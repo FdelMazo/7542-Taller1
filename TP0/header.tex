@@ -1,5 +1,10 @@
 \usepackage[margin=2.5cm,a4paper]{geometry}
-\usepackage{framed,fancyhdr,xcolor}
+\usepackage{framed,fancyhdr,xcolor,fvextra,newunicodechar}
+
+% Declara simbolos de terminal zsh para poder copypastear desde la terminal
+\newunicodechar{➜}{\ensuremath{\rightarrow}}
+\newunicodechar{✗}{\ensuremath{\triangle}}
+\newunicodechar{✓}{\ensuremath{\triangle}}
 
 % Sacar 'Figure 1:' de las imagenes
 \usepackage[labelformat=empty]{caption}
@@ -26,5 +31,8 @@
 {\endMakeFramed}
 \let\oldshaded\Shaded
 \renewenvironment{Shaded}{\begin{leftbar_mod}\begin{oldshaded}}{\end{oldshaded}\end{leftbar_mod}}
-	\let\oldverbatim\verbatim
+\let\oldverbatim\verbatim
 \renewenvironment{verbatim}{\begin{leftbar_mod}\begin{oldverbatim}}{\end{oldverbatim}\end{leftbar_mod}}
+
+% Code wrap cuando hay lenguaje especificado
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
