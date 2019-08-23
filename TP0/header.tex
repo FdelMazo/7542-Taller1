@@ -1,5 +1,5 @@
 \usepackage[margin=2.5cm,a4paper]{geometry}
-\usepackage{framed,fancyhdr,xcolor,fvextra,newunicodechar}
+\usepackage{framed,fancyhdr,xcolor,fvextra,newunicodechar, float}
 
 % Declara simbolos de terminal zsh para poder copypastear desde la terminal
 \newunicodechar{➜}{\ensuremath{\rightarrow}}
@@ -36,3 +36,12 @@
 
 % Code wrap cuando hay lenguaje especificado
 \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+
+% Siempre que se puede, posicionar las imagenes en el lugar que se las indica
+\let\origfigure\figure
+\let\endorigfigure\endfigure
+\renewenvironment{figure}[1][2] {
+    \expandafter\origfigure\expandafter[H]
+} {
+    \endorigfigure
+}
