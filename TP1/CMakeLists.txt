@@ -4,12 +4,12 @@ project(TP1 C)
 include_directories(.)
 
 set(CMAKE_C_STANDARD 99)
-set(CMAKE_C_FLAGS "-pedantic -pedantic-errors \
-                  -O3 \
-                  -ggdb -DDEBUG -fno-inline")
 
-set(CMAKE_C_CPPLINT "cpplint;\
---extensions=h,hpp,c,cpp;\
+set(CMAKE_C_FLAGS "-Wall -Werror -pedantic -pedantic-errors -O3 -ggdb -DDEBUG -fno-inline")
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR})
+
+set(CMAKE_C_CPPLINT "cpplint;--extensions=h,hpp,c,cpp;\
 --filter=-,+build/class,+build/deprecated,+build/include_what_you_use,+build/namespaces,+build/printf_format,\
 +readability/braces,+readability/check,+readability/fn_size,+readability/function,+readability/multiline_comment,+readability/multiline_string,+readability/utf8,\
 +runtime/arrays,+runtime/casting,+runtime/explicit,+runtime/init,+runtime/invalid_increment,+runtime/memset,+runtime/operator,+runtime/printf,+runtime/printf_format,+runtime/rtti,+runtime/string,+runtime/threadsafe_fn,\
@@ -33,7 +33,7 @@ add_executable(TP1
         aux/strutil.h
 )
 
-add_executable(sudoku_tests
+add_executable( sudoku_tests
         sudoku/tests.c
         sudoku/board.c
         sudoku/board.h

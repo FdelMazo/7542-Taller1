@@ -1,7 +1,7 @@
 #ifndef TP1_SUDOKU_H
 #define TP1_SUDOKU_H
 
-#include "board.h"
+#include "sudoku/board.h"
 #include <stdlib.h>
 
 #define SUDOKU_RANGE 9

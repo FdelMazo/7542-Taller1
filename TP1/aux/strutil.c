@@ -1,16 +1,8 @@
-// Federico del Mazo - 100029
-// TP1 - STRUTIL
-// Corrige Gonzalo
-
 #define _POSIX_C_SOURCE 200809L // strdup(), stpcpy()
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "strutil.h"
-
-/* *****************************************************************
-                         FUNCIONES AUXILIARES
- * *****************************************************************/
 
 //Sacada de stackoverflow, retira todos los \n \0 y \t de una string
 void strip(char *s) {
@@ -55,10 +47,6 @@ size_t cant_cads(char** strv){
     }
     return cantidad;
 }
-
-/* *****************************************************************
-                         SPLIT, JOIN y FREE_STVR
- * *****************************************************************/
 
 char** split(const char* cadena_orig, char sep){
     char str_sep[2] = {sep, '\0'};

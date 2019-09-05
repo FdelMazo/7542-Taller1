@@ -1,5 +1,5 @@
 #include "sudoku.h"
-#include "strutil.h"
+#include "aux/strutil.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -41,7 +41,8 @@ void sudoku_put(sudoku_t *self, size_t number, size_t row, size_t col) {
 }
 
 bool sudoku_verify(sudoku_t *self) {
-//    boolboard_verify(self->board);
+//    bool board_verify(self->board);
+    return true;
 }
 
 void sudoku_get(sudoku_t *self) {
