@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void board_init(board_t *self) {
+bool board_init(board_t *self) {
     cell_t ***cells = malloc(sizeof(cell_t) * 9 * 9);
 
     for (int row=0; row<9; row++){
@@ -18,6 +18,7 @@ void board_init(board_t *self) {
         }
     }
     self->cells = cells;
+    return true;
 }
 
 void board_load(board_t *self, size_t **numbers, size_t rows, size_t columns) {
@@ -31,23 +32,45 @@ void board_load(board_t *self, size_t **numbers, size_t rows, size_t columns) {
     }
 }
 
-void board_set_number(board_t *self, size_t n, size_t row, size_t col) {
-    cell_set_number(self->cells[row][col], n);
+bool board_set_number(board_t *self, size_t n, size_t row, size_t col) {
+    return cell_set_number(self->cells[row][col], n);
 }
 
 void board_set_as_original(board_t *self, size_t row, size_t col) {
     cell_set_as_original(self->cells[row][col]);
 }
 
-void board_to_string(board_t *self) {
-    printf("\n~~~\n");
+size_t board_to_string(board_t *self, char *buf, size_t count) {
+//    U===========U===========U===========U
+//    U X | X | X U X | X | X U X | X | X U
+//    U---+---+---U---+---+---U---+---+---U
+//    U X | X | X U X | X | X U X | X | X U
+//    U---+---+---U---+---+---U---+---+---U
+//    U X | X | X U X | X | X U X | X | X U
+//    U===========U===========U===========U
+//    U X | X | X U X | X | X U X | X | X U
+//    U---+---+---U---+---+---U---+---+---U
+//    U X | X | X U X | X | X U X | X | X U
+//    U---+---+---U---+---+---U---+---+---U
+//    U X | X | X U X | X | X U X | X | X U
+//    U===========U===========U===========U
+//    U X | X | X U X | X | X U X | X | X U
+//    U---+---+---U---+---+---U---+---+---U
+//    U X | X | X U X | X | X U X | X | X U
+//    U---+---+---U---+---+---U---+---+---U
+//    U X | X | X U X | X | X U X | X | X U
+//    U===========U===========U===========U
+
+    printf("U===========U===========U===========U\n");
     for (int x=0; x<9; x++){
+        printf("U");
         for (int y=0; y<9; y++){
             printf("%zd", self->cells[x][y]->number);
         }
         printf("\n");
     }
-    printf("~~~\n");
+    printf("U===========U===========U===========U\n");
+    return 1;
 }
 
 void board_reset(board_t *self){
@@ -56,4 +79,8 @@ void board_reset(board_t *self){
             cell_set_number(self->cells[x][y], 0);
         }
     }
+}
+
+bool board_verify(board_t *self){
+    return true;
 }
