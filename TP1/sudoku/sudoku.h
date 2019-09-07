@@ -5,7 +5,7 @@
 #include "board.h"
 
 #define SUDOKU_RANGE 9
-#define SUDOKU_SECTION 3
+#define SUDOKU_DIVISION 3
 
 typedef struct {
     board_t *board;
@@ -37,10 +37,8 @@ int sudoku_put(sudoku_t *self, size_t n, size_t row, size_t col);
 // Returns true if the board is valid, false if it isn't
 bool sudoku_verify(sudoku_t *self);
 
-// Stores in the buf (of size _count_) a printable representation of the board
-// If buf isn't long enough to store the string, returns -1
-// Otherwise, returns the buf size
-ssize_t sudoku_get(sudoku_t *self, char *buf, size_t count);
+// Stores in the buf a printable representation of the board
+void sudoku_get(sudoku_t *self, char *buf);
 
 // Restores the board to the original one, without the user-modified cells
 void sudoku_reset(sudoku_t *self);

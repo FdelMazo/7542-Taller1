@@ -5,7 +5,7 @@ include_directories(.)
 
 set(CMAKE_C_STANDARD 99)
 
-set(CMAKE_C_FLAGS "-Wall -Werror -pedantic -pedantic-errors -O3 -ggdb -DDEBUG -fno-inline")
+set(CMAKE_C_FLAGS "-Wall -Werror -pedantic -pedantic-errors -ggdb -DDEBUG -fno-inline")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR})
 
@@ -21,6 +21,8 @@ add_executable(TP1
         sudoku/board.h
         sudoku/cell.c
         sudoku/cell.h
+        sudoku/2d_array.c
+        sudoku/2d_array.h
         sudoku/sudoku.c
         sudoku/sudoku.h
         network/client.c
@@ -29,8 +31,6 @@ add_executable(TP1
         network/server.h
         network/socket.c
         network/socket.h
-        aux/strutil.c
-        aux/strutil.h
 )
 
 add_executable( sudoku_tests
@@ -41,8 +41,8 @@ add_executable( sudoku_tests
         sudoku/cell.h
         sudoku/sudoku.c
         sudoku/sudoku.h
-        aux/strutil.c
-        aux/strutil.h
+        sudoku/2d_array.c
+        sudoku/2d_array.h
 )
 
 add_executable(network_tests
@@ -53,6 +53,4 @@ add_executable(network_tests
         network/server.h
         network/socket.c
         network/socket.h
-        aux/strutil.c
-        aux/strutil.h
 )

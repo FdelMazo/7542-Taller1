@@ -13,6 +13,7 @@ int main() {
 
     printf("tests sudoku_put\n");
     assert(sudoku_put(&sudoku, 1, 1, 2) == 0);
+    assert(sudoku_put(&sudoku, 1, 1, 2) == 0);
     assert(sudoku_put(&sudoku, 1, 10, 1) == 1);
     assert(sudoku_put(&sudoku, 1, 1, 10) == 1);
     assert(sudoku_put(&sudoku, 1, 0, 1) == 1);
@@ -25,13 +26,18 @@ int main() {
     sudoku_reset(&sudoku);
 
     printf("tests sudoku_verify\n");
+    char buf[800];
+    sudoku_get(&sudoku, buf);
+    printf("%s",buf);
     assert(sudoku_verify(&sudoku) == true);
     sudoku_put(&sudoku, 7, 5, 8);
     assert(sudoku_verify(&sudoku) == true);
     sudoku_put(&sudoku, 1, 1, 2);
     assert(sudoku_verify(&sudoku) == false);
+    sudoku_put(&sudoku, 1, 1, 1);
+    assert(sudoku_verify(&sudoku) == false);
 
-    char *buf = malloc(800);
-    sudoku_get(&sudoku, buf, 800);
-    free(buf);
+//    char buf[800];
+//    sudoku_get(&sudoku, buf);
+//    printf("%s",buf);
 }

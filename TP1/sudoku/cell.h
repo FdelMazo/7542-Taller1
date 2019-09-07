@@ -3,17 +3,23 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <stdlib.h>
+#include <stddef.h>
+
+#define EMPTY_CELL ' '
 
 typedef struct {
-	bool original;
-    size_t number;
-	size_t row;
-	size_t col;
+    bool original;
+    uint8_t number;
 } cell_t;
 
-void cell_init(cell_t *self, uint8_t x, uint8_t y);
+void cell_init(cell_t *self);
+
+uint8_t cell_get_number(cell_t *self);
+
 bool cell_set_number(cell_t *self, uint8_t n);
+
 void cell_set_as_original(cell_t *self);
+
+char cell_repr(cell_t *self);
 
 #endif
