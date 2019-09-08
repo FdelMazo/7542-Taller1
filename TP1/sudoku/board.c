@@ -187,6 +187,6 @@ bool board_repr(board_t *self, char *buf) {
 }
 
 void board_release(board_t *self) {
-//    _2d_array_release((void ***) self->cells);
-    _3d_array_destroy((void ***) self->cells);
+    _2d_array_release((void ***) self->cells);
+    _2d_array_destroy((void **) self->cells);
 }

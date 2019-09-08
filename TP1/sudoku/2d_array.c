@@ -7,20 +7,10 @@ void _2d_array_destroy(void **arr) {
     free(arr);
 }
 
-void _3d_array_destroy(void ***arr) {
-    for (size_t x = 0; arr[x]; x++) {
-        for (size_t y = 0; arr[y]; y++) free(arr[x][y]);
-        free(arr[x]);
-    }
-    free(arr);
-}
-
 void _2d_array_release(void ***arr) {
     for (size_t x = 0; arr[x]; x++) {
-        for (size_t y = 0; arr[x][y]; y++)
-            _2d_array_destroy(arr[x]);
+        for (size_t y = 0; arr[y]; y++) free(arr[x][y]);
     }
-    _2d_array_destroy((void **) arr);
 }
 
 bool _2d_array_init(void ***arr, size_t size, size_t n, size_t m) {
