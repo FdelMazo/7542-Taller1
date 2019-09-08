@@ -108,23 +108,29 @@ bool board_verify(board_t *self) {
     return true;
 }
 
+bool _board_repr_cell(board_t *self, char *buf, ssize_t row, size_t col) {
+    char *cell_buf = calloc(CELL_LEN+1, sizeof(char));
+    if (!(cell_buf)) return false;
+
+    if (row == -1)
+        memset(cell_buf, HEADER, CELL_LEN);
+    else if (row == -2)
+        memset(cell_buf, CELL_TOP, CELL_LEN);
+    else
+        snprintf(cell_buf, CELL_LEN+1, CELL_FORMAT,
+                 cell_repr(self->cells[row][col]));
+
+    strncat(buf, cell_buf, CELL_LEN);
+    free(cell_buf);
+    return true;
+}
+
 bool _board_repr_cells(board_t *self, char *buf, ssize_t row, size_t col_i) {
-    strncat(buf, COLUMN, strlen(COLUMN));
+    snprintf(buf, sizeof(char)*2, "%s", COLUMN);
     size_t col_f = col_i + self->division;
     for (size_t col = col_i; col < col_f; col++) {
-        char *cell_buf;
-        size_t len = self->division +1;
-        if (!(cell_buf = calloc(len, sizeof(char)))) return false;
-
-        if (row == -1)
-            memset(cell_buf, HEADER[0], self->division);
-        else if (row == -2)
-            memset(cell_buf, CELL_TOP[0], self->division);
-        else
-            snprintf(cell_buf, len, " %c ", cell_repr(self->cells[row][col]));
-
-        strncat(buf, cell_buf, len);
-        free(cell_buf);
+        if (!_board_repr_cell(self, buf, row, col))
+            return false;
     }
 
     return true;
@@ -132,10 +138,12 @@ bool _board_repr_cells(board_t *self, char *buf, ssize_t row, size_t col_i) {
 bool _board_repr_row(board_t *self, char *buf, ssize_t row) {
     for (size_t cells = 0; cells < self->division; cells++) {
         char *cells_buf;
-        size_t len = self->division * self->division + self->division+1;
-        if (!(cells_buf = calloc(len, sizeof(char)))) return false;
-        if (!(_board_repr_cells(self, cells_buf, row, cells * self->division))) return false;
-        strcat(buf, cells_buf);
+        size_t cell_len = strlen(CELL_FORMAT) +1;
+        size_t cells_len = (cell_len + strlen(COLUMN)) * self->division;
+        if (!(cells_buf = calloc(cells_len, sizeof(char)))) return false;
+        if (!(_board_repr_cells(self, cells_buf, row, cells * self->division)))
+            return false;
+        strncat(buf, cells_buf, strlen(cells_buf));
         free(cells_buf);
     }
     strncat(buf, COLUMN, strlen(COLUMN));
@@ -143,20 +151,42 @@ bool _board_repr_row(board_t *self, char *buf, ssize_t row) {
     return true;
 }
 
-void board_repr(board_t *self, char *buf) {
+bool board_repr(board_t *self, char *buf) {
+    size_t cell_len = strlen(CELL_FORMAT) +1;
+    size_t cells_len = (cell_len + strlen(COLUMN)) * self->division;
+    size_t row_len = (cells_len + strlen(COLUMN)) * self->division;
+
     for (size_t i = 0; i < self->range; i++) {
-        char *buff = calloc(100, 1);
-        if ((i % self->division) == 0) _board_repr_row(self, buff, -1);
-        else _board_repr_row(self, buff, -2);
-        _board_repr_row(self, buff, i);
-        strncat(buf, buff, strlen(buff));
+        char *row_buf;
+
+        if (!(row_buf = calloc(row_len, sizeof(char)))) return false;
+
+        if ((i % self->division) == 0) {
+            char *header;
+            if (!(header = calloc(row_len, sizeof(char)))) return false;
+            _board_repr_row(self, header, -1);
+            strncat(buf, header, strlen(header));
+            free(header);
+        } else {
+            char *separator;
+            if (!(separator = calloc(row_len, sizeof(char)))) return false;
+            _board_repr_row(self, separator, -2);
+            strncat(buf, separator, strlen(separator));
+            free(separator);
+        }
+        _board_repr_row(self, row_buf, i);
+        strncat(buf, row_buf, strlen(row_buf));
+        free(row_buf);
     }
-    char *buff = calloc(100, 1);
-    _board_repr_row(self, buff, -1);
-    strncat(buf, buff, strlen(buff));
+    char *footer;
+    if (!(footer = calloc(row_len, sizeof(char)))) return false;
+    _board_repr_row(self, footer, -1);
+    strncat(buf, footer, strlen(footer));
+    free(footer);
+    return true;
 }
 
-
-
-
-
+void board_release(board_t *self) {
+//    _2d_array_release((void ***) self->cells);
+    _3d_array_destroy((void ***) self->cells);
+}

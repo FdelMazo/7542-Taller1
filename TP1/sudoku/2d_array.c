@@ -7,6 +7,14 @@ void _2d_array_destroy(void **arr) {
     free(arr);
 }
 
+void _3d_array_destroy(void ***arr) {
+    for (size_t x = 0; arr[x]; x++) {
+        for (size_t y = 0; arr[y]; y++) free(arr[x][y]);
+        free(arr[x]);
+    }
+    free(arr);
+}
+
 void _2d_array_release(void ***arr) {
     for (size_t x = 0; arr[x]; x++) {
         for (size_t y = 0; arr[x][y]; y++)
@@ -30,7 +38,7 @@ bool _2d_array_init(void ***arr, size_t size, size_t n, size_t m) {
 
 void ***_2d_array_create(size_t n, size_t m) {
     void ***arr;
-    if (!(arr = malloc(sizeof(void *) * n * m))) return NULL;
+    if (!(arr = calloc(n * m, sizeof(void *)))) return NULL;
 
     for (size_t x = 0; x < n; x++) {
         if (!(arr[x] = malloc(sizeof(void *) * m))) {

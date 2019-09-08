@@ -6,10 +6,12 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#define CELL_TOP "-"
+#define CELL_FORMAT " %c "
+#define CELL_LEN 3
+#define CELL_TOP '-'
 #define CELL_SIDE '|'
 #define CELL_CORNER '+'
-#define HEADER "="
+#define HEADER '='
 #define COLUMN "U"
 
 typedef struct {
@@ -26,10 +28,12 @@ void board_set_as_original(board_t *self, size_t row, size_t col);
 
 void board_load(board_t *self, uint8_t **numbers, size_t rows, size_t columns);
 
-void board_repr(board_t *self, char *buf);
+bool board_repr(board_t *self, char *buf);
 
 void board_reset(board_t *self);
 
 bool board_verify(board_t *self);
+
+void board_release(board_t *self);
 
 #endif

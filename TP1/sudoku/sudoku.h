@@ -30,7 +30,7 @@ bool sudoku_load(sudoku_t *self, char *filename);
 //   3 if the cell is an original one
 int sudoku_put(sudoku_t *self, size_t n, size_t row, size_t col);
 
-// Verifys the status of the board
+// Verifies the status of the board
 // A board is valid if it doesn't have any repeated numbers in the rows, columns, or sections
 //   (which isn't to say it is mistake-free)
 // A board isn't valid otherwise
@@ -42,5 +42,8 @@ void sudoku_get(sudoku_t *self, char *buf);
 
 // Restores the board to the original one, without the user-modified cells
 void sudoku_reset(sudoku_t *self);
+
+// Releases the allocated memory inside the structure
+void sudoku_release(sudoku_t *self);
 
 #endif

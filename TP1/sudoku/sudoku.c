@@ -1,5 +1,4 @@
 #include "sudoku.h"
-#include "../aux/strutil.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include "2d_array.h"
@@ -36,6 +35,7 @@ bool sudoku_load(sudoku_t *self, char *filename) {
     }
 
     board_load(self->board, numbers, SUDOKU_RANGE, SUDOKU_RANGE);
+    _2d_array_destroy((void **) numbers);
     fclose(stream);
     return true;
 }
@@ -60,4 +60,9 @@ void sudoku_get(sudoku_t *self, char *buf) {
 
 void sudoku_reset(sudoku_t *self) {
     board_reset(self->board);
+}
+
+void sudoku_release(sudoku_t *self) {
+    board_release(self->board);
+    free(self->board);
 }

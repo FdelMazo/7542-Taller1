@@ -2,7 +2,7 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
-
+#include <string.h>
 int main() {
     sudoku_t sudoku;
     sudoku_init(&sudoku);
@@ -26,9 +26,6 @@ int main() {
     sudoku_reset(&sudoku);
 
     printf("tests sudoku_verify\n");
-    char buf[800];
-    sudoku_get(&sudoku, buf);
-    printf("%s",buf);
     assert(sudoku_verify(&sudoku) == true);
     sudoku_put(&sudoku, 7, 5, 8);
     assert(sudoku_verify(&sudoku) == true);
@@ -37,7 +34,13 @@ int main() {
     sudoku_put(&sudoku, 1, 1, 1);
     assert(sudoku_verify(&sudoku) == false);
 
-//    char buf[800];
-//    sudoku_get(&sudoku, buf);
-//    printf("%s",buf);
+    char* buf = calloc(800, 1);
+    sudoku_get(&sudoku, buf);
+    printf("%s",buf);
+    free(buf);
+
+    sudoku_release(&sudoku);
+    fclose(stdin);
+    fclose(stdout);
+    fclose(stderr);
 }
