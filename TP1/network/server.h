@@ -5,8 +5,13 @@
 
 typedef struct {
     socket_t skt;
+    socket_t client_skt;
 } server_t;
 
-void server_init(server_t *self, char* port_number);
+#define MAX_LENGTH 50
+
+void server_init(server_t *self, char* port);
+void server_communicate(server_t *self);
+void server_release(server_t *self);
 
 #endif //TP1_SERVER_H

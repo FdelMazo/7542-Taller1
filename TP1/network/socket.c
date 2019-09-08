@@ -1,20 +1,61 @@
 #include "socket.h"
-#include <stdio.h> // printf()
-#include <stdbool.h> // bool
-#include <string.h> // memset()
-#include <netdb.h> // getaddrinfo()
-#include <sys/socket.h> // socket()
-#include <errno.h> // errno
-#include <unistd.h> // close()
+#include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
+#include <netdb.h>
+#include <sys/socket.h>
+#include <errno.h>
+#include <unistd.h>
 
-void socket_init(socket_t *self) {
-	int fd = socket(AF_INET, SOCK_STREAM, 6);
+bool socket_init(socket_t *self, int _fd) {
+	if (_fd) {
+	    self->fd = _fd;
+	    return true;
+	}
+    int fd = socket(FAMILY, SOCK_TYPE, 0);
 	if (fd == -1) {
 		fprintf(stderr, "socket_init-->socket: %s\n", strerror(errno));
-		return;
+		return false;
 	}
 	self->fd = fd;
+	return true;
 }
+
+struct addrinfo* _socket_get_addr(socket_t *self, const char *host, const char *service, int flags) {
+    struct addrinfo *addr_list;
+    struct addrinfo hints;
+    memset(&hints, 0, sizeof(struct addrinfo));
+    hints.ai_family = FAMILY;
+    hints.ai_socktype = SOCK_TYPE;
+    hints.ai_flags = flags;
+    int addr_err = 0;
+    if ( (addr_err = getaddrinfo(host, service, &hints, &addr_list)) != 0) {
+        fprintf(stderr, "_socket_get_addr-->getaddrinfo: %s\n", gai_strerror(addr_err));
+        socket_release(self);
+        return false;
+    }
+    return addr_list;
+}
+
+bool socket_connect(socket_t *self, const char *host, const char *service) {
+    bool connection_err = false;
+    struct addrinfo *addr_list = _socket_get_addr(self, host, service, CLIENT_FLAGS);
+
+    for (struct addrinfo *addr = addr_list; addr && !connection_err; addr = addr->ai_next) {
+        if (connect(self->fd, addr->ai_addr, addr->ai_addrlen) == -1) connection_err = true;
+    }
+
+    freeaddrinfo(addr_list);
+
+    if (connection_err) {
+        fprintf(stderr, "socket_connect-->connect: %s\n", strerror(errno));
+        socket_release(self);
+        return false;
+    }
+
+    return true;
+}
+
 
 void socket_release(socket_t *self){
 	shutdown(self->fd, SHUT_RDWR);
@@ -24,96 +65,56 @@ void socket_release(socket_t *self){
 	}
 }
 
-int socket_connect(socket_t *self, const char *host, const char *service) {
-	int addr_err, connection_err;
-	struct addrinfo hints;
-	struct addrinfo *addr_list;
 
-	memset(&hints, 0, sizeof(struct addrinfo));
-	hints.ai_family = AF_INET;
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_flags = 0;
-	if ( (addr_err = getaddrinfo(host, service, &hints, &addr_list)) != 0) {
-		fprintf(stderr, "socket_connect-->getaddrinfo: %s\n", gai_strerror(addr_err));
-		return addr_err;
-	}
-
-	for (struct addrinfo *addr = addr_list; addr != NULL && connection_err != 0; addr = addr->ai_next) {
-		connection_err = connect(self->fd, addr->ai_addr, addr->ai_addrlen);
-	}
-
-	if (connection_err == -1) {
-		fprintf(stderr, "socket_connect-->connect: %s\n", strerror(errno));
-		socket_release(self);
-		return errno;
-	}
-
-	freeaddrinfo(addr_list);
-	return 1;
-}
-
-int socket_send(socket_t* self, const char* buffer, size_t length) {
-	bool err = false;
+ssize_t socket_send(socket_t* self, const char* request, size_t length) {
 	int remaining_bytes = length;
-	int bytes_sent = 0;
-	int bytes;
-	while (bytes_sent < length && !err) {
-		bytes = send(self->fd, &buffer[bytes_sent], remaining_bytes, MSG_NOSIGNAL);
-		if (bytes <= 0){
-			err = true;
+	int total_bytes_sent = 0;
+    ssize_t bytes = 0;
+	while (total_bytes_sent < length) {
+		bytes = send(self->fd, &request[total_bytes_sent], remaining_bytes, MSG_NOSIGNAL);
+		if (bytes == -1){
 			fprintf(stderr, "socket_send-->send: %s\n", strerror(errno));
-		} else {
-			bytes_sent += bytes;
-			remaining_bytes -= bytes;
+			break;
 		}
+        total_bytes_sent += bytes;
+        remaining_bytes -= bytes;
 	}
 	return bytes;
 }
 
-int socket_receive(socket_t* self, char* response, size_t length) {
-    bool err = false;
+ssize_t socket_receive(socket_t* self, char* response, size_t length) {
     int remaining_bytes = length;
-    int bytes_received = 0;
-    int bytes;
-    while (bytes_received < length && !err) {
-        bytes = recv(self->fd, &response[bytes_received], remaining_bytes, 0);
-        if (bytes <= 0) {
-            err = true;
+    int total_bytes_received = 0;
+    ssize_t bytes = 0;
+    while (total_bytes_received < length) {
+        bytes = recv(self->fd, &response[total_bytes_received], remaining_bytes, 0);
+        if (bytes == -1) {
             fprintf(stderr, "socket_receive-->recv: %s\n", strerror(errno));
-        } else {
-            bytes_received += bytes;
-            remaining_bytes -= bytes;
+            break;
         }
+        total_bytes_received += bytes;
+        remaining_bytes -= bytes;
     }
     return bytes;
 }
 
-int socket_bind(socket_t* self, const char* host, const char* service) {
-    int addr_err, bind_err;
-    struct addrinfo hints;
-    struct addrinfo *addr_list;
+int socket_bind(socket_t* self, const char* service) {
+    bool bind_err = false;
+    struct addrinfo *addr_list = _socket_get_addr(self, NULL, service, SERVER_FLAGS);
 
-    memset(&hints, 0, sizeof(struct addrinfo));
-    hints.ai_family = AF_INET;
-    hints.ai_socktype = SOCK_STREAM;
-    hints.ai_flags = 0;
-    if ( (addr_err = getaddrinfo(host, service, &hints, &addr_list)) != 0) {
-        fprintf(stderr, "socket_bind-->getaddrinfo: %s\n", gai_strerror(addr_err));
-        return addr_err;
-    }
-
-    bind_err = bind(self->fd, addr_list->ai_addr, addr_list->ai_addrlen);
-//    for (struct addrinfo *addr = addr_list; addr != NULL && bind_err != 0; addr = addr->ai_next) {
-//        bind_err = bind(self->fd, addr->ai_addr, addr->ai_addrlen);
-//    }
-
-    if (bind_err == -1) {
-        fprintf(stderr, "socket_bind-->bind: %s\n", strerror(errno));
-        socket_release(self);
-        return errno;
+    for (struct addrinfo *addr = addr_list; addr && !bind_err; addr = addr->ai_next) {
+        if (bind(self->fd, addr->ai_addr, addr->ai_addrlen) == -1) bind_err = true;
     }
 
     freeaddrinfo(addr_list);
+
+    if (bind_err) {
+        fprintf(stderr, "socket_bind-->bind: %s\n", strerror(errno));
+        socket_release(self);
+        return false;
+    }
+
+    return true;
 }
 
 int socket_listen(socket_t* self) {
@@ -123,9 +124,11 @@ int socket_listen(socket_t* self) {
         socket_release(self);
         return 1;
     }
-    while (true) {
-        accept(self->fd, NULL, NULL);
-        printf("New client\n");
-    }
-    return 1;
+    return 0;
+}
+
+int socket_accept(socket_t *self) {
+    int fd = accept(self->fd, NULL, NULL);
+    printf("New client!\n");
+    return fd;
 }
