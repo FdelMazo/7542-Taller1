@@ -8,7 +8,7 @@
 
 bool board_init(board_t *self, size_t range, size_t division) {
     cell_t ***cells;
-    cells = (cell_t***) _2d_array_create(range, range);
+    cells = (cell_t ***) _2d_array_create(range, range);
     if (!cells) return false;
 
     if (!_2d_array_init((void ***) cells, sizeof(cell_t), range, range)) {
@@ -16,8 +16,8 @@ bool board_init(board_t *self, size_t range, size_t division) {
         return false;
     }
 
-    for (size_t row=0; row<range; row++){
-        for (size_t col=0; col<range; col++){
+    for (size_t row = 0; row < range; row++) {
+        for (size_t col = 0; col < range; col++) {
             cell_init(cells[row][col]);
         }
     }
@@ -108,82 +108,65 @@ bool board_verify(board_t *self) {
     return true;
 }
 
-bool _board_repr_cell(board_t *self, char *buf, ssize_t row, size_t col) {
-    char *cell_buf = calloc(CELL_LEN+1, sizeof(char));
-    if (!(cell_buf)) return false;
+ssize_t _board_repr_cell(board_t *self, char *buf, ssize_t row, size_t col) {
+    ssize_t len = CELL_LEN + 2;
+    char *cell_buf = calloc(len + 2, sizeof(char));
+    char side_c;
+    if (!(cell_buf)) return -1;
 
-    if (row == -1)
+    if (row == -1) {
         memset(cell_buf, HEADER, CELL_LEN);
-    else if (row == -2)
+        side_c = HEADER_SIDE;
+    } else if (row == -2) {
         memset(cell_buf, CELL_TOP, CELL_LEN);
-    else
-        snprintf(cell_buf, CELL_LEN+1, CELL_FORMAT,
-                 cell_repr(self->cells[row][col]));
+        side_c = CELL_CORNER;
+    } else {
+        len = snprintf(cell_buf, len + 1, CELL_FORMAT,
+                       cell_repr(self->cells[row][col]));
+        side_c = CELL_SIDE;
+    }
 
-    strncat(buf, cell_buf, CELL_LEN);
+    if ((col % self->division) != self->division - 1) {
+        char side[] = {side_c, 0};
+        strncat(cell_buf, side, strlen(side));
+        len += strlen(side);
+    }
+
+    strncat(buf, cell_buf, len);
     free(cell_buf);
-    return true;
+    return len;
 }
 
-bool _board_repr_cells(board_t *self, char *buf, ssize_t row, size_t col_i) {
-    snprintf(buf, sizeof(char)*2, "%s", COLUMN);
+ssize_t _board_repr_cells(board_t *self, char *buf, ssize_t row, size_t col_i) {
+    char column[] = {COLUMN, 0};
+    strncat(buf, column, strlen(column));
+    ssize_t len = 0;
     size_t col_f = col_i + self->division;
     for (size_t col = col_i; col < col_f; col++) {
-        if (!_board_repr_cell(self, buf, row, col))
-            return false;
+        len += _board_repr_cell(self, buf, row, col);
     }
-
-    return true;
+    return len;
 }
-bool _board_repr_row(board_t *self, char *buf, ssize_t row) {
+
+ssize_t _board_repr_row(board_t *self, char *buf, size_t row) {
+    ssize_t len = 0;
     for (size_t cells = 0; cells < self->division; cells++) {
-        char *cells_buf;
-        size_t cell_len = strlen(CELL_FORMAT) +1;
-        size_t cells_len = (cell_len + strlen(COLUMN)) * self->division;
-        if (!(cells_buf = calloc(cells_len, sizeof(char)))) return false;
-        if (!(_board_repr_cells(self, cells_buf, row, cells * self->division)))
-            return false;
-        strncat(buf, cells_buf, strlen(cells_buf));
-        free(cells_buf);
+        len += _board_repr_cells(self, buf, row, cells * self->division);
     }
-    strncat(buf, COLUMN, strlen(COLUMN));
-    strncat(buf, "\n", strlen("\n"));
-    return true;
+    char column[] = {COLUMN, '\n'};
+    strncat(buf, column, strlen(column));
+    return len;
 }
 
-bool board_repr(board_t *self, char *buf) {
-    size_t cell_len = strlen(CELL_FORMAT) +1;
-    size_t cells_len = (cell_len + strlen(COLUMN)) * self->division;
-    size_t row_len = (cells_len + strlen(COLUMN)) * self->division;
-
+void board_repr(board_t *self, char *buf) {
     for (size_t i = 0; i < self->range; i++) {
-        char *row_buf;
-
-        if (!(row_buf = calloc(row_len, sizeof(char)))) return false;
-
-        if ((i % self->division) == 0) {
-            char *header;
-            if (!(header = calloc(row_len, sizeof(char)))) return false;
-            _board_repr_row(self, header, -1);
-            strncat(buf, header, strlen(header));
-            free(header);
-        } else {
-            char *separator;
-            if (!(separator = calloc(row_len, sizeof(char)))) return false;
-            _board_repr_row(self, separator, -2);
-            strncat(buf, separator, strlen(separator));
-            free(separator);
-        }
-        _board_repr_row(self, row_buf, i);
-        strncat(buf, row_buf, strlen(row_buf));
-        free(row_buf);
+        if ((i % self->division) == 0)
+            _board_repr_row(self, buf, -1);
+        else
+            _board_repr_row(self, buf, -2);
+        _board_repr_row(self, buf, i);
     }
-    char *footer;
-    if (!(footer = calloc(row_len, sizeof(char)))) return false;
-    _board_repr_row(self, footer, -1);
-    strncat(buf, footer, strlen(footer));
-    free(footer);
-    return true;
+    _board_repr_row(self, buf, -1);
 }
 
 void board_release(board_t *self) {

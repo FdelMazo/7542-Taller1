@@ -12,7 +12,8 @@
 #define CELL_SIDE '|'
 #define CELL_CORNER '+'
 #define HEADER '='
-#define COLUMN "U"
+#define HEADER_SIDE '='
+#define COLUMN 'U'
 
 typedef struct {
     cell_t ***cells;
@@ -28,7 +29,7 @@ void board_set_as_original(board_t *self, size_t row, size_t col);
 
 void board_load(board_t *self, uint8_t **numbers, size_t rows, size_t columns);
 
-bool board_repr(board_t *self, char *buf);
+void board_repr(board_t *self, char *buf);
 
 void board_reset(board_t *self);
 

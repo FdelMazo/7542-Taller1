@@ -20,7 +20,7 @@ bool sudoku_load(sudoku_t *self, char *filename) {
     if (!(stream = fopen(filename, "r"))) return false;
 
     uint8_t **numbers;
-    numbers = (uint8_t**) _2d_array_create(SUDOKU_RANGE, SUDOKU_RANGE);
+    numbers = (uint8_t **) _2d_array_create(SUDOKU_RANGE, SUDOKU_RANGE);
     if (!numbers) {
         fclose(stream);
         return false;
@@ -45,7 +45,7 @@ int sudoku_put(sudoku_t *self, size_t n, size_t row, size_t col) {
         return 1;
     if (n == 0 || n > SUDOKU_RANGE)
         return 2;
-    if (!board_set_number(self->board, n, row-1, col-1))
+    if (!board_set_number(self->board, n, row - 1, col - 1))
         return 3;
     return 0;
 }
