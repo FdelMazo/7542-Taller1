@@ -26,8 +26,8 @@ add_custom_target(zip
         COMMAND rm -rf sercom
 )
 
-add_custom_target(sercom COMMAND
-        make -f SercomMakefile)
+add_custom_target(informe COMMAND
+        pandoc README.md -H header.tex -o Informe.pdf --latex-engine=xelatex)
 
 add_executable(tp
         main.c
