@@ -23,15 +23,15 @@ typedef struct {
 
 bool board_init(board_t *self, size_t range, size_t division);
 
+void board_load(board_t *self, uint8_t **numbers, size_t rows, size_t columns);
+
 bool board_set_number(board_t *self, uint8_t number, size_t row, size_t col);
 
 void board_set_as_original(board_t *self, size_t row, size_t col);
 
-void board_load(board_t *self, uint8_t **numbers, size_t rows, size_t columns);
+void board_reset(board_t *self);
 
 void board_repr(board_t *self, char *buf);
-
-void board_reset(board_t *self);
 
 bool board_verify(board_t *self);
 

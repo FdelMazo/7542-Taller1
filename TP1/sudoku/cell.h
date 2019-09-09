@@ -14,9 +14,9 @@ typedef struct {
 
 void cell_init(cell_t *self);
 
-uint8_t cell_get_number(cell_t *self);
-
 bool cell_set_number(cell_t *self, uint8_t n);
+
+uint8_t cell_get_number(cell_t *self);
 
 void cell_set_as_original(cell_t *self);
 
