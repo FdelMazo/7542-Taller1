@@ -58,12 +58,12 @@ ssize_t _protocol_encode(char *buf, char *message) {
     return MAX_REQUEST_LENGTH;
 }
 
-ssize_t protocol_client_send(protocol_t *self, char *buf) {
+ssize_t protocol_client_send(protocol_t *self, char *request) {
     char msg[MAX_REQUEST_LENGTH + 1] = {0};
-    ssize_t bytes = _protocol_encode(buf, msg);
+    ssize_t bytes = _protocol_encode(request, msg);
     if (bytes == -1) return -1;
 //    DEBUG_PRINT("protocol received from client: %s"
-//                "\ttranscribed to: %s\n", buf, msg);
+//                "\ttranscribed to: %s\n", request, msg);
     return socket_send(self->skt, msg, bytes);
 }
 
@@ -71,17 +71,17 @@ ssize_t protocol_client_receive(protocol_t *self, char *response) {
     return socket_receive(self->skt, response, MAX_RESPONSE_LENGTH);
 }
 
-ssize_t protocol_server_send(protocol_t *self, char *buf) {
-    return socket_send(self->client_skt, buf, MAX_RESPONSE_LENGTH);
-}
-
-ssize_t protocol_server_receive(protocol_t *self, char *buf) {
+ssize_t protocol_server_receive(protocol_t *self, char *request) {
     if (!self->client_skt) {
         int client_skt = socket_accept(self->skt);
         self->client_skt = malloc(sizeof(socket_t));
         socket_init(self->client_skt, client_skt);
     }
-    return socket_receive(self->client_skt, buf, MAX_REQUEST_LENGTH);
+    return socket_receive(self->client_skt, request, MAX_REQUEST_LENGTH);
+}
+
+ssize_t protocol_server_send(protocol_t *self, char *response) {
+    return socket_send(self->client_skt, response, MAX_RESPONSE_LENGTH);
 }
 
 void protocol_release(protocol_t *self) {
