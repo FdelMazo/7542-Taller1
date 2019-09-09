@@ -54,6 +54,8 @@ ssize_t _protocol_encode(char *buf, char *message) {
         message[0] = 'R';
     } else if (strncmp(action, GET, strlen(RESET)) == 0) {
         message[0] = 'G';
+    } else {
+        return 0;
     }
     return MAX_REQUEST_LENGTH;
 }
