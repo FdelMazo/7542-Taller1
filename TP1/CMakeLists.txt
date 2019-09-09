@@ -17,9 +17,8 @@ set(CMAKE_C_CPPLINT "cpplint;--extensions=h,hpp,c,cpp;\
 
 add_custom_target(zip COMMAND
         ${CMAKE_COMMAND} -E tar "cfv" "sercom.zip" --format=zip
-        "${CMAKE_CURRENT_SOURCE_DIR}/sudoku/"
-        "${CMAKE_CURRENT_SOURCE_DIR}/network"
-        "${CMAKE_CURRENT_SOURCE_DIR}/main.c")
+            "${CMAKE_CURRENT_SOURCE_DIR}/*.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
 
 add_custom_target(make COMMAND
         make -f SercomMakefile)

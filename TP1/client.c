@@ -28,7 +28,7 @@ bool client_init(client_t *self, char *host, char *port) {
 void client_communicate(client_t *self) {
     while (true) {
         char command[MAX_LENGTH_COMMAND];
-        fgets(command, MAX_LENGTH_COMMAND, stdin);
+        if (!fgets(command, MAX_LENGTH_COMMAND, stdin)) break;
         DEBUG_PRINT("client sending: %s\n", command);
         if (protocol_client_send(self->protocol, command) == 0) break;
         char output[MAX_LENGTH_OUTPUT] = {0};

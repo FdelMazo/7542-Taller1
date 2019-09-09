@@ -3,7 +3,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-int main() {
+//int main() {
+int tests(){
     sudoku_t sudoku;
     sudoku_init(&sudoku);
 
@@ -43,4 +44,5 @@ int main() {
     fclose(stdin);
     fclose(stdout);
     fclose(stderr);
+    return 0;
 }

@@ -1,3 +1,4 @@
+#define _POSIX_C_SOURCE 200112L
 #include "socket.h"
 #include <stdio.h>
 #include <stdbool.h>

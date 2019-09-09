@@ -29,7 +29,7 @@ bool sudoku_load(sudoku_t *self, char *filename) {
     for (size_t n_line = 0; n_line < SUDOKU_RANGE; n_line++) {
         for (size_t i = 0; i < SUDOKU_RANGE; i++) {
             int n;
-            fscanf(stream, "%d", &n);
+            if (!fscanf(stream, "%d", &n)) continue;
             numbers[n_line][i] = n;
         }
     }
