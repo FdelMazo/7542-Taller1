@@ -32,15 +32,15 @@ bool protocol_server_init(protocol_t *self, char *port) {
     return true;
 }
 
-ssize_t _protocol_encode_response(char *buf, char *message) {
-    *message = *buf;
-    return strlen(message);
-}
+//ssize_t _protocol_encode_response(char *buf, char *message) {
+//    *message = *buf;
+//    return strlen(message);
+//}
 
-ssize_t _protocol_decode_response(char *buf, char *response) {
-    *response = *buf;
-    return strlen(response);
-}
+//ssize_t _protocol_decode_response(char *buf, char *response) {
+//    *response = *buf;
+//    return strlen(response);
+//}
 
 
 ssize_t _protocol_encode_command(char *buf, char *message) {
@@ -79,9 +79,9 @@ ssize_t protocol_client_send(protocol_t *self, char *request) {
 }
 
 ssize_t protocol_client_receive(protocol_t *self, char *buffer) {
-    socket_receive(self->skt, buffer, MAX_RESPONSE_LENGTH);
-    char response[MAX_RESPONSE_LENGTH] = {0};
-    return _protocol_decode_response(buffer, response);
+    return socket_receive(self->skt, buffer, MAX_RESPONSE_LENGTH);
+//    char response[MAX_RESPONSE_LENGTH] = {0};
+//    return _protocol_decode_response(buffer, response);
 }
 
 ssize_t protocol_server_receive(protocol_t *self, char *request) {
@@ -94,9 +94,9 @@ ssize_t protocol_server_receive(protocol_t *self, char *request) {
 }
 
 ssize_t protocol_server_send(protocol_t *self, char *buffer) {
-    char response[MAX_RESPONSE_LENGTH] = {0};
-    ssize_t bytes = _protocol_encode_response(buffer, response);
-    return socket_send(self->client_skt, response, bytes);
+//    char response[MAX_RESPONSE_LENGTH] = {0};
+//    ssize_t bytes = _protocol_encode_response(buffer, response);
+    return socket_send(self->client_skt, buffer, MAX_RESPONSE_LENGTH);
 }
 
 void protocol_release(protocol_t *self) {
