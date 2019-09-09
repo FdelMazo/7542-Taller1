@@ -26,35 +26,35 @@ add_custom_target(make COMMAND
 
 add_executable(TP1
         main.c
-        sudoku/board.c
-        sudoku/board.h
-        sudoku/cell.c
-        sudoku/cell.h
-        sudoku/2d_array.c
-        sudoku/2d_array.h
-        sudoku/sudoku.c
-        sudoku/sudoku.h
-        network/protocol.c
-        network/debug.h
-        network/protocol.h
-        network/sudoku_dispatcher.c
-        network/sudoku_dispatcher.h
-        network/client.c
-        network/client.h
-        network/server.c
-        network/server.h
-        network/socket.c
-        network/socket.h
+        board.c
+        board.h
+        cell.c
+        cell.h
+        2d_array.c
+        2d_array.h
+        sudoku.c
+        sudoku.h
+        protocol.c
+        debug.h
+        protocol.h
+        sudoku_dispatcher.c
+        sudoku_dispatcher.h
+        client.c
+        client.h
+        server.c
+        server.h
+        socket.c
+        socket.h
 )
 
 add_executable(sudoku_tests
-        sudoku/tests.c
-        sudoku/board.c
-        sudoku/board.h
-        sudoku/cell.c
-        sudoku/cell.h
-        sudoku/sudoku.c
-        sudoku/sudoku.h
-        sudoku/2d_array.c
-        sudoku/2d_array.h
+        sudoku_tests.c
+        board.c
+        board.h
+        cell.c
+        cell.h
+        sudoku.c
+        sudoku.h
+        2d_array.c
+        2d_array.h
 )

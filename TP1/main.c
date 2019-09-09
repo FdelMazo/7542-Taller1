@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
-#include "network/client.h"
-#include "network/server.h"
+#include "client.h"
+#include "server.h"
 
 #define SERVER "server"
 #define CLIENT "client"

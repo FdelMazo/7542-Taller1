@@ -1,7 +1,7 @@
 #ifndef TP1_SUDOKU_DISPATCHER_H
 #define TP1_SUDOKU_DISPATCHER_H
 
-#include "../sudoku/sudoku.h"
+#include "sudoku.h"
 
 #define OK "OK\n"
 #define ERROR "ERROR\n"

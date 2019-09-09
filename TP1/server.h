@@ -3,7 +3,7 @@
 
 #include "protocol.h"
 #include <stdbool.h>
-#include "../sudoku/sudoku.h"
+#include "sudoku.h"
 
 #define BOARD_PATH "board.txt"
 
