@@ -59,7 +59,7 @@ ssize_t protocol_client_send(protocol_t *self, char *buf) {
 }
 
 ssize_t protocol_client_receive(protocol_t *self, char *response) {
-    int r = socket_receive(self->skt, response, 800);
+    int r = socket_receive(self->skt, response, MAX_RESPONSE_LENGTH);
     return r;
 }
 

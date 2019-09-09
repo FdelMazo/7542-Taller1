@@ -15,6 +15,15 @@ set(CMAKE_C_CPPLINT "cpplint;--extensions=h,hpp,c,cpp;\
 +runtime/arrays,+runtime/casting,+runtime/explicit,+runtime/init,+runtime/invalid_increment,+runtime/memset,+runtime/operator,+runtime/printf,+runtime/printf_format,+runtime/rtti,+runtime/string,+runtime/threadsafe_fn,\
 +whitespace/blank_line,+whitespace/empty_loop_body,+whitespace/ending_newline,+whitespace/line_length,+whitespace/newline,+whitespace/parens,+whitespace/semicolon")
 
+add_custom_target(zip COMMAND
+        ${CMAKE_COMMAND} -E tar "cfv" "sercom.zip" --format=zip
+        "${CMAKE_CURRENT_SOURCE_DIR}/sudoku/"
+        "${CMAKE_CURRENT_SOURCE_DIR}/network"
+        "${CMAKE_CURRENT_SOURCE_DIR}/main.c")
+
+add_custom_target(make COMMAND
+        make -f SercomMakefile)
+
 add_executable(TP1
         main.c
         sudoku/board.c

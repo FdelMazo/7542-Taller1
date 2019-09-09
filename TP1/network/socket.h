@@ -3,6 +3,8 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <sys/types.h>
 
 #define FAMILY AF_INET
 #define SOCK_TYPE SOCK_STREAM

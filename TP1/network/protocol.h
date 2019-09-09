@@ -13,6 +13,7 @@
 #define EXIT "exit"
 
 #include "socket.h"
+#include <sys/types.h>
 
 typedef struct {
     socket_t *skt;

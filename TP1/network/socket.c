@@ -23,7 +23,7 @@ bool socket_init(socket_t *self, int _fd) {
 }
 
 struct addrinfo *_socket_get_addr(socket_t *self,
-                                  const char *host, const char *service, int flags) {
+                          const char *host, const char *service, int flags) {
     struct addrinfo *addr_list;
     struct addrinfo hints;
     memset(&hints, 0, sizeof(struct addrinfo));

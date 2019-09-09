@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include "../sudoku/sudoku.h"
 
-#define BOARD_PATH "resources/board.txt"
+#define BOARD_PATH "board.txt"
 
 typedef struct {
     protocol_t *protocol;

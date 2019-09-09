@@ -9,11 +9,11 @@
 
 int main(int argc, char *argv[]) {
     int r = 0;
-    if (argv[1] && strncmp(argv[1], SERVER, strlen(SERVER)) == 0)
+    if (argv[1] && strncmp(argv[1], SERVER, strlen(SERVER)) == 0) {
         r = server_main(argc, argv);
-    else if (strncmp(argv[1], CLIENT, strlen(CLIENT)) == 0)
+    } else if (strncmp(argv[1], CLIENT, strlen(CLIENT)) == 0) {
         r = client_main(argc, argv);
-    else {
+    } else {
         fprintf(stderr, ERR);
         r = -1;
     }

@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>
+#include <sys/types.h>
 
 #define CELL_FORMAT " %c "
 #define CELL_LEN 3

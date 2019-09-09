@@ -16,7 +16,8 @@ typedef struct {
 bool sudoku_init(sudoku_t *self);
 
 // Loads the original cells to play, from a given file
-// The file must be formatted as 9 lines of numbers, separated by spaces, with a 0 when a cell is to be left empty
+// The file must be formatted as 9 lines of numbers,
+//   separated by spaces, with a 0 when a cell is to be left empty
 // Returns false if fopen or any allocation fails, otherwise, returns true
 bool sudoku_load(sudoku_t *self, char *filename);
 
@@ -31,7 +32,8 @@ bool sudoku_load(sudoku_t *self, char *filename);
 int sudoku_put(sudoku_t *self, size_t n, size_t row, size_t col);
 
 // Verifies the status of the board
-// A board is valid if it doesn't have any repeated numbers in the rows, columns, or sections
+// A board is valid if it doesn't have any repeated numbers in
+//   the rows, columns, or sections
 //   (which isn't to say it is mistake-free)
 // A board isn't valid otherwise
 // Returns true if the board is valid, false if it isn't
