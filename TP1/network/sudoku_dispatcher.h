@@ -3,6 +3,6 @@
 
 #include "../sudoku/sudoku.h"
 
-void sudoku_dispatcher_command(sudoku_t* sudoku, char *command, char *output);
+void sudoku_dispatcher_command(sudoku_t *sudoku, char *command, char *output);
 
 #endif //TP1_SUDOKU_DISPATCHER_H

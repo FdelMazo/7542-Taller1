@@ -1,7 +1,6 @@
 #include "client.h"
 #include "debug.h"
 #include <stdio.h>
-#include <string.h>
 #include "protocol.h"
 
 int client_main(int argc, char *argv[]) {
@@ -16,36 +15,30 @@ int client_main(int argc, char *argv[]) {
     return 0;
 }
 
-void client_release(client_t *self){
-    protocol_release(self->protocol);
-}
-
-bool client_init(client_t *self, char* host, char *port) {
-    protocol_t protocol;
-    protocol_client_init(&protocol, host, port);
-    self->protocol = &protocol;
+bool client_init(client_t *self, char *host, char *port) {
+    protocol_t *protocol = malloc(sizeof(protocol_t));
+    if (!protocol || !protocol_client_init(protocol, host, port)) {
+        free(protocol);
+        return false;
+    }
+    self->protocol = protocol;
     return true;
 }
 
-bool _client_exit(char *command){
-    if (strncmp(command, EXIT_COMMAND, strlen(EXIT_COMMAND)) == 0) return true;
-    return false;
-}
-
 void client_communicate(client_t *self) {
-    char *command = calloc(MAX_LENGTH_COMMAND, sizeof(char));
-    char* output = calloc(MAX_LENGTH_OUTPUT, sizeof(char));
     while (true) {
-        command = fgets(command, MAX_LENGTH_COMMAND, stdin);
-        if (_client_exit(command)) {
-            break;
-        }
+        char command[MAX_LENGTH_COMMAND];
+        fgets(command, MAX_LENGTH_COMMAND, stdin);
         DEBUG_PRINT("client sending: %s\n", command);
-        protocol_client_send(self->protocol, command);
+        if (protocol_client_send(self->protocol, command) == 0) break;
+        char output[MAX_LENGTH_OUTPUT] = {0};
         protocol_client_receive(self->protocol, output);
-        DEBUG_PRINT("client got back: %s\n", output);
         printf("%s", output);
     }
-    free(command);
-    free(output);
+}
+
+void client_release(client_t *self) {
+    if (!self) return;
+    protocol_release(self->protocol);
+    free(self->protocol);
 }

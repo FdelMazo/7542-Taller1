@@ -1,7 +1,6 @@
 #include "server.h"
 #include "debug.h"
 #include <stdio.h>
-#include <string.h>
 #include "sudoku_dispatcher.h"
 
 int server_main(int argc, char *argv[]) {
@@ -16,45 +15,39 @@ int server_main(int argc, char *argv[]) {
     return 0;
 }
 
-bool server_init(server_t *self, char* port) {
-    protocol_t *protocol = malloc(sizeof(protocol_t));;
-    if (!protocol_server_init(protocol, port)) return false;
+bool server_init(server_t *self, char *port) {
+    bool no_err = true;
+    protocol_t *protocol = malloc(sizeof(protocol_t));
+    sudoku_t *sudoku = malloc(sizeof(sudoku_t));
+    no_err &= protocol_server_init(protocol, port);
+    no_err &= sudoku_init(sudoku);
+    no_err &= sudoku_load(sudoku, BOARD_PATH);
     self->protocol = protocol;
-
-    sudoku_t* sudoku = malloc(sizeof(sudoku_t));
-    if (!sudoku_init(sudoku)) return false;
-    if (!sudoku_load(sudoku, BOARD_PATH)) return false;
     self->sudoku = sudoku;
 
+    if (!protocol || !sudoku || !no_err) {
+        server_release(self);
+        return false;
+    }
     return true;
 }
 
-bool _server_exit(char *OUTPUT){
-//    if (strncmp(OUTPUT, EXIT_COMMAND, strlen(EXIT_COMMAND)) == 0) return true;
-    return false;
-}
-
-
-void server_communicate(server_t *self){
-    char *command = calloc(MAX_LENGTH_COMMAND, sizeof(char));
-    char* response = calloc(MAX_LENGTH_OUTPUT, sizeof(char));
-    char* output = calloc(MAX_LENGTH_OUTPUT, sizeof(char));
+void server_communicate(server_t *self) {
     while (true) {
-        protocol_server_receive(self->protocol, command);
+        char command[MAX_LENGTH_COMMAND] = {0};
+        if (protocol_server_receive(self->protocol, command) == 0) break;
         DEBUG_PRINT("server got: %s\n", command);
+        char output[MAX_LENGTH_OUTPUT] = {0};
         sudoku_dispatcher_command(self->sudoku, command, output);
         protocol_server_send(self->protocol, output);
-        DEBUG_PRINT("server sending back: %s\n", output);
-        if (_server_exit(output)) {
-            break;
-        }
+        DEBUG_PRINT("server sending back: \n%s\n", output);
     }
-    free(response);
-    free(command);
-    free(output);
 }
 
 void server_release(server_t *self) {
+    if (!self) return;
     protocol_release(self->protocol);
+    free(self->protocol);
     sudoku_release(self->sudoku);
+    free(self->sudoku);
 }
