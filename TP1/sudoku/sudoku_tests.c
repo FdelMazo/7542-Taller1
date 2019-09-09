@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 //int main() {
-int tests(){
+int sudoku_tests(){
     sudoku_t sudoku;
     sudoku_init(&sudoku);
 

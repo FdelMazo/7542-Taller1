@@ -5,7 +5,7 @@ include_directories(.)
 
 set(CMAKE_C_STANDARD 99)
 
-set(CMAKE_C_FLAGS "-Wall -Werror -pedantic -pedantic-errors -ggdb -DDEBUG -fno-inline")
+set(CMAKE_C_FLAGS "-Wall -Werror -pedantic -pedantic-errors -ggdb -DDEBUG -fno-inline -Isudoku -Inetwork")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR})
 
@@ -15,45 +15,51 @@ set(CMAKE_C_CPPLINT "cpplint;--extensions=h,hpp,c,cpp;\
 +runtime/arrays,+runtime/casting,+runtime/explicit,+runtime/init,+runtime/invalid_increment,+runtime/memset,+runtime/operator,+runtime/printf,+runtime/printf_format,+runtime/rtti,+runtime/string,+runtime/threadsafe_fn,\
 +whitespace/blank_line,+whitespace/empty_loop_body,+whitespace/ending_newline,+whitespace/line_length,+whitespace/newline,+whitespace/parens,+whitespace/semicolon")
 
-add_custom_target(zip COMMAND
-        ${CMAKE_COMMAND} -E tar "cfv" "sercom.zip" --format=zip
-            "${CMAKE_CURRENT_SOURCE_DIR}/*.c"
-        "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
+add_custom_target(zip
+        COMMAND mkdir sercom
+        COMMAND cp "${CMAKE_CURRENT_SOURCE_DIR}/sudoku/*" sercom
+        COMMAND cp "${CMAKE_CURRENT_SOURCE_DIR}/network/*" sercom
+        COMMAND cp "${CMAKE_CURRENT_SOURCE_DIR}/main.c" sercom
+        COMMAND cp "${CMAKE_CURRENT_SOURCE_DIR}/debug.h" sercom
+        COMMAND
+            cd sercom && ${CMAKE_COMMAND} -E tar "cfv" "../sercom.zip" --format=zip "*"
+        COMMAND rm -rf sercom
+)
 
-add_custom_target(make COMMAND
+add_custom_target(sercom COMMAND
         make -f SercomMakefile)
 
 add_executable(tp
         main.c
-        board.c
-        board.h
-        cell.c
-        cell.h
-        2d_array.c
-        2d_array.h
-        sudoku.c
-        sudoku.h
-        protocol.c
+        sudoku/board.c
+        sudoku/board.h
+        sudoku/cell.c
+        sudoku/cell.h
+        sudoku/2d_array.c
+        sudoku/2d_array.h
+        sudoku/sudoku.c
+        sudoku/sudoku.h
+        network/protocol.c
         debug.h
-        protocol.h
-        sudoku_dispatcher.c
-        sudoku_dispatcher.h
-        client.c
-        client.h
-        server.c
-        server.h
-        socket.c
-        socket.h
+        network/protocol.h
+        network/sudoku_dispatcher.c
+        network/sudoku_dispatcher.h
+        network/client.c
+        network/client.h
+        network/server.c
+        network/server.h
+        network/socket.c
+        network/socket.h
 )
 
 add_executable(sudoku_tests
-        sudoku_tests.c
-        board.c
-        board.h
-        cell.c
-        cell.h
-        sudoku.c
-        sudoku.h
-        2d_array.c
-        2d_array.h
+        sudoku/sudoku_tests.c
+        sudoku/board.c
+        sudoku/board.h
+        sudoku/cell.c
+        sudoku/cell.h
+        sudoku/sudoku.c
+        sudoku/sudoku.h
+        sudoku/2d_array.c
+        sudoku/2d_array.h
 )
