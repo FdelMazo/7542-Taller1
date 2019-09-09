@@ -43,7 +43,7 @@ ssize_t protocol_client_send(protocol_t *self, char *request);
 // Returns:
 //    -1 or 0 when the server closed the connection
 //    n  when a n byte message was received and stored in the buffer
-ssize_t protocol_client_receive(protocol_t *self, char *response);
+ssize_t protocol_client_receive(protocol_t *self, char *buffer);
 
 // Gets an empty buffer to fill with the client request to the server
 // This is for when the client asks the server it's response to one command
@@ -58,7 +58,7 @@ ssize_t protocol_server_receive(protocol_t *self, char *request);
 //    -1 when there was an unexpected error in the send
 //    0  if nothing was sent
 //    n  when a n byte message was sent
-ssize_t protocol_server_send(protocol_t *self, char *response);
+ssize_t protocol_server_send(protocol_t *self, char *buffer);
 
 
 // Releases the different allocations per attributes

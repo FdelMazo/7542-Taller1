@@ -32,7 +32,18 @@ bool protocol_server_init(protocol_t *self, char *port) {
     return true;
 }
 
-ssize_t _protocol_encode(char *buf, char *message) {
+ssize_t _protocol_encode_response(char *buf, char *message) {
+    *message = *buf;
+    return strlen(message);
+}
+
+ssize_t _protocol_decode_response(char *buf, char *response) {
+    *response = *buf;
+    return strlen(response);
+}
+
+
+ssize_t _protocol_encode_command(char *buf, char *message) {
     char action[MAX_LENGTH_COMMAND] = {0};
     sscanf(buf, "%s", action);
     buf += strlen(action) + 1;
@@ -60,15 +71,17 @@ ssize_t _protocol_encode(char *buf, char *message) {
 
 ssize_t protocol_client_send(protocol_t *self, char *request) {
     char msg[MAX_REQUEST_LENGTH + 1] = {0};
-    ssize_t bytes = _protocol_encode(request, msg);
+    ssize_t bytes = _protocol_encode_command(request, msg);
     if (bytes == -1) return -1;
 //    DEBUG_PRINT("protocol received from client: %s"
 //                "\ttranscribed to: %s\n", request, msg);
     return socket_send(self->skt, msg, bytes);
 }
 
-ssize_t protocol_client_receive(protocol_t *self, char *response) {
-    return socket_receive(self->skt, response, MAX_RESPONSE_LENGTH);
+ssize_t protocol_client_receive(protocol_t *self, char *buffer) {
+    socket_receive(self->skt, buffer, MAX_RESPONSE_LENGTH);
+    char response[MAX_RESPONSE_LENGTH] = {0};
+    return _protocol_decode_response(buffer, response);
 }
 
 ssize_t protocol_server_receive(protocol_t *self, char *request) {
@@ -80,8 +93,10 @@ ssize_t protocol_server_receive(protocol_t *self, char *request) {
     return socket_receive(self->client_skt, request, MAX_REQUEST_LENGTH);
 }
 
-ssize_t protocol_server_send(protocol_t *self, char *response) {
-    return socket_send(self->client_skt, response, MAX_RESPONSE_LENGTH);
+ssize_t protocol_server_send(protocol_t *self, char *buffer) {
+    char response[MAX_RESPONSE_LENGTH] = {0};
+    ssize_t bytes = _protocol_encode_response(buffer, response);
+    return socket_send(self->client_skt, response, bytes);
 }
 
 void protocol_release(protocol_t *self) {
