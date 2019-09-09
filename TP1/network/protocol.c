@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "debug.h"
-#include <unistd.h>
-#include <stdint.h>
 #include "sudoku_dispatcher.h"
 
 bool protocol_client_init(protocol_t *self, char *host, char *port) {
@@ -35,7 +33,7 @@ bool protocol_server_init(protocol_t *self, char *port) {
 }
 
 ssize_t _protocol_encode(char *buf, char *message) {
-    char action[MAX_LENGTH_COMMAND];
+    char action[MAX_LENGTH_COMMAND] = {0};
     sscanf(buf, "%s", action);
     buf += strlen(action) + 1;
     if (strncmp(action, PUT, strlen(PUT)) == 0) {
@@ -63,6 +61,7 @@ ssize_t _protocol_encode(char *buf, char *message) {
 ssize_t protocol_client_send(protocol_t *self, char *buf) {
     char msg[MAX_REQUEST_LENGTH + 1] = {0};
     ssize_t bytes = _protocol_encode(buf, msg);
+    if (bytes == -1) return -1;
 //    DEBUG_PRINT("protocol received from client: %s"
 //                "\ttranscribed to: %s\n", buf, msg);
     return socket_send(self->skt, msg, bytes);

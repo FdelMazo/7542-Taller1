@@ -35,7 +35,7 @@ bool server_init(server_t *self, char *port) {
 void server_communicate(server_t *self) {
     while (true) {
         char command[MAX_LENGTH_COMMAND] = {0};
-        if (protocol_server_receive(self->protocol, command) == 0) break;
+        if (protocol_server_receive(self->protocol, command) <= 0) break;
         DEBUG_PRINT("Server got: %s\n", command);
         char output[MAX_LENGTH_OUTPUT] = {0};
         sudoku_dispatcher_command(self->sudoku, command, output);

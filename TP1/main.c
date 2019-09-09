@@ -17,8 +17,5 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, ERR);
         r = 1;
     }
-    fclose(stdin);
-    fclose(stdout);
-    fclose(stderr);
     return r;
 }

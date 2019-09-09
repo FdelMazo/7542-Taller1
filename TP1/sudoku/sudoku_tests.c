@@ -41,7 +41,5 @@ void sudoku_tests() {
     free(buf);
 
     sudoku_release(&sudoku);
-    fclose(stdin);
-    fclose(stdout);
-    fclose(stderr);
 }
+

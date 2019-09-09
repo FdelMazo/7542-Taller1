@@ -103,7 +103,6 @@ int socket_accept(socket_t *self) {
 }
 
 ssize_t socket_send(socket_t *self, const char *request, size_t length) {
-    if (length == 0) return 0;
     int remaining_bytes = length;
     int total_bytes_sent = 0;
     ssize_t bytes = 0;
@@ -145,13 +144,10 @@ ssize_t socket_receive(socket_t *self, char *response, size_t length) {
 
 void socket_release(socket_t *self) {
     if (!self) return;
-    int err = 0;
-    err = shutdown(self->fd, SHUT_RDWR);
-    if (err == -1) {
+    if (shutdown(self->fd, SHUT_RDWR) == -1) {
 //        fprintf(stderr, "socket_release-->shutdown: %s\n", strerror(errno));
     }
-    err = close(self->fd);
-    if (err == -1) {
+    if (close(self->fd) == -1) {
 //        fprintf(stderr, "socket_release-->close: %s\n", strerror(errno));
     }
 }

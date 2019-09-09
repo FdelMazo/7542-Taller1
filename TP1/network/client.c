@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include "protocol.h"
+#include <stdbool.h>
 
 int client_main(int argc, char *argv[]) {
     if (argc != 4) {
@@ -28,14 +29,15 @@ bool client_init(client_t *self, char *host, char *port) {
 
 void client_communicate(client_t *self) {
     while (true) {
-        char command[MAX_LENGTH_COMMAND];
+        char command[MAX_LENGTH_COMMAND] = {0};
         if (!fgets(command, MAX_LENGTH_COMMAND, stdin)) break;
 //        DEBUG_PRINT("client sending: %s\n", command);
         ssize_t send = protocol_client_send(self->protocol, command);
         if (send == -1) break;
         else if (send == 0) continue;
         char output[MAX_LENGTH_OUTPUT] = {0};
-        protocol_client_receive(self->protocol, output);
+        ssize_t received = protocol_client_receive(self->protocol, output);
+        if (received == 0) break;
         printf("%s", output);
     }
 }
@@ -44,5 +46,4 @@ void client_release(client_t *self) {
     if (!self) return;
     protocol_release(self->protocol);
     free(self->protocol);
-    close(3);
 }
