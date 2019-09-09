@@ -31,47 +31,31 @@ bool protocol_server_init(protocol_t *self, char *port) {
     return true;
 }
 
-void _protocol_encode_command(char *message, char **argv) {
-    char *args = message;
-    if (strncmp(argv[0], PUT, strlen(PUT)) == 0) {
-        args[0] = 'P';
-        args[1] = *argv[1];
-        args[2] = argv[3][0];
-        args[3] = argv[3][2];
-    } else if (strncmp(argv[0], VERIFY, strlen(VERIFY)) == 0) {
-        args[0] = 'V';
-    } else if (strncmp(argv[0], RESET, strlen(RESET)) == 0) {
-        args[0] = 'R';
-    } else if (strncmp(argv[0], GET, strlen(RESET)) == 0) {
-        args[0] = 'G';
+ssize_t _protocol_encode(char *buf, char *message) {
+    char action[MAX_LENGTH_COMMAND];
+    sscanf(buf, "%s", action);
+    buf += strlen(action) + 1;
+    if (strncmp(action, PUT, strlen(PUT)) == 0) {
+        message[0] = 'P';
+        sscanf(buf, "%c in %c,%c", &message[1], &message[2], &message[3]);
+    } else if (strncmp(action, EXIT, strlen(EXIT)) == 0) {
+        return 0;
+    } else if (strncmp(action, VERIFY, strlen(VERIFY)) == 0) {
+        message[0] = 'V';
+    } else if (strncmp(action, RESET, strlen(RESET)) == 0) {
+        message[0] = 'R';
+    } else if (strncmp(action, GET, strlen(RESET)) == 0) {
+        message[0] = 'G';
     }
-}
-
-void _protocol_encode(char *buf, char *message) {
-    char *ptr = buf;
-    int argc = 0;
-    char **argv = calloc(MAX_ARGUMENTS, sizeof(char *));
-    for (int i = 0; i < MAX_ARGUMENTS; i++) {
-        argv[i] = calloc(50, sizeof(char));
-        sscanf(ptr, "%s", argv[i]);
-        ptr += strlen(argv[i]) + 1;
-        argc++;
-    }
-    for (int i = argc; i < MAX_ARGUMENTS; i++) {
-        free(argv[i]);
-    }
-    _protocol_encode_command(message, argv);
-    free(argv);
+    return MAX_REQUEST_LENGTH;
 }
 
 ssize_t protocol_client_send(protocol_t *self, char *buf) {
-    if (strncmp(buf, EXIT, strlen(EXIT)) == 0) return 0;
-
     char msg[MAX_REQUEST_LENGTH + 1];
-    _protocol_encode(buf, msg);
+    ssize_t bytes = _protocol_encode(buf, msg);
     DEBUG_PRINT("protocol received from client: %s"
                 "\ttranscribed to: %s\n", buf, msg);
-    return socket_send(self->skt, msg, MAX_REQUEST_LENGTH);
+    return socket_send(self->skt, msg, bytes);
 }
 
 ssize_t protocol_client_receive(protocol_t *self, char *response) {
