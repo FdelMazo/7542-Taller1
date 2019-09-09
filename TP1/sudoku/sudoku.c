@@ -40,13 +40,19 @@ bool sudoku_load(sudoku_t *self, char *filename) {
     return true;
 }
 
-int sudoku_put(sudoku_t *self, size_t n, size_t row, size_t col) {
+int sudoku_put_valid(size_t n, size_t row, size_t col) {
     if (row <= 0 || col <= 0 || row > SUDOKU_RANGE || col > SUDOKU_RANGE)
         return 1;
     if (n == 0 || n > SUDOKU_RANGE)
         return 2;
+    return 0;
+}
+
+int sudoku_put(sudoku_t *self, size_t n, size_t row, size_t col) {
+    int r = sudoku_put_valid(n, row, col);
+    if (r != 0) return r;
     if (!board_set_number(self->board, n, row - 1, col - 1))
-        return 3;
+        return -1;
     return 0;
 }
 

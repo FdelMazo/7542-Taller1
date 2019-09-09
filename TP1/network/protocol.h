@@ -6,10 +6,6 @@
 #define MAX_REQUEST_LENGTH 4
 #define MAX_RESPONSE_LENGTH 800
 
-#define INDEX "Error en los índices. Rango soportado: [1,9]\n"
-#define VALUE "Error en el valor ingresado. Rango soportado: [1,9]\n"
-
-
 #define PUT "put"
 #define GET "get"
 #define VERIFY "verify"

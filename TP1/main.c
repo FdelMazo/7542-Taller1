@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
         r = client_main(argc, argv);
     } else {
         fprintf(stderr, ERR);
-        r = -1;
+        r = 1;
     }
     fclose(stdin);
     fclose(stdout);

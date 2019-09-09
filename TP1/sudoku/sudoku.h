@@ -21,14 +21,20 @@ bool sudoku_init(sudoku_t *self);
 // Returns false if fopen or any allocation fails, otherwise, returns true
 bool sudoku_load(sudoku_t *self, char *filename);
 
+// Responds whether a put is valid or not
+// Returns:
+//   0 if the put is valid
+//   1 if (row,col) isn't in the supported range
+//   2 if the number isn't in the supported range
+int sudoku_put_valid(size_t n, size_t row, size_t col);
+
 // Writes n in the position (row,col)
 // (row,col) are indexes from 1 to SUDOKU_RANGE
 // n is a number from 1 to SUDOKU_RANGE
 // Returns:
+//   -1 if the cell is an original (unmodifiable) one
 //   0 if the number was written
-//   1 if (row,col) isn't in the supported range
-//   2 if the number isn't in the supported range
-//   3 if the cell is an original one
+//   1 or 2 if there was an error (specified in sudoku_put_valid)
 int sudoku_put(sudoku_t *self, size_t n, size_t row, size_t col);
 
 // Verifies the status of the board

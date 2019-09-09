@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 //int main() {
-int sudoku_tests(){
+void sudoku_tests() {
     sudoku_t sudoku;
     sudoku_init(&sudoku);
 
@@ -44,5 +44,4 @@ int sudoku_tests(){
     fclose(stdin);
     fclose(stdout);
     fclose(stderr);
-    return 0;
 }

@@ -5,6 +5,7 @@
 #include "debug.h"
 #include <unistd.h>
 #include <stdint.h>
+#include "sudoku_dispatcher.h"
 
 bool protocol_client_init(protocol_t *self, char *host, char *port) {
     bool no_err = true;
@@ -33,37 +34,18 @@ bool protocol_server_init(protocol_t *self, char *port) {
     return true;
 }
 
-bool _invalid_put(char charn, char charrow, char charcol) {
-    uint8_t n = charn - '0';
-    size_t row = charrow - '0';
-    size_t col = charcol - '0';
-    if (row <= 0 || col <= 0 || row > 9 || col > 9){
-        fprintf(stderr, INDEX);
-        return true;
-    }
-    if (n == 0 || n > 9){
-        fprintf(stderr, VALUE);
-        return true;
-    }
-    return false;
-}
-
 ssize_t _protocol_encode(char *buf, char *message) {
     char action[MAX_LENGTH_COMMAND];
     sscanf(buf, "%s", action);
     buf += strlen(action) + 1;
     if (strncmp(action, PUT, strlen(PUT)) == 0) {
         message[0] = 'P';
-        char arg1[5]; char arg2[5]; char arg3[5];
-        sscanf(buf, "%s in %c,%c", arg1, arg2, arg3);
-        if (strlen(arg1) > 1) {
-            fprintf(stderr, VALUE);
-            return 0;
-        }
-        message[1] = *arg1;
-        message[2] = *arg2;
-        message[3] = *arg3;
-        if (_invalid_put(message[1], message[2], message[3])) return 0;
+        int arg1, arg2, arg3;
+        sscanf(buf, "%d in %d,%d", &arg1, &arg2, &arg3);
+        if (!sudoku_dispatcher_input_valid(arg1, arg2, arg3)) return 0;
+        message[1] = '0' + arg1;
+        message[2] = '0' + arg2;
+        message[3] = '0' + arg3;
     } else if (strncmp(action, EXIT, strlen(EXIT)) == 0) {
         return 0;
     } else if (strncmp(action, VERIFY, strlen(VERIFY)) == 0) {

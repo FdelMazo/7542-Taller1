@@ -2,6 +2,18 @@
 #include <stdio.h>
 #include <string.h>
 
+bool sudoku_dispatcher_input_valid(uint8_t n, size_t row, size_t col) {
+    switch (sudoku_put_valid(n, row, col)) {
+        case 1:
+            fprintf(stderr, INDEX_ERR);
+            return false;
+        case 2:
+            fprintf(stderr, VALUE_ERR);
+            return false;
+    }
+    return true;
+}
+
 void _sudoku_dispatcher_get(sudoku_t *sudoku, char *output) {
     sudoku_get(sudoku, output);
 }
@@ -22,15 +34,11 @@ void _sudoku_dispatcher_put(sudoku_t *sudoku, char *command, char *output) {
     uint8_t n = command[1] - '0';
     size_t row = command[2] - '0';
     size_t col = command[3] - '0';
-    int r = sudoku_put(sudoku, n, row, col);
-    switch (r) {
-        case 0:
-            sudoku_get(sudoku, output);
-            break;
-        case 3:
-            snprintf(output, strlen(ORIGINAL) + 1, ORIGINAL);
-            break;
+    if ((sudoku_put(sudoku, n, row, col)) == -1) {
+        snprintf(output, strlen(ORIGINAL_CELL_ERR) + 1, ORIGINAL_CELL_ERR);
+        return;
     }
+    sudoku_get(sudoku, output);
 }
 
 void sudoku_dispatcher_command(sudoku_t *sudoku, char *command, char *output) {
