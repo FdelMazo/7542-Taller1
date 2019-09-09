@@ -23,7 +23,7 @@ add_custom_target(zip COMMAND
 add_custom_target(make COMMAND
         make -f SercomMakefile)
 
-add_executable(TP1
+add_executable(tp
         main.c
         board.c
         board.h

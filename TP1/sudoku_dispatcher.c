@@ -27,12 +27,6 @@ void _sudoku_dispatcher_put(sudoku_t *sudoku, char *command, char *output) {
         case 0:
             sudoku_get(sudoku, output);
             break;
-        case 1:
-            snprintf(output, strlen(INDEX) + 1, INDEX);
-            break;
-        case 2:
-            snprintf(output, strlen(VALUE) + 1, VALUE);
-            break;
         case 3:
             snprintf(output, strlen(ORIGINAL) + 1, ORIGINAL);
             break;

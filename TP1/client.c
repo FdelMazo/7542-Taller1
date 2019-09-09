@@ -1,6 +1,7 @@
 #include "client.h"
 #include "debug.h"
 #include <stdio.h>
+#include <unistd.h>
 #include "protocol.h"
 
 int client_main(int argc, char *argv[]) {
@@ -29,7 +30,7 @@ void client_communicate(client_t *self) {
     while (true) {
         char command[MAX_LENGTH_COMMAND];
         if (!fgets(command, MAX_LENGTH_COMMAND, stdin)) break;
-        DEBUG_PRINT("client sending: %s\n", command);
+//        DEBUG_PRINT("client sending: %s\n", command);
         if (protocol_client_send(self->protocol, command) == 0) break;
         char output[MAX_LENGTH_OUTPUT] = {0};
         protocol_client_receive(self->protocol, output);
@@ -41,4 +42,5 @@ void client_release(client_t *self) {
     if (!self) return;
     protocol_release(self->protocol);
     free(self->protocol);
+    close(3);
 }
