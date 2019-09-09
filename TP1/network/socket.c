@@ -1,6 +1,7 @@
 #include "socket.h"
 #include <stdio.h>
 #include <stdbool.h>
+#include "debug.h"
 #include <string.h>
 #include <netdb.h>
 #include <sys/socket.h>
@@ -58,8 +59,12 @@ bool socket_connect(socket_t *self, const char *host, const char *service) {
 
 
 void socket_release(socket_t *self){
-	shutdown(self->fd, SHUT_RDWR);
-	int err = close(self->fd);
+	int err;
+    err = shutdown(self->fd, SHUT_RDWR);
+    if (err == -1) {
+        fprintf(stderr, "socket_release-->shutdown: %s\n", strerror(errno));
+    }
+    err = close(self->fd);
 	if (err == -1) {
 		fprintf(stderr, "socket_release-->close: %s\n", strerror(errno));
 	}
@@ -75,6 +80,9 @@ ssize_t socket_send(socket_t* self, const char* request, size_t length) {
 		if (bytes == -1){
 			fprintf(stderr, "socket_send-->send: %s\n", strerror(errno));
 			break;
+		}
+		if (bytes == 0){
+		    break;
 		}
         total_bytes_sent += bytes;
         remaining_bytes -= bytes;
@@ -98,7 +106,7 @@ ssize_t socket_receive(socket_t* self, char* response, size_t length) {
     return bytes;
 }
 
-int socket_bind(socket_t* self, const char* service) {
+bool socket_bind(socket_t* self, const char* service) {
     bool bind_err = false;
     struct addrinfo *addr_list = _socket_get_addr(self, NULL, service, SERVER_FLAGS);
 
@@ -129,6 +137,6 @@ int socket_listen(socket_t* self) {
 
 int socket_accept(socket_t *self) {
     int fd = accept(self->fd, NULL, NULL);
-    printf("New client!\n");
+    DEBUG_PRINT("new client!\n");
     return fd;
 }

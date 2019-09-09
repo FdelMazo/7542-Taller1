@@ -1,43 +1,51 @@
 #include "client.h"
-#include <string.h>
+#include "debug.h"
 #include <stdio.h>
+#include <string.h>
 #include "protocol.h"
 
-bool client_send(client_t* self, char *buf) {
-    if (socket_send(&self->skt, buf, 3) == -1) return false;
-    return true;
-}
-
-bool client_receive(client_t* self, char* buf) {
-    if (socket_receive(&self->skt, buf, 3) == -1) return false;
-    return true;
+int client_main(int argc, char *argv[]) {
+    if (argc != 4) {
+        fprintf(stderr, "Uso: ./tp client <host> <puerto>\n");
+        return 1;
+    }
+    client_t client;
+    if (!client_init(&client, argv[2], argv[3])) return 1;
+    client_communicate(&client);
+    client_release(&client);
+    return 0;
 }
 
 void client_release(client_t *self){
-    socket_release(&self->skt);
+    protocol_release(self->protocol);
 }
 
 bool client_init(client_t *self, char* host, char *port) {
-    socket_t socket;
-    if (!socket_init(&socket, 0)) return false;
-    if (!socket_connect(&socket, host, port)) return false;
-    self->skt = socket;
+    protocol_t protocol;
+    protocol_client_init(&protocol, host, port);
+    self->protocol = &protocol;
     return true;
 }
 
-bool client_command(client_t *self, char *buf) {
-    printf("Yo, cliente, mando: %s\n", buf);
-    client_send(self, buf);
-    char* response = calloc(MAX_LENGTH, 1);
-    client_receive(self, response);
-    printf("Yo, cliente, recibo: %s\n", response);
-    return true;
+bool _client_exit(char *command){
+    if (strncmp(command, EXIT_COMMAND, strlen(EXIT_COMMAND)) == 0) return true;
+    return false;
 }
 
 void client_communicate(client_t *self) {
-    char *command = calloc(MAX_LENGTH, sizeof(char));
-    command = fgets(command, MAX_LENGTH, stdin);
-    while (client_command(self, command)) {
-        command = fgets(command, MAX_LENGTH, stdin);
+    char *command = calloc(MAX_LENGTH_COMMAND, sizeof(char));
+    char* output = calloc(MAX_LENGTH_OUTPUT, sizeof(char));
+    while (true) {
+        command = fgets(command, MAX_LENGTH_COMMAND, stdin);
+        if (_client_exit(command)) {
+            break;
+        }
+        DEBUG_PRINT("client sending: %s\n", command);
+        protocol_client_send(self->protocol, command);
+        protocol_client_receive(self->protocol, output);
+        DEBUG_PRINT("client got back: %s\n", output);
+        printf("%s", output);
     }
+    free(command);
+    free(output);
 }

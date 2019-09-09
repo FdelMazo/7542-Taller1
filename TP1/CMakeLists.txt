@@ -26,7 +26,10 @@ add_executable(TP1
         sudoku/sudoku.c
         sudoku/sudoku.h
         network/protocol.c
+        network/debug.h
         network/protocol.h
+        network/sudoku_dispatcher.c
+        network/sudoku_dispatcher.h
         network/client.c
         network/client.h
         network/server.c
@@ -35,7 +38,7 @@ add_executable(TP1
         network/socket.h
 )
 
-add_executable( sudoku_tests
+add_executable(sudoku_tests
         sudoku/tests.c
         sudoku/board.c
         sudoku/board.h
@@ -45,16 +48,4 @@ add_executable( sudoku_tests
         sudoku/sudoku.h
         sudoku/2d_array.c
         sudoku/2d_array.h
-)
-
-add_executable(network_tests
-        network/protocol.c
-        network/protocol.h
-        network/tests.c
-        network/client.c
-        network/client.h
-        network/server.c
-        network/server.h
-        network/socket.c
-        network/socket.h
 )

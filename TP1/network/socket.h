@@ -13,7 +13,6 @@ typedef struct {
 	int fd;
 } socket_t;
 
-
 bool socket_init(socket_t* self, int _fd);
 
 void socket_release(socket_t* self);
@@ -24,7 +23,7 @@ ssize_t socket_send(socket_t* self, const char* message, size_t length);
 
 ssize_t socket_receive(socket_t* self, char* response, size_t length);
 
-int socket_bind(socket_t* self, const char* service);
+bool socket_bind(socket_t* self, const char* service);
 
 int socket_listen(socket_t* socket);
 

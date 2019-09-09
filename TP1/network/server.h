@@ -1,16 +1,21 @@
 #ifndef TP1_SERVER_H
 #define TP1_SERVER_H
 
-#include "socket.h"
+#include "protocol.h"
+#include <stdbool.h>
+#include "../sudoku/sudoku.h"
+#define BOARD_PATH "resources/board.txt"
+
+#define MAX_LENGTH_COMMAND 15
+#define MAX_LENGTH_OUTPUT 800
 
 typedef struct {
-    socket_t skt;
-    socket_t client_skt;
+    protocol_t *protocol;
+    sudoku_t *sudoku;
 } server_t;
 
-#define MAX_LENGTH 50
-
-void server_init(server_t *self, char* port);
+int server_main(int argc, char *argv[]);
+bool server_init(server_t *self, char* port);
 void server_communicate(server_t *self);
 void server_release(server_t *self);
 
