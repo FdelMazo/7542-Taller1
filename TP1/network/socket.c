@@ -113,10 +113,8 @@ ssize_t socket_send(socket_t *self, const char *request, size_t length) {
             fprintf(stderr, "socket_send-->send: %s\n", strerror(errno));
             break;
         }
-        if (bytes == 0) {
-            total_bytes_sent = 0;
+        if (bytes == 0)
             break;
-        }
         total_bytes_sent += bytes;
         remaining_bytes -= bytes;
     }
@@ -135,10 +133,8 @@ ssize_t socket_receive(socket_t *self, char *response, size_t length) {
             fprintf(stderr, "socket_receive-->recv: %s\n", strerror(errno));
             break;
         }
-        if (bytes == 0) {
-            total_bytes_received = 0;
+        if (bytes == 0)
             break;
-        }
         total_bytes_received += bytes;
         remaining_bytes -= bytes;
     }

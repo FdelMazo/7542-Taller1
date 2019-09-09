@@ -59,20 +59,12 @@ ssize_t protocol_client_send(protocol_t *self, char *buf) {
 }
 
 ssize_t protocol_client_receive(protocol_t *self, char *response) {
-    char len_buf[1];
-    if (socket_receive(self->skt, len_buf, 1 == -1)) return -1;
-    int len = atoi(len_buf);
-    char buf[len];
     int r = socket_receive(self->skt, response, 800);
-    if (r > 0) {
-        *response = *buf;
-    }
     return r;
 }
 
 ssize_t protocol_server_send(protocol_t *self, char *buf) {
     char *ptr = buf;
-//    ptr++;
     return socket_send(self->client_skt, ptr, MAX_RESPONSE_LENGTH);
 }
 
