@@ -103,6 +103,7 @@ int socket_accept(socket_t *self) {
 }
 
 ssize_t socket_send(socket_t *self, const char *request, size_t length) {
+    if (length == 0) return 0;
     int remaining_bytes = length;
     int total_bytes_sent = 0;
     ssize_t bytes = 0;

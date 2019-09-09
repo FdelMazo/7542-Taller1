@@ -47,7 +47,7 @@ ssize_t _protocol_encode(char *buf, char *message) {
         message[2] = '0' + arg2;
         message[3] = '0' + arg3;
     } else if (strncmp(action, EXIT, strlen(EXIT)) == 0) {
-        return 0;
+        return -1;
     } else if (strncmp(action, VERIFY, strlen(VERIFY)) == 0) {
         message[0] = 'V';
     } else if (strncmp(action, RESET, strlen(RESET)) == 0) {
@@ -67,13 +67,11 @@ ssize_t protocol_client_send(protocol_t *self, char *buf) {
 }
 
 ssize_t protocol_client_receive(protocol_t *self, char *response) {
-    int r = socket_receive(self->skt, response, MAX_RESPONSE_LENGTH);
-    return r;
+    return socket_receive(self->skt, response, MAX_RESPONSE_LENGTH);
 }
 
 ssize_t protocol_server_send(protocol_t *self, char *buf) {
-    char *ptr = buf;
-    return socket_send(self->client_skt, ptr, MAX_RESPONSE_LENGTH);
+    return socket_send(self->client_skt, buf, MAX_RESPONSE_LENGTH);
 }
 
 ssize_t protocol_server_receive(protocol_t *self, char *buf) {

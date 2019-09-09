@@ -31,7 +31,9 @@ void client_communicate(client_t *self) {
         char command[MAX_LENGTH_COMMAND];
         if (!fgets(command, MAX_LENGTH_COMMAND, stdin)) break;
 //        DEBUG_PRINT("client sending: %s\n", command);
-        if (protocol_client_send(self->protocol, command) == 0) break;
+        ssize_t send = protocol_client_send(self->protocol, command);
+        if (send == -1) break;
+        else if (send == 0) continue;
         char output[MAX_LENGTH_OUTPUT] = {0};
         protocol_client_receive(self->protocol, output);
         printf("%s", output);
