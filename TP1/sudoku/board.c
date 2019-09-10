@@ -74,7 +74,7 @@ static bool _verify_cells_set(board_t *self, size_t row_i, size_t row_f,
 
 static bool _verify_row(board_t *self, size_t row) {
     size_t row_i = row;
-    size_t row_f = row;
+    size_t row_f = row +1;
     size_t col_i = 0;
     size_t col_f = self->range;
     return _verify_cells_set(self, row_i, row_f, col_i, col_f);
@@ -85,7 +85,7 @@ static bool _verify_column(board_t *self, size_t col) {
     size_t row_i = 0;
     size_t row_f = self->range;
     size_t col_i = col;
-    size_t col_f = col;
+    size_t col_f = col +1;
     return _verify_cells_set(self, row_i, row_f, col_i, col_f);
 }
 

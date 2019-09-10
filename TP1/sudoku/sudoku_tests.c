@@ -35,6 +35,12 @@ void sudoku_tests() {
     sudoku_put(&sudoku, 1, 1, 1);
     assert(sudoku_verify(&sudoku) == false);
 
+    sudoku_reset(&sudoku);
+    sudoku_put(&sudoku, 4, 1, 2);
+    assert(sudoku_verify(&sudoku) == true);
+    sudoku_put(&sudoku, 4, 1, 4);
+    assert(sudoku_verify(&sudoku) == false);
+
     char *buf = calloc(800, 1);
     sudoku_get(&sudoku, buf);
     printf("%s", buf);
