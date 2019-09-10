@@ -2,9 +2,10 @@
 #define TP1_PROTOCOL_H
 
 #define MAX_LENGTH_COMMAND 15
-#define MAX_LENGTH_OUTPUT 800
+
 #define REQUEST_LENGTH 1
 #define ARGUMENTS_LENGTH 3
+
 #define MAX_RESPONSE_LENGTH 800
 
 #define PUT "put"

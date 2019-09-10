@@ -35,7 +35,7 @@ void client_communicate(client_t *self) {
         ssize_t send = protocol_client_send(self->protocol, command);
         if (send == -1) break;
         else if (send == 0) continue;
-        char output[MAX_LENGTH_OUTPUT] = {0};
+        char output[MAX_RESPONSE_LENGTH] = {0};
         ssize_t received = protocol_client_receive(self->protocol, output);
         if (received <= 0) break;
         printf("%s", output);

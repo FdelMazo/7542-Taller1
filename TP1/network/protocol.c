@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "debug.h"
 #include "sudoku_dispatcher.h"
+#include <arpa/inet.h>
 
 bool protocol_client_init(protocol_t *self, char *host, char *port) {
     bool no_err = true;
@@ -29,16 +30,6 @@ bool protocol_server_init(protocol_t *self, char *port) {
     self->client_skt = NULL;
     return true;
 }
-
-//static ssize_t _encode_response(char *buf, char *message) {
-//    *message = *buf;
-//    return strlen(message);
-//}
-//
-//static ssize_t _decode_response(char *buf, char *response) {
-//    *response = *buf;
-//    return strlen(response);
-//}
 
 // return -1 if the input is invalid
 // returns 0 if the input is valid, but there is nothing else to send
@@ -99,9 +90,10 @@ ssize_t protocol_client_send(protocol_t *self, char *request) {
 }
 
 ssize_t protocol_client_receive(protocol_t *self, char *buffer) {
-    return socket_receive(self->skt, buffer, MAX_RESPONSE_LENGTH);
-//    char response[MAX_RESPONSE_LENGTH] = {0};
-//    return _decode_response(buffer, response);
+    uint32_t len;
+    socket_receive(self->skt, &len, sizeof(uint32_t));
+    len = ntohl(len);
+    return socket_receive(self->skt, buffer, len);
 }
 
 void protocol_server_accept(protocol_t *self) {
@@ -119,9 +111,11 @@ ssize_t protocol_server_receive(protocol_t *self, char *request) {
 }
 
 ssize_t protocol_server_send(protocol_t *self, char *buffer) {
-//    char response[MAX_RESPONSE_LENGTH] = {0};
-//    ssize_t bytes = _encode_response(buffer, response);
-    return socket_send(self->client_skt, buffer, MAX_RESPONSE_LENGTH);
+    uint32_t len = strlen(buffer);
+    uint32_t len_buf = htonl(len);
+//    DEBUG_PRINT("Protocol sending back: \n%d%s\n", len, buffer);
+    socket_send(self->client_skt, &len_buf, sizeof(uint32_t));
+    return socket_send(self->client_skt, buffer, len);
 }
 
 void protocol_release(protocol_t *self) {

@@ -93,7 +93,7 @@ int socket_listen(socket_t *self) {
 
 int socket_accept(socket_t *self) {
     int fd = accept(self->fd, NULL, NULL);
-    DEBUG_PRINT("New Client!\n");
+//    DEBUG_PRINT("New Client!\n");
     return fd;
 }
 
@@ -119,13 +119,14 @@ ssize_t socket_send(socket_t *self, const void *request, size_t length) {
     return total_bytes_sent;
 }
 
-ssize_t socket_receive(socket_t *self, char *response, size_t length) {
+ssize_t socket_receive(socket_t *self, void *response, size_t length) {
     if (length == 0) return 0;
     int remaining_bytes = length;
     int total_bytes_received = 0;
     ssize_t bytes = 0;
+    char *recv_response = response;
     while (total_bytes_received < length) {
-        bytes = recv(self->fd, &response[total_bytes_received],
+        bytes = recv(self->fd, &recv_response[total_bytes_received],
                      remaining_bytes, 0);
         if (bytes == -1) {
             total_bytes_received = -1;
