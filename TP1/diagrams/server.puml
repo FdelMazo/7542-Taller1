@@ -1,0 +1,23 @@
+@startuml
+participant server
+collections protocol
+boundary sudoku_dispatcher
+entity sudoku
+
+note over protocol #Crimson: V
+server <[#Crimson]-protocol: protocol_server_receive()
+server-[#Crimson]>sudoku_dispatcher : dispatch(command)
+sudoku_dispatcher-[#green]>o sudoku : sudoku_verify()
+
+note right sudoku #SteelBlue: true
+sudoku_dispatcher <[#SteelBlue]- sudoku
+
+note left sudoku_dispatcher #SteelBlue: 3OK
+sudoku_dispatcher-[#SteelBlue]>server
+
+server -[#SteelBlue]>protocol: protocol_server_send()
+note over protocol #SteelBlue: OK
+note over protocol #yellow: responds \nto client
+
+@enduml
+

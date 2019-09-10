@@ -1,0 +1,44 @@
+@startuml
+class sudoku
+class board
+class cell
+
+abstract class sudoku_dispatcher
+
+class server
+class client
+class protocol
+class socket
+
+server : communicate()
+client : communicate()
+
+protocol : client_to_server()
+protocol : server_to_client()
+
+socket : int fd
+socket : send()
+socket : receive()
+
+server o-- protocol
+client o-- protocol
+protocol *-- socket
+
+sudoku *-- board
+board *-- cell
+
+sudoku : board
+sudoku : put()
+sudoku : get()
+sudoku : reset()
+sudoku : verify()
+
+board : cells
+board : represent()
+board : put()
+
+cell : int number
+
+sudoku_dispatcher <-left- server : command
+sudoku_dispatcher -left-> sudoku : action
+@enduml

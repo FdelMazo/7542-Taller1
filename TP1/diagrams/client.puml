@@ -1,0 +1,18 @@
+@startuml
+actor user
+participant client
+collections protocol
+
+client-[#green]>user: ask_input()
+note over user #Crimson: verify
+user-[#Crimson]>client : input
+
+client -> protocol : protocol_client_send()
+note right #Crimson: V
+client <[#SteelBlue]- protocol : protocol_client_receive()
+note right #SteelBlue: 3OK
+note left #SteelBlue: OK
+user <[#SteelBlue]- client : print()
+
+@enduml
+

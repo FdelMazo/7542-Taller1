@@ -26,8 +26,12 @@ add_custom_target(zip
         COMMAND rm -rf sercom
 )
 
-add_custom_target(informe COMMAND
-        pandoc README.md -H header.tex -o Informe.pdf --latex-engine=xelatex)
+add_custom_target(informe
+        COMMAND plantuml diagrams/*.puml
+        COMMAND pandoc README.md -H header.tex -o Informe.tex --latex-engine=xelatex
+        COMMAND sed -i 's/@{}ll@{}/@{}l|l@{}/g' Informe.tex
+        COMMAND pdflatex Informe.tex
+        COMMAND rm Informe.tex)
 
 add_executable(tp
         main.c
