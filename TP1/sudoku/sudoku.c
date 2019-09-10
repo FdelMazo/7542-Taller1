@@ -5,9 +5,8 @@
 
 
 bool sudoku_init(sudoku_t *self) {
-    board_t *board = malloc(sizeof(board_t));
-    if (!(board) || !board_init(board, SUDOKU_RANGE, SUDOKU_DIVISION)) {
-        free(board);
+    board_t board;
+    if (!board_init(&board, SUDOKU_RANGE, SUDOKU_DIVISION)) {
         return false;
     }
 
@@ -34,7 +33,7 @@ bool sudoku_load(sudoku_t *self, char *filename) {
         }
     }
 
-    board_load(self->board, numbers, SUDOKU_RANGE, SUDOKU_RANGE);
+    board_load(&self->board, numbers, SUDOKU_RANGE, SUDOKU_RANGE);
     _2d_array_destroy((void **) numbers);
     fclose(stream);
     return true;
@@ -51,24 +50,23 @@ int sudoku_put_valid(size_t n, size_t row, size_t col) {
 int sudoku_put(sudoku_t *self, size_t n, size_t row, size_t col) {
     int r = sudoku_put_valid(n, row, col);
     if (r != 0) return r;
-    if (!board_set_number(self->board, n, row - 1, col - 1))
+    if (!board_set_number(&self->board, n, row - 1, col - 1))
         return -1;
     return 0;
 }
 
 bool sudoku_verify(sudoku_t *self) {
-    return board_verify(self->board);
+    return board_verify(&self->board);
 }
 
 void sudoku_get(sudoku_t *self, char *buf) {
-    board_repr(self->board, buf);
+    board_repr(&self->board, buf);
 }
 
 void sudoku_reset(sudoku_t *self) {
-    board_reset(self->board);
+    board_reset(&self->board);
 }
 
 void sudoku_release(sudoku_t *self) {
-    board_release(self->board);
-    free(self->board);
+    board_release(&self->board);
 }

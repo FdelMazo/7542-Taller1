@@ -45,6 +45,9 @@ ssize_t protocol_client_send(protocol_t *self, char *request);
 //    n  when a n byte message was received and stored in the buffer
 ssize_t protocol_client_receive(protocol_t *self, char *buffer);
 
+// The server accepts the incoming client
+void protocol_server_accept(protocol_t *self);
+
 // Gets an empty buffer to fill with the client request to the server
 // This is for when the client asks the server it's response to one command
 // Returns:

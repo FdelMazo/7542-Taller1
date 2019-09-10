@@ -84,12 +84,13 @@ ssize_t protocol_client_receive(protocol_t *self, char *buffer) {
 //    return _protocol_decode_response(buffer, response);
 }
 
+void protocol_server_accept(protocol_t *self) {
+    int client_skt = socket_accept(self->skt);
+    self->client_skt = malloc(sizeof(socket_t));
+    socket_init(self->client_skt, client_skt);
+}
+
 ssize_t protocol_server_receive(protocol_t *self, char *request) {
-    if (!self->client_skt) {
-        int client_skt = socket_accept(self->skt);
-        self->client_skt = malloc(sizeof(socket_t));
-        socket_init(self->client_skt, client_skt);
-    }
     return socket_receive(self->client_skt, request, MAX_REQUEST_LENGTH);
 }
 

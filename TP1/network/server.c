@@ -33,6 +33,7 @@ bool server_init(server_t *self, char *port) {
 }
 
 void server_communicate(server_t *self) {
+    protocol_server_accept(self->protocol);
     while (true) {
         char command[MAX_LENGTH_COMMAND] = {0};
         if (protocol_server_receive(self->protocol, command) <= 0) break;

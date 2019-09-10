@@ -10,7 +10,7 @@ void sudoku_tests() {
 
     printf("tests sudoku_load\n");
     assert(sudoku_load(&sudoku, "null.txt") == false);
-    assert(sudoku_load(&sudoku, "resources/board.txt") == true);
+    assert(sudoku_load(&sudoku, "board.txt") == true);
 
     printf("tests sudoku_put\n");
     assert(sudoku_put(&sudoku, 1, 1, 2) == 0);
@@ -22,7 +22,7 @@ void sudoku_tests() {
     assert(sudoku_put(&sudoku, 1, 1, 0) == 1);
     assert(sudoku_put(&sudoku, 10, 5, 5) == 2);
     assert(sudoku_put(&sudoku, 0, 1, 1) == 2);
-    assert(sudoku_put(&sudoku, 1, 1, 1) == 3);
+    assert(sudoku_put(&sudoku, 1, 1, 1) == -1);
 
     sudoku_reset(&sudoku);
 

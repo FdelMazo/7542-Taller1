@@ -14,23 +14,23 @@ bool sudoku_dispatcher_input_valid(uint8_t n, size_t row, size_t col) {
     return true;
 }
 
-void _sudoku_dispatcher_get(sudoku_t *sudoku, char *output) {
+static void _get(sudoku_t *sudoku, char *output) {
     sudoku_get(sudoku, output);
 }
 
-void _sudoku_dispatcher_verify(sudoku_t *sudoku, char *output) {
+static void _verify(sudoku_t *sudoku, char *output) {
     if (sudoku_verify(sudoku))
         snprintf(output, strlen(OK) + 1, OK);
     else
         snprintf(output, strlen(ERROR) + 1, ERROR);
 }
 
-void _sudoku_dispatcher_reset(sudoku_t *sudoku, char *output) {
+static void _reset(sudoku_t *sudoku, char *output) {
     sudoku_reset(sudoku);
     sudoku_get(sudoku, output);
 }
 
-void _sudoku_dispatcher_put(sudoku_t *sudoku, char *command, char *output) {
+static void _put(sudoku_t *sudoku, char *command, char *output) {
     uint8_t n = command[1] - '0';
     size_t row = command[2] - '0';
     size_t col = command[3] - '0';
@@ -44,16 +44,16 @@ void _sudoku_dispatcher_put(sudoku_t *sudoku, char *command, char *output) {
 void sudoku_dispatcher_command(sudoku_t *sudoku, char *command, char *output) {
     switch (command[0]) {
         case 'P':
-            _sudoku_dispatcher_put(sudoku, command, output);
+            _put(sudoku, command, output);
             break;
         case 'G':
-            _sudoku_dispatcher_get(sudoku, output);
+            _get(sudoku, output);
             break;
         case 'R':
-            _sudoku_dispatcher_reset(sudoku, output);
+            _reset(sudoku, output);
             break;
         case 'V':
-            _sudoku_dispatcher_verify(sudoku, output);
+            _verify(sudoku, output);
             break;
     }
     return;

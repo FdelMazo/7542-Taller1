@@ -8,7 +8,7 @@
 #define SUDOKU_DIVISION 3
 
 typedef struct {
-    board_t *board;
+    board_t board;
 } sudoku_t;
 
 // Initializes sudoku structure

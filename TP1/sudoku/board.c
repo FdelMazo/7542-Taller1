@@ -54,8 +54,8 @@ void board_reset(board_t *self) {
     }
 }
 
-bool _board_verify_cells_set(board_t *self, size_t row_i, size_t row_f,
-                             size_t col_i, size_t col_f) {
+static bool _verify_cells_set(board_t *self, size_t row_i, size_t row_f,
+                              size_t col_i, size_t col_f) {
     bool *numbers = calloc(sizeof(bool), self->range);
     for (size_t row = row_i; row < row_f; row++) {
         for (size_t col = col_i; col < col_f; col++) {
@@ -72,43 +72,43 @@ bool _board_verify_cells_set(board_t *self, size_t row_i, size_t row_f,
     return true;
 }
 
-bool _board_verify_row(board_t *self, size_t row) {
+static bool _verify_row(board_t *self, size_t row) {
     size_t row_i = row;
     size_t row_f = row;
     size_t col_i = 0;
     size_t col_f = self->range;
-    return _board_verify_cells_set(self, row_i, row_f, col_i, col_f);
+    return _verify_cells_set(self, row_i, row_f, col_i, col_f);
 }
 
 
-bool _board_verify_column(board_t *self, size_t col) {
+static bool _verify_column(board_t *self, size_t col) {
     size_t row_i = 0;
     size_t row_f = self->range;
     size_t col_i = col;
     size_t col_f = col;
-    return _board_verify_cells_set(self, row_i, row_f, col_i, col_f);
+    return _verify_cells_set(self, row_i, row_f, col_i, col_f);
 }
 
 
-bool _board_verify_section(board_t *self, size_t sec) {
+static bool _verify_section(board_t *self, size_t sec) {
     size_t row_i = floor(sec / self->division) * self->division;
     size_t row_f = row_i + self->division;
     size_t col_i = (sec % self->division) * self->division;
     size_t col_f = col_i + self->division;
-    return _board_verify_cells_set(self, row_i, row_f, col_i, col_f);
+    return _verify_cells_set(self, row_i, row_f, col_i, col_f);
 }
 
 
 bool board_verify(board_t *self) {
     for (size_t n = 0; n < self->range; n++) {
-        if (!_board_verify_row(self, n)) return false;
-        if (!_board_verify_column(self, n)) return false;
-        if (!_board_verify_section(self, n)) return false;
+        if (!_verify_row(self, n)) return false;
+        if (!_verify_column(self, n)) return false;
+        if (!_verify_section(self, n)) return false;
     }
     return true;
 }
 
-ssize_t _board_repr_cell(board_t *self, char *buf, ssize_t row, size_t col) {
+static ssize_t _repr_cell(board_t *self, char *buf, ssize_t row, size_t col) {
     ssize_t len = CELL_LEN + 2;
     char *cell_buf = calloc(len + 2, sizeof(char));
     char side_c;
@@ -137,21 +137,22 @@ ssize_t _board_repr_cell(board_t *self, char *buf, ssize_t row, size_t col) {
     return len;
 }
 
-ssize_t _board_repr_cells(board_t *self, char *buf, ssize_t row, size_t col_i) {
+static ssize_t _repr_cells(board_t *self, char *buf,
+                           ssize_t row, size_t col_i) {
     char column[] = {COLUMN, 0};
     strncat(buf, column, strlen(column));
     ssize_t len = 0;
     size_t col_f = col_i + self->division;
     for (size_t col = col_i; col < col_f; col++) {
-        len += _board_repr_cell(self, buf, row, col);
+        len += _repr_cell(self, buf, row, col);
     }
     return len;
 }
 
-ssize_t _board_repr_row(board_t *self, char *buf, size_t row) {
+static ssize_t _repr_row(board_t *self, char *buf, size_t row) {
     ssize_t len = 0;
     for (size_t cells = 0; cells < self->division; cells++) {
-        len += _board_repr_cells(self, buf, row, cells * self->division);
+        len += _repr_cells(self, buf, row, cells * self->division);
     }
     char column[] = {COLUMN, '\n'};
     strncat(buf, column, strlen(column));
@@ -161,12 +162,12 @@ ssize_t _board_repr_row(board_t *self, char *buf, size_t row) {
 void board_repr(board_t *self, char *buf) {
     for (size_t i = 0; i < self->range; i++) {
         if ((i % self->division) == 0)
-            _board_repr_row(self, buf, -1);
+            _repr_row(self, buf, -1);
         else
-            _board_repr_row(self, buf, -2);
-        _board_repr_row(self, buf, i);
+            _repr_row(self, buf, -2);
+        _repr_row(self, buf, i);
     }
-    _board_repr_row(self, buf, -1);
+    _repr_row(self, buf, -1);
 }
 
 void board_release(board_t *self) {
