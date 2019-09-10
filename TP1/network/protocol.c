@@ -8,7 +8,6 @@
 bool protocol_client_init(protocol_t *self, char *host, char *port) {
     bool no_err = true;
     socket_t *socket = malloc(sizeof(socket_t));
-    no_err &= socket_init(socket, 0);
     no_err &= socket_connect(socket, host, port);
 
     self->skt = socket;
@@ -24,7 +23,6 @@ bool protocol_client_init(protocol_t *self, char *host, char *port) {
 
 bool protocol_server_init(protocol_t *self, char *port) {
     socket_t *socket = malloc(sizeof(socket_t));
-    if (!socket_init(socket, 0)) return false;
     if (!socket_bind(socket, port)) return false;
     socket_listen(socket);
     self->skt = socket;

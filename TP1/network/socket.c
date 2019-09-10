@@ -9,18 +9,8 @@
 #include <errno.h>
 #include <unistd.h>
 
-bool socket_init(socket_t *self, int _fd) {
-    if (_fd) {
-        self->fd = _fd;
-        return true;
-    }
-    int fd = socket(FAMILY, SOCK_TYPE, 0);
-    if (fd == -1) {
-//        fprintf(stderr, "socket_init-->socket: %s\n", strerror(errno));
-        return false;
-    }
+void socket_init(socket_t *self, int fd) {
     self->fd = fd;
-    return true;
 }
 
 struct addrinfo *_socket_get_addr(socket_t *self,
@@ -45,12 +35,14 @@ bool socket_connect(socket_t *self, const char *host, const char *service) {
     bool connection_err = false;
     struct addrinfo *addr_list = _socket_get_addr(self, host,
                                                   service, CLIENT_FLAGS);
-
+    int fd = -1;
     struct addrinfo *addr = addr_list;
     for (; addr && !connection_err; addr = addr->ai_next) {
-        if (connect(self->fd, addr->ai_addr, addr->ai_addrlen) == -1)
+        fd = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
+        if (connect(fd, addr->ai_addr, addr->ai_addrlen) == -1)
             connection_err = true;
     }
+    self->fd = fd;
 
     freeaddrinfo(addr_list);
 
@@ -69,11 +61,14 @@ bool socket_bind(socket_t *self, const char *service) {
     struct addrinfo *addr_list = _socket_get_addr(self, NULL,
                                                   service, SERVER_FLAGS);
 
+    int fd = -1;
     struct addrinfo *addr = addr_list;
     for (; addr && !bind_err; addr = addr->ai_next) {
-        if (bind(self->fd, addr->ai_addr, addr->ai_addrlen) == -1)
+        fd = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
+        if (bind(fd, addr->ai_addr, addr->ai_addrlen) == -1)
             bind_err = true;
     }
+    self->fd = fd;
 
     freeaddrinfo(addr_list);
 

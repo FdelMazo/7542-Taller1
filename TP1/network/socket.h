@@ -15,7 +15,7 @@ typedef struct {
     int fd;
 } socket_t;
 
-bool socket_init(socket_t *self, int _fd);
+void socket_init(socket_t *self, int fd);
 
 bool socket_connect(socket_t *self, const char *host, const char *service);
 
