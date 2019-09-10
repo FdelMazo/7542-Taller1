@@ -3,7 +3,8 @@
 
 #define MAX_LENGTH_COMMAND 15
 #define MAX_LENGTH_OUTPUT 800
-#define MAX_REQUEST_LENGTH 4
+#define REQUEST_LENGTH 1
+#define ARGUMENTS_LENGTH 3
 #define MAX_RESPONSE_LENGTH 800
 
 #define PUT "put"
@@ -36,6 +37,13 @@ bool protocol_server_init(protocol_t *self, char *port);
 //                                  like a bad 'put',
 //                                  or something not in the specifications)
 //    n  when a n byte message was sent
+//
+// The protocol for the client sending side is as follows:
+//    The user request is in natural language. 'verify' 'put 5 in 1,2'
+//    The protocol receives this. If it is a supported command, converts it
+//    The put command is a char 'P' followed by 3 unsigned ints of 1 byte
+//    The rest of the commands are just the initial letter, as a single char
+//    That char (and if neccesary,the uints) are the message sent to the server
 ssize_t protocol_client_send(protocol_t *self, char *request);
 
 // Gets an empty buffer to fill with the server response to the client
@@ -43,6 +51,11 @@ ssize_t protocol_client_send(protocol_t *self, char *request);
 // Returns:
 //    -1 or 0 when the server closed the connection
 //    n  when a n byte message was received and stored in the buffer
+//
+// The protocol for the client receiving side is as follows:
+//    The protocol gets a 4 byte big-endian unsigned int
+//    That number is the length of the incoming message
+//    Then, it receives a message of that length
 ssize_t protocol_client_receive(protocol_t *self, char *buffer);
 
 // The server accepts the incoming client
@@ -53,6 +66,12 @@ void protocol_server_accept(protocol_t *self);
 // Returns:
 //    -1 or 0 when the server closed the connection
 //    n  when a n byte message was received and stored in the buffer
+//
+// The protocol for the server receiving side is as follows:
+//    The protocol gets at most 4 bytes
+//    The first one is the initial letter of the command
+//    If the command is a put one, it then gets 3 unsigned 1-byte ints
+//    The server will never get anything other than specified
 ssize_t protocol_server_receive(protocol_t *self, char *request);
 
 // Gets a buffer with a message, encodes it to follow the protocol and sends it
@@ -61,6 +80,11 @@ ssize_t protocol_server_receive(protocol_t *self, char *request);
 //    -1 when there was an unexpected error in the send
 //    0  if nothing was sent
 //    n  when a n byte message was sent
+//
+// The protocol for the server sending side is as follows:
+//    The protocol gets a message to send
+//    Then, it sends one big-endian 4-byte uint, with the length of that message
+//    Finally, it sends the whole message
 ssize_t protocol_server_send(protocol_t *self, char *buffer);
 
 

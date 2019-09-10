@@ -25,7 +25,7 @@ int socket_listen(socket_t *socket);
 
 int socket_accept(socket_t *self);
 
-ssize_t socket_send(socket_t *self, const char *message, size_t length);
+ssize_t socket_send(socket_t *self, const void *message, size_t length);
 
 ssize_t socket_receive(socket_t *self, char *response, size_t length);
 

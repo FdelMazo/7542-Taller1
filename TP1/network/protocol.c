@@ -30,56 +30,78 @@ bool protocol_server_init(protocol_t *self, char *port) {
     return true;
 }
 
-//ssize_t _protocol_encode_response(char *buf, char *message) {
+//static ssize_t _encode_response(char *buf, char *message) {
 //    *message = *buf;
 //    return strlen(message);
 //}
-
-//ssize_t _protocol_decode_response(char *buf, char *response) {
+//
+//static ssize_t _decode_response(char *buf, char *response) {
 //    *response = *buf;
 //    return strlen(response);
 //}
 
+// return -1 if the input is invalid
+// returns 0 if the input is valid, but there is nothing else to send
+// return n bytes if there are arguments to send
+static ssize_t _encode_arguments(char *buf, char *message, uint8_t *arguments) {
+    if (message[0] != 'P') return 0;
+    char discard = 0;
+    int arg1, arg2, arg3;
+    sscanf(buf, "%s %d in %d,%d", &discard, &arg1, &arg2, &arg3);
+    if (!sudoku_dispatcher_input_valid(arg1, arg2, arg3)) return -1;
+    arguments[0] = '0' + arg1;
+    arguments[1] = '0' + arg2;
+    arguments[2] = '0' + arg3;
+    return ARGUMENTS_LENGTH;
+}
 
-ssize_t _protocol_encode_command(char *buf, char *message) {
+
+static ssize_t _encode_request(char *buf, char *message) {
     char action[MAX_LENGTH_COMMAND] = {0};
+    ssize_t bytes = 0;
     sscanf(buf, "%s", action);
-    buf += strlen(action) + 1;
-    if (strncmp(action, PUT, strlen(PUT)) == 0) {
-        message[0] = 'P';
-        int arg1, arg2, arg3;
-        sscanf(buf, "%d in %d,%d", &arg1, &arg2, &arg3);
-        if (!sudoku_dispatcher_input_valid(arg1, arg2, arg3)) return 0;
-        message[1] = '0' + arg1;
-        message[2] = '0' + arg2;
-        message[3] = '0' + arg3;
-    } else if (strncmp(action, EXIT, strlen(EXIT)) == 0) {
+    if (strncmp(action, EXIT, strlen(EXIT)) == 0) {
         return -1;
+    } else if (strncmp(action, PUT, strlen(PUT)) == 0) {
+        message[bytes++] = 'P';
     } else if (strncmp(action, VERIFY, strlen(VERIFY)) == 0) {
-        message[0] = 'V';
+        message[bytes++] = 'V';
     } else if (strncmp(action, RESET, strlen(RESET)) == 0) {
-        message[0] = 'R';
+        message[bytes++] = 'R';
     } else if (strncmp(action, GET, strlen(RESET)) == 0) {
-        message[0] = 'G';
-    } else {
-        return 0;
+        message[bytes++] = 'G';
     }
-    return MAX_REQUEST_LENGTH;
+    return bytes;
+}
+
+// Returns the n bytes the server must ask again
+// (e.g. if the command is a get, nothing else is expected
+//     if the command is a put, the server needs the arguments)
+static bool _decode_request(char *request) {
+    if (request[0] != 'P') return 0;
+    return ARGUMENTS_LENGTH;
 }
 
 ssize_t protocol_client_send(protocol_t *self, char *request) {
-    char msg[MAX_REQUEST_LENGTH + 1] = {0};
-    ssize_t bytes = _protocol_encode_command(request, msg);
-    if (bytes == -1) return -1;
+    char msg[REQUEST_LENGTH] = {0};
+    uint8_t arguments[ARGUMENTS_LENGTH] = {0};
+    ssize_t bytes, arg_bytes;
+    if ((bytes = _encode_request(request, msg)) == -1)
+        return bytes;
+    if ((arg_bytes = _encode_arguments(request, msg, arguments)) == -1)
+        return 0;
 //    DEBUG_PRINT("protocol received from client: %s"
 //                "\ttranscribed to: %s\n", request, msg);
-    return socket_send(self->skt, msg, bytes);
+//    DEBUG_PRINT("protocol also sends: %s\n", arguments);
+    socket_send(self->skt, msg, bytes);
+    bytes += socket_send(self->skt, arguments, arg_bytes);
+    return bytes;
 }
 
 ssize_t protocol_client_receive(protocol_t *self, char *buffer) {
     return socket_receive(self->skt, buffer, MAX_RESPONSE_LENGTH);
 //    char response[MAX_RESPONSE_LENGTH] = {0};
-//    return _protocol_decode_response(buffer, response);
+//    return _decode_response(buffer, response);
 }
 
 void protocol_server_accept(protocol_t *self) {
@@ -89,12 +111,16 @@ void protocol_server_accept(protocol_t *self) {
 }
 
 ssize_t protocol_server_receive(protocol_t *self, char *request) {
-    return socket_receive(self->client_skt, request, MAX_REQUEST_LENGTH);
+    ssize_t recv = socket_receive(self->client_skt, request, REQUEST_LENGTH);
+    if (_decode_request(request) == 0) return recv;
+    request += recv;
+    recv += socket_receive(self->client_skt, request, ARGUMENTS_LENGTH);
+    return recv;
 }
 
 ssize_t protocol_server_send(protocol_t *self, char *buffer) {
 //    char response[MAX_RESPONSE_LENGTH] = {0};
-//    ssize_t bytes = _protocol_encode_response(buffer, response);
+//    ssize_t bytes = _encode_response(buffer, response);
     return socket_send(self->client_skt, buffer, MAX_RESPONSE_LENGTH);
 }
 

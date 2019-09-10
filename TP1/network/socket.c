@@ -13,8 +13,8 @@ void socket_init(socket_t *self, int fd) {
     self->fd = fd;
 }
 
-struct addrinfo *_socket_get_addr(socket_t *self,
-                          const char *host, const char *service, int flags) {
+static struct addrinfo *_get_addr(socket_t *self,
+                                  const char *host, const char *service, int flags) {
     struct addrinfo *addr_list;
     struct addrinfo hints;
     memset(&hints, 0, sizeof(struct addrinfo));
@@ -33,8 +33,8 @@ struct addrinfo *_socket_get_addr(socket_t *self,
 
 bool socket_connect(socket_t *self, const char *host, const char *service) {
     bool connection_err = false;
-    struct addrinfo *addr_list = _socket_get_addr(self, host,
-                                                  service, CLIENT_FLAGS);
+    struct addrinfo *addr_list = _get_addr(self, host,
+                                           service, CLIENT_FLAGS);
     int fd = -1;
     struct addrinfo *addr = addr_list;
     for (; addr && !connection_err; addr = addr->ai_next) {
@@ -58,8 +58,8 @@ bool socket_connect(socket_t *self, const char *host, const char *service) {
 
 bool socket_bind(socket_t *self, const char *service) {
     bool bind_err = false;
-    struct addrinfo *addr_list = _socket_get_addr(self, NULL,
-                                                  service, SERVER_FLAGS);
+    struct addrinfo *addr_list = _get_addr(self, NULL,
+                                           service, SERVER_FLAGS);
 
     int fd = -1;
     struct addrinfo *addr = addr_list;
@@ -97,12 +97,14 @@ int socket_accept(socket_t *self) {
     return fd;
 }
 
-ssize_t socket_send(socket_t *self, const char *request, size_t length) {
+ssize_t socket_send(socket_t *self, const void *request, size_t length) {
+    if (length == 0) return 0;
     int remaining_bytes = length;
     int total_bytes_sent = 0;
     ssize_t bytes = 0;
+    const char *send_request = request;
     while (total_bytes_sent < length) {
-        bytes = send(self->fd, &request[total_bytes_sent],
+        bytes = send(self->fd, &send_request[total_bytes_sent],
                      remaining_bytes, MSG_NOSIGNAL);
         if (bytes == -1) {
             total_bytes_sent = -1;
@@ -118,6 +120,7 @@ ssize_t socket_send(socket_t *self, const char *request, size_t length) {
 }
 
 ssize_t socket_receive(socket_t *self, char *response, size_t length) {
+    if (length == 0) return 0;
     int remaining_bytes = length;
     int total_bytes_received = 0;
     ssize_t bytes = 0;

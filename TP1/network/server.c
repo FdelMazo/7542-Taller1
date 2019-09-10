@@ -35,7 +35,7 @@ bool server_init(server_t *self, char *port) {
 void server_communicate(server_t *self) {
     protocol_server_accept(self->protocol);
     while (true) {
-        char command[MAX_LENGTH_COMMAND] = {0};
+        char command[REQUEST_LENGTH + ARGUMENTS_LENGTH] = {0};
         if (protocol_server_receive(self->protocol, command) <= 0) break;
         DEBUG_PRINT("Server got: %s\n", command);
         char output[MAX_LENGTH_OUTPUT] = {0};

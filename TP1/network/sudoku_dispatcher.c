@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 
-bool sudoku_dispatcher_input_valid(uint8_t n, size_t row, size_t col) {
+bool sudoku_dispatcher_input_valid(uint8_t n,
+                                   size_t row, size_t col) {
     switch (sudoku_put_valid(n, row, col)) {
         case 1:
             fprintf(stderr, INDEX_ERR);
