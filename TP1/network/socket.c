@@ -14,7 +14,7 @@ void socket_init(socket_t *self, int fd) {
 }
 
 static struct addrinfo *_get_addr(socket_t *self,
-                                  const char *host, const char *service, int flags) {
+                          const char *host, const char *service, int flags) {
     struct addrinfo *addr_list;
     struct addrinfo hints;
     memset(&hints, 0, sizeof(struct addrinfo));

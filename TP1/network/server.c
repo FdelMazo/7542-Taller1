@@ -37,11 +37,11 @@ void server_communicate(server_t *self) {
     while (true) {
         char command[REQUEST_LENGTH + ARGUMENTS_LENGTH] = {0};
         if (protocol_server_receive(self->protocol, command) <= 0) break;
-        DEBUG_PRINT("Server got: %s\n", command);
+//        DEBUG_PRINT("Server got: %s\n", command);
         char output[MAX_LENGTH_OUTPUT] = {0};
         sudoku_dispatcher_command(self->sudoku, command, output);
         protocol_server_send(self->protocol, output);
-        DEBUG_PRINT("Server sending back: \n%s\n", output);
+//        DEBUG_PRINT("Server sending back: \n%s\n", output);
     }
 }
 
