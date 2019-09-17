@@ -56,7 +56,8 @@ int main(int argc, char *argv[]) {
             std::string importantBits = binary.substr(mask);
             pack += importantBits;
         }
-        while (pack.size() % CHAR_BIT != 0) {
+        while ( (pack.size() % CHAR_BIT != 0) ||
+                ((bitsToRepr != 0) && (pack.size() % bitsToRepr != 0)))  {
             pack += '0';
         }
         for (uint y = 0; y < pack.size(); y+=CHAR_BIT) {
