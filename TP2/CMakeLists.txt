@@ -8,6 +8,10 @@ set(CMAKE_CXX_FLAGS "-Wall -Werror -pedantic -pedantic-errors -ggdb -DDEBUG -fno
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR})
 
+add_custom_target(zip COMMAND
+        ${CMAKE_COMMAND} -E tar "cfv" "sercom.zip" --format=zip "*cpp"
+)
+
 set(CMAKE_CXX_CPPLINT "cpplint;--extensions=h,hpp,c,cpp;\
 --filter=-,+build/class,+build/deprecated,+build/include_what_you_use,+build/namespaces,+build/printf_format,\
 +readability/braces,+readability/check,+readability/fn_size,+readability/function,+readability/multiline_comment,+readability/multiline_string,+readability/utf8,\

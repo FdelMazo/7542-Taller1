@@ -14,38 +14,39 @@ int main(int argc, char *argv[]) {
     std::ofstream output;
     output.open(argv[5], std::ios::out | std::ios::binary);
 
-    int blockSize = atoi(argv[1]);
+    uint32_t blockSize = atoi(argv[1]);
 
-    while( input.peek() != EOF ) {
-        std::vector <uint32_t> block(blockSize);
-        std::cerr << "Block to compress: ";
-        for (uint32_t i = 0; i < block.size(); i++) {
+    while ( input.peek() != EOF ) {
+        std::vector <uint32_t> block;
+//        std::cerr << "Block to compress: ";
+        for (uint32_t i = 0; i < blockSize && input.peek() != EOF; i++) {
             uint32_t myint;
             input.read(reinterpret_cast<char *>(&myint), sizeof(uint32_t));
-            block[i] = be32toh(myint);
-            std::cerr << block[i] << " - ";
+            block.emplace_back(be32toh(myint));
+//            std::cerr << block[i] << " - ";
         }
-        std::cerr << '\n';
+//        std::cerr << '\n';
 
         uint32_t min = *std::min_element(block.begin(), block.end());
-        std::cerr << "Ref in block: " << min << "; ";
-
-        std::cerr << "Now turned to: ";
+//        std::cerr << "Ref in block: " << min << "; ";
+//
+//        std::cerr << "Now turned to: ";
         for (uint32_t i = 0; i < block.size(); i++) {
             block[i] -= min;
-            std::cerr << block[i] << " - ";
+//            std::cerr << block[i] << " - ";
         }
-        std::cerr << '\n';
+//        std::cerr << '\n';
 
         uint32_t max = *std::max_element(block.begin(), block.end());
-        int bitsToRepr = ceil(log2(max));
+        int bitsToRepr = (max == 0) ? 0 : ceil(log2(max));
 
-        std::cerr << "Max in block: " << max << "; ";
-        std::cerr << "Bits neccesary to represent: " << bitsToRepr << "; ";
+//        std::cerr << "Max in block: " << max << "; ";
+//        std::cerr << "Bits neccesary to represent: " << bitsToRepr << "; ";
 
         min = htobe32(min);
         output.write(reinterpret_cast<const char *>(&min), sizeof(uint32_t));
-        output.write(reinterpret_cast<const char *>(&bitsToRepr), sizeof(uint8_t));
+        output.write(reinterpret_cast<const char *>(&bitsToRepr),
+                sizeof(uint8_t));
 
         std::string pack;
         for (uint32_t i = 0; i < block.size(); i++) {
@@ -64,6 +65,7 @@ int main(int argc, char *argv[]) {
             uint8_t x = (uint8_t) ul;
             output.write(reinterpret_cast<const char *>(&x), sizeof(uint8_t));
         }
+//        std::cerr << "\n\n";
     }
 
     input.close();
