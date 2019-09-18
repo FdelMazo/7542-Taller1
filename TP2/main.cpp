@@ -17,19 +17,23 @@ int main(int argc, char *argv[]) {
     uint32_t blockSize = atoi(argv[1]);
 
     while ( input.peek() != EOF ) {
-        std::vector <uint32_t> block;
+        std::vector<uint32_t> block(blockSize);
 //        std::cerr << "Block to compress: ";
-        for (uint32_t i = 0; i < blockSize && input.peek() != EOF; i++) {
-            uint32_t myint;
-            input.read(reinterpret_cast<char *>(&myint), sizeof(uint32_t));
-            block.emplace_back(be32toh(myint));
+        for (uint32_t i = 0; i < block.size(); i++) {
+            if (input.peek() != EOF) {
+                uint32_t num;
+                input.read(reinterpret_cast<char *>(&num), sizeof(uint32_t));
+                block[i] = be32toh(num);
+            } else {
+                block[i] = block[i - 1];
+            }
 //            std::cerr << block[i] << " - ";
         }
 //        std::cerr << '\n';
 
         uint32_t min = *std::min_element(block.begin(), block.end());
 //        std::cerr << "Ref in block: " << min << "; ";
-//
+
 //        std::cerr << "Now turned to: ";
         for (uint32_t i = 0; i < block.size(); i++) {
             block[i] -= min;
@@ -56,8 +60,7 @@ int main(int argc, char *argv[]) {
             std::string importantBits = binary.substr(mask);
             pack += importantBits;
         }
-        while ( (pack.size() % CHAR_BIT != 0) ||
-                ((bitsToRepr != 0) && (pack.size() % bitsToRepr != 0)))  {
+        while (pack.size() % CHAR_BIT != 0) {
             pack += '0';
         }
         for (uint y = 0; y < pack.size(); y+=CHAR_BIT) {
