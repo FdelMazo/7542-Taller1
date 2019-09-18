@@ -34,7 +34,7 @@ bool sudoku_load(sudoku_t *self, char *filename) {
     }
 
     board_load(&self->board, numbers, SUDOKU_RANGE, SUDOKU_RANGE);
-    _2d_array_destroy((void **) numbers);
+    _2d_array_destroy((void **) numbers, SUDOKU_RANGE);
     fclose(stream);
     return true;
 }

@@ -30,7 +30,7 @@ En cuanto a la comunicación entre servidor y cliente, hay también diversas cap
 
 Por ejemplo, el protocolo actual es el de convertir un comando como `put 5 in 1,2` en un mensaje como `P512`, y que eso se despache a la acción de colocar un número en una celda. Sin embargo, este protocolo podría cambiarse a que el mensaje sea `P125`, y solo debería cambiarse la capa del medio (el protocolo), sin que el servidor y el cliente se vean modificados.
 
-De la misma manera, se podría reemplazar el socket por una API, y el servidor y el cliente no verían cambios desde su lado (estos no tienen ni noción de lo que hay por debajo del protocolo, solo se encargan de pedir comandos y dar respuestas).
+De la misma manera, se podría reemplazar el socket por una API, y el servidor y el cliente no verían cambios desde su lado (estos no tienen noción de lo que hay por debajo del protocolo, solo se encargan de pedir comandos y dar respuestas).
 
 Punto de vista del cliente/servidor | 
 - | -
@@ -69,3 +69,17 @@ En cambio, con esta nueva funcionalidad de validar los comandos, se agrega mucho
 Es por esto que la clase que despacha comandos pasa a funcionar tanto para el cliente como para el servidor, para que por un lado sepa responder si un comando será valido o no del lado del cliente (antes de enviarlo al servidor), y por el otro sepa como accionar desde el lado del servidor una vez que recibe un comando sí valido. 
 
 Idealmente, de ser más grande el proyecto, este *handler* debería dividirse en dos, uno del cliente y uno del servidor, para poder asignarle comportamiento específico y bien modulado a ambas partes por separado. Pero como el cliente solo se encarga de imprimir lo que recibe (comportamiento no tan digno de una clase entera, porque es solo una llamada a `printf()`), y de validar comandos, se deja al `sudoku_dispatcher` con dos funciones, una que llame el cliente y una que llame al servidor, y no como dos clases distintas.
+
+\newpage
+
+## Cambios requeridos en la re-entrega
+
+* Se cambian las firmas de inicialización (y otros métodos) de la clase de protocolo para que los parametros `host` y `port` sean constantes. Lo mismo sucede con el buffer del cual se quieren parsear los comandos. Esto es porque estas funciones efectivamente no cambian (ni deberían cambiar) estos parametros.
+
+* Se modifica en el manejo de errores que el método del socket de conseguir la dirección a la cual conectarse no sea la responsable de liberar el socket. De fallar la función, es tanto el método de `connect` o `bind` el encargado de entender esta salida, y ahí liberar el socket. Estos dos métodos pasan ahora a chequear la salida de la función.
+
+* Se cambia para que el arreglo de punteros (el que contiene las celdas) sea de 9 y no de 81 punteros (había un error en la inicialización, donde se pedía mas memoria de la necesaria). Para que esto funcione, se cambian las funciones de destrucción y liberación del arreglo (se generaba un `invalid read` porque la condición de corte del ciclo definido era `arreglo[x]`, ahora, se recorre el arreglo con un tamaño fijo).
+
+* No se cambio la corrección de no liberar los punteros nulos, porque en C99 este comportamiento sí esta definido: `The free function causes the space pointed to by ptr to be deallocated [...]. If ptr is a null pointer, no action occurs.`. Esto se deja así para que los chequeos de errores sean mas legibles: "si no se asigna bien la memoria, o no se inicializa correctamente la estructura, liberar y retornar error".
+
+* No se pasó al stack el arreglo con el que se verifica el estado de las filas/columnas/secciones del sudoku, porque si bien tener un arreglo de longitud variable es valido en el estandar C99 (variable en este caso se entiende como el depender de un atributo de la clase), el linter `cpplint` no lo toma como algo correcto: `Do not use variable-length arrays.  Use an appropriately named ('k' followed by CamelCase) compile-time constant for the size.`. La longitud no se pone en un macro porque se toma como esa la responsabilidad de la clase `sudoku` (donde sí esta definida la macro) y no como responsabilidad de la clase del tablero, quien en vez de tener una macro, tiene un atributo de la clase refiriendo a ese número. 

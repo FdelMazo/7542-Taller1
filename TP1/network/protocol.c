@@ -6,7 +6,7 @@
 #include "sudoku_dispatcher.h"
 #include <arpa/inet.h>
 
-bool protocol_client_init(protocol_t *self, char *host, char *port) {
+bool protocol_client_init(protocol_t *self, const char *host, const char *port){
     bool no_err = true;
     socket_t *socket = malloc(sizeof(socket_t));
     no_err &= socket_connect(socket, host, port);
@@ -22,7 +22,7 @@ bool protocol_client_init(protocol_t *self, char *host, char *port) {
     return true;
 }
 
-bool protocol_server_init(protocol_t *self, char *port) {
+bool protocol_server_init(protocol_t *self, const char *port) {
     socket_t *socket = malloc(sizeof(socket_t));
     if (!socket_bind(socket, port)) return false;
     socket_listen(socket);
@@ -47,7 +47,7 @@ static ssize_t _encode_arguments(char *buf, char *message, uint8_t *arguments) {
 }
 
 
-static ssize_t _encode_request(char *buf, char *message) {
+static ssize_t _encode_request(const char *buf, char *message) {
     char action[MAX_LENGTH_COMMAND] = {0};
     ssize_t bytes = 0;
     sscanf(buf, "%s", action);

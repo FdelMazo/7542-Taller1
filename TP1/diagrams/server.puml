@@ -4,19 +4,19 @@ collections protocol
 boundary sudoku_dispatcher
 entity sudoku
 
-note over protocol #Crimson: V
-server <[#Crimson]-protocol: protocol_server_receive()
-server-[#Crimson]>sudoku_dispatcher : dispatch(command)
+note over protocol #tomato: V
+server <[#tomato]-protocol: protocol_server_receive()
+server-[#tomato]>sudoku_dispatcher : dispatch(command)
 sudoku_dispatcher-[#green]>o sudoku : sudoku_verify()
 
-note right sudoku #SteelBlue: true
-sudoku_dispatcher <[#SteelBlue]- sudoku
+note right sudoku #palegreen: true
+sudoku_dispatcher <[#palegreen]- sudoku
 
-note left sudoku_dispatcher #SteelBlue: 3OK
-sudoku_dispatcher-[#SteelBlue]>server
+note left sudoku_dispatcher #palegreen: 3OK
+sudoku_dispatcher-[#palegreen]>server
 
-server -[#SteelBlue]>protocol: protocol_server_send()
-note over protocol #SteelBlue: OK
+server -[#palegreen]>protocol: protocol_server_send()
+note over protocol #palegreen: OK
 note over protocol #yellow: responds \nto client
 
 @enduml

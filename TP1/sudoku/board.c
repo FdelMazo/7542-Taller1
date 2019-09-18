@@ -12,7 +12,7 @@ bool board_init(board_t *self, size_t range, size_t division) {
     if (!cells) return false;
 
     if (!_2d_array_init((void ***) cells, sizeof(cell_t), range, range)) {
-        _2d_array_release((void ***) cells);
+        _2d_array_release((void ***) cells, range, range);
         return false;
     }
 
@@ -171,6 +171,6 @@ void board_repr(board_t *self, char *buf) {
 }
 
 void board_release(board_t *self) {
-    _2d_array_release((void ***) self->cells);
-    _2d_array_destroy((void **) self->cells);
+    _2d_array_release((void ***) self->cells, self->range, self->range);
+    _2d_array_destroy((void **) self->cells, self->range);
 }

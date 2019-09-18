@@ -24,11 +24,11 @@ typedef struct {
 
 // Initializes the structure when called from the client
 // Returns false if any of the subsequent initializations fail
-bool protocol_client_init(protocol_t *self, char *host, char *port);
+bool protocol_client_init(protocol_t *self, const char *host, const char *port);
 
 // Initializes the structure when called from the client
 // Returns false if any of the subsequent initializations fail
-bool protocol_server_init(protocol_t *self, char *port);
+bool protocol_server_init(protocol_t *self, const char *port);
 
 // Gets a buffer with a message, encodes it to follow the protocol and sends it
 // This is for when the client sends to the server a command

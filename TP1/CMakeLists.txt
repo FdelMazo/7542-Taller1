@@ -28,7 +28,7 @@ add_custom_target(zip
 
 add_custom_target(informe
         COMMAND plantuml diagrams/*.puml
-        COMMAND pandoc README.md -H header.tex -o Informe.tex --latex-engine=xelatex
+        COMMAND pandoc README.md -H header.tex -o Informe.tex --pdf-engine=xelatex
         COMMAND sed -i 's/@{}ll@{}/@{}l|l@{}/g' Informe.tex
         COMMAND pdflatex Informe.tex
         COMMAND rm Informe.tex)
