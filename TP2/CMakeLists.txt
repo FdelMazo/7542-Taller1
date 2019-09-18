@@ -31,4 +31,5 @@ add_custom_target(sercom
 
 add_executable(tp
         main.cpp
+        Block.cpp Block.h
 )
