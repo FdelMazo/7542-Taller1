@@ -25,16 +25,19 @@ static struct addrinfo *_get_addr(socket_t *self,
     if ((addr_err = getaddrinfo(host, service, &hints, &addr_list)) != 0) {
 //        fprintf(stderr, "_socket_get_addr-->getaddrinfo: %s\n",
 //                gai_strerror(addr_err));
-        socket_release(self);
-        return false;
+        return NULL;
     }
     return addr_list;
 }
 
 bool socket_connect(socket_t *self, const char *host, const char *service) {
     bool connection_err = false;
-    struct addrinfo *addr_list = _get_addr(self, host,
-                                           service, CLIENT_FLAGS);
+    struct addrinfo *addr_list;
+    if ((addr_list = _get_addr(self, host, service, CLIENT_FLAGS)) == NULL) {
+        socket_release(self);
+        return false;
+    }
+
     int fd = -1;
     struct addrinfo *addr = addr_list;
     for (; addr && !connection_err; addr = addr->ai_next) {
@@ -58,8 +61,11 @@ bool socket_connect(socket_t *self, const char *host, const char *service) {
 
 bool socket_bind(socket_t *self, const char *service) {
     bool bind_err = false;
-    struct addrinfo *addr_list = _get_addr(self, NULL,
-                                           service, SERVER_FLAGS);
+    struct addrinfo *addr_list;
+    if ((addr_list = _get_addr(self, NULL, service, SERVER_FLAGS)) == NULL) {
+        socket_release(self);
+        return false;
+    }
 
     int fd = -1;
     struct addrinfo *addr = addr_list;
