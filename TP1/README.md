@@ -76,10 +76,199 @@ Idealmente, de ser más grande el proyecto, este *handler* debería dividirse en
 
 * Se cambian las firmas de inicialización (y otros métodos) de la clase de protocolo para que los parametros `host` y `port` sean constantes. Lo mismo sucede con el buffer del cual se quieren parsear los comandos. Esto es porque estas funciones efectivamente no cambian (ni deberían cambiar) estos parametros.
 
-* Se modifica en el manejo de errores que el método del socket de conseguir la dirección a la cual conectarse no sea la responsable de liberar el socket. De fallar la función, es tanto el método de `connect` o `bind` el encargado de entender esta salida, y ahí liberar el socket. Estos dos métodos pasan ahora a chequear la salida de la función.
+```diff
+diff --git a/TP1/network/protocol.c b/TP1/network/protocol.c
+index 807e1e5..9c85f34 100644
+--- a/TP1/network/protocol.c
++++ b/TP1/network/protocol.c
+@@ -6,7 +6,7 @@
+ #include "sudoku_dispatcher.h"
+ #include <arpa/inet.h>
+ 
+-bool protocol_client_init(protocol_t *self, char *host, char *port) {
++bool protocol_client_init(protocol_t *self, const char *host, const char *port){
+     bool no_err = true;
+     socket_t *socket = malloc(sizeof(socket_t));
+     no_err &= socket_connect(socket, host, port);
+@@ -22,7 +22,7 @@ bool protocol_client_init(protocol_t *self, char *host, char *port) {
+     return true;
+ }
+ 
+-bool protocol_server_init(protocol_t *self, char *port) {
++bool protocol_server_init(protocol_t *self, const char *port) {
+     socket_t *socket = malloc(sizeof(socket_t));
+     if (!socket_bind(socket, port)) return false;
+     socket_listen(socket);
+@@ -47,7 +47,7 @@ static ssize_t _encode_arguments(char *buf, char *message, uint8_t *arguments) {
+ }
+ 
+ 
+-static ssize_t _encode_request(char *buf, char *message) {
++static ssize_t _encode_request(const char *buf, char *message) {
+     char action[MAX_LENGTH_COMMAND] = {0};
+     ssize_t bytes = 0;
+     sscanf(buf, "%s", action);
+diff --git a/TP1/network/protocol.h b/TP1/network/protocol.h
+index 80eae47..1e26b76 100644
+--- a/TP1/network/protocol.h
++++ b/TP1/network/protocol.h
+@@ -24,11 +24,11 @@ typedef struct {
+ 
+ // Initializes the structure when called from the client
+ // Returns false if any of the subsequent initializations fail
+-bool protocol_client_init(protocol_t *self, char *host, char *port);
++bool protocol_client_init(protocol_t *self, const char *host, const char *port);
+ 
+ // Initializes the structure when called from the client
+ // Returns false if any of the subsequent initializations fail
+-bool protocol_server_init(protocol_t *self, char *port);
++bool protocol_server_init(protocol_t *self, const char *port);
+ 
+ // Gets a buffer with a message, encodes it to follow the protocol and sends it
+ // This is for when the client sends to the server a command
+```
+
+* Se modifica en el manejo de errores que el método del socket de conseguir la dirección a la cual conectarse no sea la responsable de liberar el socket. De fallar la función, es tanto el método de `connect` o `bind` el encargado de entender esta salida, y ahí liberar el socket. 
+
+```diff
+diff --git a/TP1/network/socket.c b/TP1/network/socket.c
+index 5edd0ed..2427a8f 100755
+--- a/TP1/network/socket.c
++++ b/TP1/network/socket.c
+@@ -25,16 +25,19 @@ static struct addrinfo *_get_addr(socket_t *self,
+     if ((addr_err = getaddrinfo(host, service, &hints, &addr_list)) != 0) {
+ //        fprintf(stderr, "_socket_get_addr-->getaddrinfo: %s\n",
+ //                gai_strerror(addr_err));
+-        socket_release(self);
+-        return false;
++        return NULL;
+     }
+     return addr_list;
+ }
+ 
+ bool socket_connect(socket_t *self, const char *host, const char *service) {
+     bool connection_err = false;
+-    struct addrinfo *addr_list = _get_addr(self, host,
+-                                           service, CLIENT_FLAGS);
++    struct addrinfo *addr_list;
++    if ((addr_list = _get_addr(self, host, service, CLIENT_FLAGS)) == NULL) {
++        socket_release(self);
++        return false;
++    }
++
+     int fd = -1;
+     struct addrinfo *addr = addr_list;
+     for (; addr && !connection_err; addr = addr->ai_next) {
+@@ -58,8 +61,11 @@ bool socket_connect(socket_t *self, const char *host, const char *service) {
+ 
+ bool socket_bind(socket_t *self, const char *service) {
+     bool bind_err = false;
+-    struct addrinfo *addr_list = _get_addr(self, NULL,
+-                                           service, SERVER_FLAGS);
++    struct addrinfo *addr_list;
++    if ((addr_list = _get_addr(self, NULL, service, SERVER_FLAGS)) == NULL) {
++        socket_release(self);
++        return false;
++    }
+ 
+     int fd = -1;
+     struct addrinfo *addr = addr_list;
+```
 
 * Se cambia para que el arreglo de punteros (el que contiene las celdas) sea de 9 y no de 81 punteros (había un error en la inicialización, donde se pedía mas memoria de la necesaria). Para que esto funcione, se cambian las funciones de destrucción y liberación del arreglo (se generaba un `invalid read` porque la condición de corte del ciclo definido era `arreglo[x]`, ahora, se recorre el arreglo con un tamaño fijo).
+
+```diff
+diff --git a/TP1/sudoku/2d_array.c b/TP1/sudoku/2d_array.c
+index c8ea1a4..1bbba4b 100644
+--- a/TP1/sudoku/2d_array.c
++++ b/TP1/sudoku/2d_array.c
+@@ -3,11 +3,11 @@
+ 
+ void ***_2d_array_create(size_t n, size_t m) {
+     void ***arr;
+-    if (!(arr = calloc(n * m, sizeof(void *)))) return NULL;
++    if (!(arr = calloc(n, sizeof(void *)))) return NULL;
+ 
+     for (size_t x = 0; x < n; x++) {
+         if (!(arr[x] = malloc(sizeof(void *) * m))) {
+-            _2d_array_destroy((void **) arr);
++            _2d_array_destroy((void **) arr, n);
+             return NULL;
+         }
+     }
+@@ -27,14 +27,14 @@ bool _2d_array_init(void ***arr, size_t size, size_t n, size_t m) {
+     return true;
+ }
+ 
+-void _2d_array_release(void ***arr) {
+-    for (size_t x = 0; arr[x]; x++) {
+-        for (size_t y = 0; arr[y]; y++) free(arr[x][y]);
++void _2d_array_release(void ***arr, size_t n, size_t m) {
++    for (size_t x = 0; x < n; x++) {
++        for (size_t y = 0; y < m; y++) free(arr[x][y]);
+     }
+ }
+ 
+-void _2d_array_destroy(void **arr) {
+-    for (size_t x = 0; arr[x]; x++)
++void _2d_array_destroy(void **arr, size_t n) {
++    for (size_t x = 0; x < n; x++)
+         free(arr[x]);
+     free(arr);
+ }
+diff --git a/TP1/sudoku/2d_array.h b/TP1/sudoku/2d_array.h
+index eff437e..081d4dd 100644
+--- a/TP1/sudoku/2d_array.h
++++ b/TP1/sudoku/2d_array.h
+@@ -8,8 +8,8 @@ void ***_2d_array_create(size_t n, size_t m);
+ 
+ bool _2d_array_init(void ***arr, size_t size, size_t n, size_t m);
+ 
+-void _2d_array_release(void ***arr);
++void _2d_array_release(void ***arr, size_t n, size_t m);
+ 
+-void _2d_array_destroy(void **arr);
++void _2d_array_destroy(void **arr, size_t n);
+ 
+ #endif //TP1_2D_ARRAY_H
+diff --git a/TP1/sudoku/board.c b/TP1/sudoku/board.c
+index dec2543..50d49c5 100644
+--- a/TP1/sudoku/board.c
++++ b/TP1/sudoku/board.c
+@@ -12,7 +12,7 @@ bool board_init(board_t *self, size_t range, size_t division) {
+     if (!cells) return false;
+ 
+     if (!_2d_array_init((void ***) cells, sizeof(cell_t), range, range)) {
+-        _2d_array_release((void ***) cells);
++        _2d_array_release((void ***) cells, range, range);
+         return false;
+     }
+ 
+@@ -171,6 +171,6 @@ void board_repr(board_t *self, char *buf) {
+ }
+ 
+ void board_release(board_t *self) {
+-    _2d_array_release((void ***) self->cells);
+-    _2d_array_destroy((void **) self->cells);
++    _2d_array_release((void ***) self->cells, self->range, self->range);
++    _2d_array_destroy((void **) self->cells, self->range);
+ }
+diff --git a/TP1/sudoku/sudoku.c b/TP1/sudoku/sudoku.c
+index dde80f2..f872275 100755
+--- a/TP1/sudoku/sudoku.c
++++ b/TP1/sudoku/sudoku.c
+@@ -34,7 +34,7 @@ bool sudoku_load(sudoku_t *self, char *filename) {
+     }
+ 
+     board_load(&self->board, numbers, SUDOKU_RANGE, SUDOKU_RANGE);
+-    _2d_array_destroy((void **) numbers);
++    _2d_array_destroy((void **) numbers, SUDOKU_RANGE);
+     fclose(stream);
+     return true;
+ }
+```
 
 * No se cambio la corrección de no liberar los punteros nulos, porque en C99 este comportamiento sí esta definido: `The free function causes the space pointed to by ptr to be deallocated [...]. If ptr is a null pointer, no action occurs.`. Esto se deja así para que los chequeos de errores sean mas legibles: "si no se asigna bien la memoria, o no se inicializa correctamente la estructura, liberar y retornar error".
 
 * No se pasó al stack el arreglo con el que se verifica el estado de las filas/columnas/secciones del sudoku, porque si bien tener un arreglo de longitud variable es valido en el estandar C99 (variable en este caso se entiende como el depender de un atributo de la clase), el linter `cpplint` no lo toma como algo correcto: `Do not use variable-length arrays.  Use an appropriately named ('k' followed by CamelCase) compile-time constant for the size.`. La longitud no se pone en un macro porque se toma como esa la responsabilidad de la clase `sudoku` (donde sí esta definida la macro) y no como responsabilidad de la clase del tablero, quien en vez de tener una macro, tiene un atributo de la clase refiriendo a ese número. 
+

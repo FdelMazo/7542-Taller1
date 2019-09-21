@@ -30,3 +30,18 @@
 } {
     \endorigfigure
 }
+
+% Pone barra magenta a la izquierda de los bloques de codigo, sean con o sin lenguaje especificado
+% Shaded -> Lenguaje especificado
+% Verbatim -> Lenguaje no especificado
+\newenvironment{leftbar_mod}{
+	\def\FrameCommand{{\color{magenta}\vrule width 1pt} \hspace{10pt}}
+	\MakeFramed {\advance\hsize-\width \FrameRestore}}
+{\endMakeFramed}
+\let\oldshaded\Shaded
+\renewenvironment{Shaded}{\begin{leftbar_mod}\begin{oldshaded} \tiny}{\end{oldshaded}\end{leftbar_mod}}
+\let\oldverbatim\verbatim
+\renewenvironment{verbatim}{\begin{leftbar_mod}\begin{oldverbatim}}{\end{oldverbatim}\end{leftbar_mod}}
+
+% Code wrap cuando hay lenguaje especificado
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
