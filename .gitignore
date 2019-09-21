@@ -9,3 +9,5 @@ CMakeCache.txt
 *.aux
 *.log
 *.out
+tp
+Makefile
