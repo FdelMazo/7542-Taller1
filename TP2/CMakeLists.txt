@@ -7,7 +7,6 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS "-Wall -Werror -pedantic -pedantic-errors -ggdb -DDEBUG -fno-inline -pthread")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR})
-set(CMAKE_directory ${PROJECT_SOURCE_DIR})
 
 set(CMAKE_CXX_CPPLINT "cpplint;--extensions=h,hpp,c,cpp;\
 --filter=-,+build/class,+build/deprecated,+build/include_what_you_use,+build/namespaces,+build/printf_format,\
@@ -23,7 +22,6 @@ add_custom_target(zip
 add_custom_target(tests
         DEPENDS tp
         COMMAND ${PROJECT_SOURCE_DIR}/tests.sh
-        CLION_EXE_DIR=${PROJECT_BINARY_DIR}
 )
 
 add_custom_target(sercom
