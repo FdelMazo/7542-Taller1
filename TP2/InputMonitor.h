@@ -6,11 +6,11 @@
 
 // InputMonitor Class
 // This monitor takes care of having a civilized read from the input
-// Any thread who wants to read from the file must first aquire the lock
+// Any thread who wants to read from the file must first acquire the lock
 
 class InputMonitor {
 private:
-    // The file lock to aquire
+    // The file lock to acquire
     std::mutex lock;
 
     // The resource everyone is racing to get to

@@ -22,6 +22,8 @@ public:
     // Writes the compressed block to the given stream
     void write(std::ostream &stream);
 
+    bool isInvalid();
+
 private:
     // Reference value
     uint32_t reference;
@@ -34,6 +36,8 @@ private:
 
     // Method to pass from the vector of (small) numbers to a string of bits
     void compressNumbers(std::vector<uint32_t> items);
+
+    bool invalid;
 };
 
 

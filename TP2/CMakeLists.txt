@@ -34,4 +34,6 @@ add_executable(tp
         Thread.cpp Thread.h
         Minion.cpp Minion.h
         InputMonitor.cpp InputMonitor.h
+        ThreadSafeQueue.cpp ThreadSafeQueue.h
+        Writer.cpp Writer.h
 )

@@ -3,6 +3,7 @@
 
 #include "Thread.h"
 #include "InputMonitor.h"
+#include "ThreadSafeQueue.h"
 #include <vector>
 
 // Minion Class
@@ -23,12 +24,16 @@ public:
     // Constructor: initializes the attributes and increments minionCount
     Minion(int blockSize, int queueLimit, InputMonitor *input);
 
+    ~Minion();
     // As long as the file hasn't reach the end,
     //   and there are blocks inside the valid range:
     //      - Read blockSize numbers from the file
     //      - Compress them
     //      - Place them on the queue
     void run();
+
+    // Public queue which the master has access to (by reference)
+    ThreadSafeQueue *queue;
 
 private:
     // Minion's id

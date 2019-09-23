@@ -5,6 +5,11 @@
 #include <bitset>
 
 CompressedBlock::CompressedBlock(std::vector<uint32_t> vec) {
+    if (vec.size() == 0) {
+        invalid = true;
+        return;
+    }
+    invalid = false;
     reference = *std::min_element(vec.begin(), vec.end());
     std::for_each(vec.begin(), vec.end(), [&](uint32_t &n) { n -= reference; });
 
@@ -28,15 +33,20 @@ void CompressedBlock::write(std::ostream &stream) {
 
 void CompressedBlock::compressNumbers(std::vector<uint32_t> items) {
     std::string pack;
-    for (uint32_t i = 0; i < items.size(); i++) {
+    for (uint i = 0; i < items.size(); i++) {
         std::string binary = std::bitset<sizeof(uint32_t) * CHAR_BIT>(items[i]).to_string();
         int mask = binary.size() - bitsToRepr;
         std::string importantBits = binary.substr(mask);
         pack += importantBits;
     }
 
+    // Padding: Until we don't have bytes, fill with 0s
     while (pack.size() % CHAR_BIT != 0)
         pack += '0';
 
     compressedNumbers = pack;
+}
+
+bool CompressedBlock::isInvalid() {
+    return invalid;
 }

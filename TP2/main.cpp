@@ -2,6 +2,7 @@
 #include <vector>
 #include <algorithm>
 #include "Minion.h"
+#include "Writer.h"
 
 int main(int argc, char *argv[]) {
     if (argc != 6) return 1;
@@ -21,13 +22,13 @@ int main(int argc, char *argv[]) {
         minions[i] = new Minion(blockSize, queueLimit, &input);
     }
 
-//    Master master(minions, &outputStream);
-//    master.start();
+    Writer writer(minions, &outputStream);
+    writer.start();
 
     std::for_each(minions.begin(), minions.end(), [&](Minion *m) { m->start(); });
     std::for_each(minions.begin(), minions.end(), [&](Minion *m) { m->join(); });
 
-//    master.join();
+    writer.join();
 
     std::for_each(minions.begin(), minions.end(), [&](Minion *m) { delete m; });
 
