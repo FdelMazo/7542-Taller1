@@ -10,7 +10,6 @@ diff oneblk4.out output/oneblk4.out
 diff largenum4.out output/largenum4.out
 diff alot4.out output/alot4.out
 
-
 ./tp 3 2 1 input/zeroblk zeroblk3.out
 ./tp 8 2 1 input/pad pad8.out
 ./tp 4 2 1 input/oneblk oneblk4.out

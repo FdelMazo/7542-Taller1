@@ -4,6 +4,7 @@
 #include <vector>
 #include <cstdint>
 #include <istream>
+#include <string>
 
 // CompressedBlock class
 // This class serves as a compressor for a vector of numbers
@@ -17,7 +18,7 @@ class CompressedBlock {
 public:
     // Given a vector of 4-byte numbers, it compresses them all
     // Everything needed for the block is stored in the members of the class
-    CompressedBlock(std::vector<uint32_t> vec);
+    explicit CompressedBlock(std::vector<uint32_t> vec);
 
     // Writes the compressed block to the given stream
     void write(std::ostream &stream);

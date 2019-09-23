@@ -25,8 +25,10 @@ int main(int argc, char *argv[]) {
     Writer writer(minions, &outputStream);
     writer.start();
 
-    std::for_each(minions.begin(), minions.end(), [&](Minion *m) { m->start(); });
-    std::for_each(minions.begin(), minions.end(), [&](Minion *m) { m->join(); });
+    std::for_each(minions.begin(), minions.end(),
+                  [&](Minion *m) { m->start(); });
+    std::for_each(minions.begin(), minions.end(),
+                  [&](Minion *m) { m->join(); });
 
     writer.join();
 

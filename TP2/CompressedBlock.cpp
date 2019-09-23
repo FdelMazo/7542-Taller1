@@ -3,6 +3,8 @@
 #include <cmath>
 #include <climits>
 #include <bitset>
+#include <string>
+#include <vector>
 
 CompressedBlock::CompressedBlock(std::vector<uint32_t> vec) {
     if (vec.size() == 0) {
@@ -34,7 +36,8 @@ void CompressedBlock::write(std::ostream &stream) {
 void CompressedBlock::compressNumbers(std::vector<uint32_t> items) {
     std::string pack;
     for (uint i = 0; i < items.size(); i++) {
-        std::string binary = std::bitset<sizeof(uint32_t) * CHAR_BIT>(items[i]).to_string();
+        std::string binary = std::bitset<sizeof(uint32_t) * CHAR_BIT>
+                (items[i]).to_string();
         int mask = binary.size() - bitsToRepr;
         std::string importantBits = binary.substr(mask);
         pack += importantBits;

@@ -16,8 +16,14 @@ public:
 
 private:
     std::ofstream *file;
-
 };
 
 
 #endif //TP1_WRITER_H
+
+
+
+
+
+
+

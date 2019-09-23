@@ -1,5 +1,6 @@
 #include "Writer.h"
 #include "CompressedBlock.h"
+#include <vector>
 
 void Writer::run() {
     bool keepPoping = true;

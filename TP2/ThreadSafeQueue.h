@@ -6,11 +6,10 @@
 #include "CompressedBlock.h"
 
 class ThreadSafeQueue {
-
 private:
     std::condition_variable cond_var;
 public:
-    ThreadSafeQueue(int elemLimit);
+    explicit ThreadSafeQueue(int elemLimit);
 
     ThreadSafeQueue();
 

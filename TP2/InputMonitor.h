@@ -21,7 +21,7 @@ private:
 
 public:
     // Constructor
-    InputMonitor(std::ifstream *inputStream);
+    explicit InputMonitor(std::ifstream *inputStream);
 
     // Returns if a position is valid or not (past the EOF)
     bool eof(int i);
