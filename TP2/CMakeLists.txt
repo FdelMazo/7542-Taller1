@@ -25,9 +25,13 @@ add_custom_target(tests
 )
 
 add_custom_target(sercom
-        COMMAND make -f ${PROJECT_SOURCE_DIR}/SercomMakefile)
+        COMMAND make -f ${PROJECT_SOURCE_DIR}/SercomMakefile
+        )
 
 add_executable(tp
         main.cpp
-        Block.cpp Block.h
+        CompressedBlock.cpp CompressedBlock.h
+        Thread.cpp Thread.h
+        Minion.cpp Minion.h
+        InputMonitor.cpp InputMonitor.h
 )
