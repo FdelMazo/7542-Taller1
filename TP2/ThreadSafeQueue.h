@@ -8,13 +8,15 @@
 class ThreadSafeQueue {
 public:
     explicit ThreadSafeQueue(int elemLimit);
-    int limit;
+
+    uint limit;
     void push(CompressedBlock block);
     CompressedBlock pop();
 
 private:
-    std::condition_variable cond_var;
     std::mutex m;
+    std::condition_variable havePushed;
+    std::condition_variable havePopped;
     std::queue<CompressedBlock> queue;
 };
 
