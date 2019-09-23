@@ -15,8 +15,7 @@ public:
 
 private:
     std::mutex m;
-    std::condition_variable havePushed;
-    std::condition_variable havePopped;
+    std::condition_variable condition;
     std::queue<CompressedBlock> queue;
 };
 
