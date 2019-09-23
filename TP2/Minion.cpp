@@ -21,14 +21,18 @@ void Minion::run() {
 
 std::vector<uint32_t> Minion::readFile(int positionToStart) {
     std::vector<uint32_t> blockNumbers(blockSize);
-    for (int i = 0, positionToRead = positionToStart; i < blockSize; i++, positionToRead += sizeof(uint32_t)) {
+    int positionToRead = positionToStart;
+    for (int i = 0; i < blockSize; i++) {
         if (!fileToRead->eof(i)) {
             uint32_t num;
-            fileToRead->read(reinterpret_cast<char *>(&num), sizeof(uint32_t), positionToRead);
+            char *buffer = reinterpret_cast<char *>(&num);
+            fileToRead->read(buffer, sizeof(uint32_t), positionToRead);
             blockNumbers[i] = be32toh(num);
         } else {
+            // Padding: fill the block with the last number read
             blockNumbers[i] = blockNumbers[i - 1];
         }
+        positionToRead += sizeof(uint32_t);
     }
     return blockNumbers;
 }

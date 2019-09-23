@@ -1,8 +1,3 @@
-//
-// Created by delmazo on 9/22/19.
-//
-
-#include <iostream>
 #include "InputMonitor.h"
 
 InputMonitor::InputMonitor(std::ifstream *inputStream) {
@@ -16,8 +11,8 @@ bool InputMonitor::eof(int i) {
     return i >= fileSize;
 }
 
-void InputMonitor::read(char *string, size_t i, int position) {
+void InputMonitor::read(char *buffer, size_t n, int pos) {
     std::unique_lock<std::mutex> l(lock);
-    file->seekg(position);
-    file->read(string, i);
+    file->seekg(pos);
+    file->read(buffer, n);
 }

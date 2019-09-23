@@ -1,17 +1,16 @@
+#include "CompressedBlock.h"
 #include <algorithm>
 #include <cmath>
 #include <climits>
 #include <bitset>
-#include "CompressedBlock.h"
 
-CompressedBlock::CompressedBlock(std::vector<uint32_t> vector) {
-    std::vector<uint32_t> numbers = vector;
-    reference = *std::min_element(numbers.begin(), numbers.end());
-    for (uint32_t i = 0; i < numbers.size(); i++)
-        numbers[i] -= reference;
-    uint32_t max = *std::max_element(numbers.begin(), numbers.end());
+CompressedBlock::CompressedBlock(std::vector<uint32_t> vec) {
+    reference = *std::min_element(vec.begin(), vec.end());
+    std::for_each(vec.begin(), vec.end(), [&](uint32_t &n) { n -= reference; });
+
+    uint32_t max = *std::max_element(vec.begin(), vec.end());
     bitsToRepr = (max == 0) ? 0 : ceil(log2(max));
-    compressNumbers(numbers);
+    compressNumbers(vec);
 }
 
 void CompressedBlock::write(std::ostream &stream) {
@@ -21,9 +20,9 @@ void CompressedBlock::write(std::ostream &stream) {
 
     for (uint y = 0; y < compressedNumbers.size(); y += CHAR_BIT) {
         std::string byte = compressedNumbers.substr(y, CHAR_BIT);
-        unsigned long ul = strtoul(byte.c_str(), NULL, 2);
-        uint8_t x = (uint8_t) ul;
-        stream.write(reinterpret_cast<const char *>(&x), sizeof(uint8_t));
+        unsigned long num = strtoul(byte.c_str(), NULL, 2);
+        char *buffer = reinterpret_cast<char *>(&num);
+        stream.write(buffer, sizeof(uint8_t));
     }
 }
 
