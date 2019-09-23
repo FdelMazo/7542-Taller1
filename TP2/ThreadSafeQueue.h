@@ -6,21 +6,16 @@
 #include "CompressedBlock.h"
 
 class ThreadSafeQueue {
-private:
-    std::condition_variable cond_var;
 public:
     explicit ThreadSafeQueue(int elemLimit);
-
-    ThreadSafeQueue();
-
     int limit;
-    std::queue<CompressedBlock> queue;
-
     void push(CompressedBlock block);
-
     CompressedBlock pop();
 
-    std::mutex lock;
+private:
+    std::condition_variable cond_var;
+    std::mutex m;
+    std::queue<CompressedBlock> queue;
 };
 
 

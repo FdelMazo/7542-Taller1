@@ -23,11 +23,14 @@ public:
     // Writes the compressed block to the given stream
     void write(std::ostream &stream);
 
-    bool isInvalid();
+    // A block isn't valid when it has no reference
+    // AKA, when it was created with an empty vector, for example
+    // (A frame of reference block without reference doesn't work...)
+    bool valid();
 
 private:
     // Reference value
-    uint32_t reference;
+    uint32_t reference = 0;
 
     // How many bits are needed to represent each number
     uint8_t bitsToRepr;
@@ -36,9 +39,7 @@ private:
     std::string compressedNumbers;
 
     // Method to pass from the vector of (small) numbers to a string of bits
-    void compressNumbers(std::vector<uint32_t> items);
-
-    bool invalid;
+    std::string compressNumbers(std::vector<uint32_t> vec);
 };
 
 

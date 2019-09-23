@@ -12,7 +12,7 @@ bool InputMonitor::eof(int i) {
 }
 
 void InputMonitor::read(char *buffer, size_t n, int pos) {
-    std::unique_lock<std::mutex> l(lock);
+    std::unique_lock<std::mutex> lock(m);
     file->seekg(pos);
     file->read(buffer, n);
 }

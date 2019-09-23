@@ -1,8 +1,7 @@
 #include <iostream>
 #include <vector>
-#include <algorithm>
+#include "Master.h"
 #include "Minion.h"
-#include "Writer.h"
 
 int main(int argc, char *argv[]) {
     if (argc != 6) return 1;
@@ -18,23 +17,21 @@ int main(int argc, char *argv[]) {
     InputMonitor input(&inputStream);
 
     std::vector<Minion *> minions(nThreads);
-    for (int i = 0; i < nThreads; i++) {
+    for (uint i = 0; i < minions.size(); i++) {
         minions[i] = new Minion(blockSize, queueLimit, &input);
     }
 
-    Writer writer(minions, &outputStream);
-    writer.start();
+    Master *master = new Master(minions, &outputStream);
+    master->start();
 
-    std::for_each(minions.begin(), minions.end(),
-                  [&](Minion *m) { m->start(); });
-    std::for_each(minions.begin(), minions.end(),
-                  [&](Minion *m) { m->join(); });
+    for (uint i = 0; i < minions.size(); i++) {
+        minions[i]->start();
+    }
 
-    writer.join();
+    delete master;
+    for (uint i = 0; i < minions.size(); i++) {
+        delete minions[i];
+    }
 
-    std::for_each(minions.begin(), minions.end(), [&](Minion *m) { delete m; });
-
-    inputStream.close();
-    outputStream.close();
     return 0;
 }

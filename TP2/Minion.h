@@ -24,7 +24,9 @@ public:
     // Constructor: initializes the attributes and increments minionCount
     Minion(int blockSize, int queueLimit, InputMonitor *input);
 
+    // Destructor: Joins the thread
     ~Minion();
+
     // As long as the file hasn't reach the end,
     //   and there are blocks inside the valid range:
     //      - Read blockSize numbers from the file

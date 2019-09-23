@@ -6,21 +6,11 @@
 
 // InputMonitor Class
 // This monitor takes care of having a civilized read from the input
-// Any thread who wants to read from the file must first acquire the lock
+// Any thread who wants to read from the file must first acquire the m
 
 class InputMonitor {
-private:
-    // The file lock to acquire
-    std::mutex lock;
-
-    // The resource everyone is racing to get to
-    std::ifstream *file;
-
-    // The file size, to know it's bounds
-    int fileSize;
-
 public:
-    // Constructor
+    // Creates a monitor for the inputStream
     explicit InputMonitor(std::ifstream *inputStream);
 
     // Returns if a position is valid or not (past the EOF)
@@ -28,6 +18,16 @@ public:
 
     // Read n bytes from file, starting in pos, and stores them in buffer
     void read(char *buffer, size_t n, int pos);
+
+private:
+    // The file m to acquire
+    std::mutex m;
+
+    // The resource everyone is racing to get to
+    std::ifstream *file;
+
+    // The file valid, to know it's bounds
+    int fileSize;
 };
 
 #endif //TP1_INPUTMONITOR_H

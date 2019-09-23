@@ -12,10 +12,6 @@ Minion::Minion(int blockSize, int queueLimit, InputMonitor *input) {
     minionCount++;
 }
 
-Minion::~Minion() {
-    delete this->queue;
-}
-
 void Minion::run() {
     int start = id * blockSize * sizeof(uint32_t);
     int step = minionCount * blockSize * sizeof(uint32_t);
@@ -25,16 +21,16 @@ void Minion::run() {
         queue->push(block);
     }
 
-    std::vector<uint32_t> bb(0, 0);
-    CompressedBlock block(bb);
-    queue->push(block);
+    // When the queue has all the minion blocks,
+    //     push an invalid block for the master to handle
+    std::vector<uint32_t> empty(0);
+    CompressedBlock nullBlock(empty);
+    queue->push(nullBlock);
 }
 
 std::vector<uint32_t> Minion::readFile(int positionToStart) {
     std::vector<uint32_t> blockNumbers(blockSize);
     int positionToRead = positionToStart;
-    int x = id;
-    x += 0;
     for (int i = 0; i < blockSize; i++) {
         if (!fileToRead->eof(positionToRead)) {
             uint32_t num;
@@ -50,3 +46,7 @@ std::vector<uint32_t> Minion::readFile(int positionToStart) {
     return blockNumbers;
 }
 
+Minion::~Minion() {
+    this->join();
+    delete this->queue;
+}

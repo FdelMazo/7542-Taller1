@@ -2,8 +2,7 @@
 
 Thread::Thread() {}
 
-Thread::~Thread() {
-}
+Thread::~Thread() {}
 
 void Thread::start() {
     this->thread = std::thread(&Thread::run, this);

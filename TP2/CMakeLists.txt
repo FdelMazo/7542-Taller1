@@ -21,17 +21,17 @@ add_custom_target(zip
         DEPENDS tests
         DEPENDS sercom
         COMMAND ${CMAKE_COMMAND} -E tar "cfv" "sercom.zip" --format=zip "*cpp" "*.h"
-)
+        )
 
 add_custom_target(tests
         DEPENDS lint_headers
         DEPENDS tp
         COMMAND ${PROJECT_SOURCE_DIR}/tests.sh
-)
+        )
 
 add_custom_target(sercom
         COMMAND make -f ${PROJECT_SOURCE_DIR}/SercomMakefile
-)
+        )
 
 add_executable(tp
         main.cpp
@@ -40,5 +40,5 @@ add_executable(tp
         Minion.cpp Minion.h
         InputMonitor.cpp InputMonitor.h
         ThreadSafeQueue.cpp ThreadSafeQueue.h
-        Writer.cpp Writer.h
-)
+        Master.cpp Master.h
+        )
