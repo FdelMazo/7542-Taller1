@@ -11,9 +11,9 @@
 class InputMonitor {
 public:
     // Creates a monitor for the inputStream
-    explicit InputMonitor(std::ifstream *inputStream);
+    explicit InputMonitor(std::istream *inputStream);
 
-    // Returns if a position is valid or not (past the EOF)
+// Returns if a position is valid or not (past the EOF)
     bool eof(int i);
 
     // Read n bytes from file, starting in pos, and stores them in buffer
@@ -24,7 +24,7 @@ private:
     std::mutex m;
 
     // The resource everyone is racing to get to
-    std::ifstream *file;
+    std::istream *file;
 
     // The file valid, to know it's bounds
     int fileSize;

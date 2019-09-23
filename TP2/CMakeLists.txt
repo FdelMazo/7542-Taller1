@@ -41,4 +41,4 @@ add_executable(tp
         InputMonitor.cpp InputMonitor.h
         ThreadSafeQueue.cpp ThreadSafeQueue.h
         Master.cpp Master.h
-        )
+        StreamHandler.cpp StreamHandler.h)

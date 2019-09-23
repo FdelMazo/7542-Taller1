@@ -8,13 +8,13 @@
 
 class Master : public Thread {
 public:
-    Master(std::vector<Minion *> vector, std::ofstream *pOfstream);
+    Master(std::vector<Minion *> vector, std::ostream *pOfstream);
 
     ~Master();
     void run();
 private:
     std::vector<ThreadSafeQueue *> queues;
-    std::ofstream *file;
+    std::ostream *file;
 };
 
 

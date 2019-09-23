@@ -1,6 +1,6 @@
 #include "InputMonitor.h"
 
-InputMonitor::InputMonitor(std::ifstream *inputStream) {
+InputMonitor::InputMonitor(std::istream *inputStream) {
     this->file = inputStream;
     file->seekg(0, std::ios::end);
     this->fileSize = file->tellg();
