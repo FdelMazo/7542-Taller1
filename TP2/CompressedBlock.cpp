@@ -4,6 +4,7 @@
 #include <climits>
 #include <bitset>
 #include <string>
+#include <vector>
 
 CompressedBlock::CompressedBlock(std::vector<uint32_t> vec) {
     if (!vec.size()) return;

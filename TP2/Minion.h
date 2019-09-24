@@ -21,7 +21,7 @@ class Minion : public Thread {
     static int minionCount;
 
 public:
-    // Constructor: initializes the attributes and increments minionCount
+    // Constructor: Initializes the attributes and increments minionCount
     Minion(int blockSize, int queueLimit, InputMonitor *input);
 
     // Destructor: Joins the thread

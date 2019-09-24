@@ -6,7 +6,7 @@
 #include <istream>
 #include <string>
 
-// CompressedBlock class
+// CompressedBlock Class
 // This class serves as a compressor for a vector of numbers
 // Compressor technique: frame of reference
 // It receives 4-byte numbers which are all similar in value, then:
@@ -20,13 +20,13 @@ public:
     // Everything needed for the block is stored in the members of the class
     explicit CompressedBlock(std::vector<uint32_t> vec);
 
-    // Writes the compressed block to the given stream
-    void write(std::ostream &stream);
-
     // A block isn't valid when it has no reference
     // AKA, when it was created with an empty vector, for example
     // (A frame of reference block without reference doesn't work...)
     bool valid();
+
+    // Writes the compressed block to the given stream
+    void write(std::ostream &stream);
 
 private:
     // Reference value

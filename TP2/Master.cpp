@@ -1,12 +1,17 @@
 #include "Master.h"
 #include "CompressedBlock.h"
+#include <vector>
 
 Master::Master(std::vector<Minion *> minions, std::ostream *output) {
-    this->file = output;
+    this->fileToWrite = output;
     this->queues = std::vector<ThreadSafeQueue *>(minions.size());
     for (uint i = 0; i < minions.size(); i++) {
         queues[i] = minions[i]->queue;
     }
+}
+
+Master::~Master() {
+    this->join();
 }
 
 void Master::run() {
@@ -15,11 +20,8 @@ void Master::run() {
         for (uint i = 0; i < queues.size(); i++) {
             CompressedBlock block = queues[i]->pop();
             keepWriting &= block.valid();
-            block.write(*file);
+            block.write(*fileToWrite);
         }
     }
 }
 
-Master::~Master() {
-    this->join();
-}

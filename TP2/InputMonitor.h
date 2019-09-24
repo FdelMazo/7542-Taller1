@@ -13,21 +13,21 @@ public:
     // Creates a monitor for the inputStream
     explicit InputMonitor(std::istream *inputStream);
 
-// Returns if a position is valid or not (past the EOF)
+    // Returns if a position is valid or not (past the EOF)
     bool eof(int i);
 
     // Read n bytes from file, starting in pos, and stores them in buffer
     void read(char *buffer, size_t n, int pos);
 
 private:
-    // The file m to acquire
-    std::mutex m;
-
     // The resource everyone is racing to get to
     std::istream *file;
 
     // The file valid, to know it's bounds
     int fileSize;
+
+    // The mutex for the lock
+    std::mutex m;
 };
 
 #endif //TP1_INPUTMONITOR_H

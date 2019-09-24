@@ -12,6 +12,11 @@ Minion::Minion(int blockSize, int queueLimit, InputMonitor *input) {
     minionCount++;
 }
 
+Minion::~Minion() {
+    this->join();
+    delete this->queue;
+}
+
 void Minion::run() {
     int start = id * blockSize * sizeof(uint32_t);
     int step = minionCount * blockSize * sizeof(uint32_t);
@@ -44,9 +49,4 @@ std::vector<uint32_t> Minion::readFile(int positionToStart) {
         positionToRead += sizeof(uint32_t);
     }
     return blockNumbers;
-}
-
-Minion::~Minion() {
-    this->join();
-    delete this->queue;
 }
