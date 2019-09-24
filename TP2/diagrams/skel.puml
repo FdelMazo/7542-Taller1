@@ -1,0 +1,51 @@
+@startuml
+class CompressedBlock {
+    reference
+    bitsToRepresent
+    compressedNumbers
+}
+
+abstract class Thread {
+    start()
+    join()
+    {abstract} run()
+}
+
+class Minion {
+    run()
+    threadSafeQueue
+    streamToRead*
+    id
+}
+
+class Master {
+    run()
+    threadSafeQueues*
+    streamTowrite*
+}
+
+class ThreadSafeQueue {
+    pop()
+    push()
+    elemLimit
+}
+
+class InputMonitor {
+    read()
+    stream
+}
+
+class StreamHandler {
+    getInput()
+    getOutput()
+}
+
+Thread <|-down- Minion
+Thread <|-down- Master
+Minion *-- ThreadSafeQueue
+Master <-- ThreadSafeQueue
+Minion -- CompressedBlock
+Minion <-right- InputMonitor
+InputMonitor <-- StreamHandler
+
+@enduml

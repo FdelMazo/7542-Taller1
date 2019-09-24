@@ -32,8 +32,8 @@ private:
     // Every minions queue, which the minion fills
     std::vector<ThreadSafeQueue *> queues;
 
-    // Output file, where the block will be written
-    std::ostream *fileToWrite;
+    // Output stream, where the block will be written
+    std::ostream *streamTowrite;
 };
 
 

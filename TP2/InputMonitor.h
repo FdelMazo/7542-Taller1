@@ -21,10 +21,10 @@ public:
 
 private:
     // The resource everyone is racing to get to
-    std::istream *file;
+    std::istream *stream;
 
-    // The file valid, to know it's bounds
-    int fileSize;
+    // The file size, to know it's bounds
+    int streamSize;
 
     // The mutex for the lock
     std::mutex m;

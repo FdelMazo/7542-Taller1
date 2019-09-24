@@ -7,7 +7,7 @@ int Minion::minionCount = 0;
 Minion::Minion(int blockSize, int queueLimit, InputMonitor *input) {
     this->blockSize = blockSize;
     this->id = minionCount;
-    this->fileToRead = input;
+    this->streamToRead = input;
     this->queue = new ThreadSafeQueue(queueLimit);
     minionCount++;
 }
@@ -20,7 +20,7 @@ Minion::~Minion() {
 void Minion::run() {
     int start = id * blockSize * sizeof(uint32_t);
     int step = minionCount * blockSize * sizeof(uint32_t);
-    for (uint i = start; !fileToRead->eof(i); i += step) {
+    for (uint i = start; !streamToRead->eof(i); i += step) {
         std::vector<uint32_t> blockNumbers = readFile(i);
         CompressedBlock block(blockNumbers);
         queue->push(block);
@@ -37,10 +37,10 @@ std::vector<uint32_t> Minion::readFile(int positionToStart) {
     std::vector<uint32_t> blockNumbers(blockSize);
     int positionToRead = positionToStart;
     for (int i = 0; i < blockSize; i++) {
-        if (!fileToRead->eof(positionToRead)) {
+        if (!streamToRead->eof(positionToRead)) {
             uint32_t num;
             char *buffer = reinterpret_cast<char *>(&num);
-            fileToRead->read(buffer, sizeof(uint32_t), positionToRead);
+            streamToRead->read(buffer, sizeof(uint32_t), positionToRead);
             blockNumbers[i] = be32toh(num);
         } else {
             // Padding: fill the block with the last number read

@@ -45,9 +45,9 @@ private:
     int blockSize;
 
     // The input from which the minion will read numbers
-    InputMonitor *fileToRead;
+    InputMonitor *streamToRead;
 
-    // Read blockSize numbers from fileToRead, starting from position start
+    // Read blockSize numbers from streamToRead, starting from position start
     std::vector<uint32_t> readFile(int start);
 };
 

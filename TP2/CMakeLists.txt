@@ -13,6 +13,11 @@ set(CPPLINT_FILTER_OPTIONS
         )
 set(CMAKE_CXX_CPPLINT "cpplint;--extensions=h,hpp,c,cpp;--filter=${CPPLINT_FILTER_OPTIONS}")
 
+add_custom_target(informe
+        COMMAND plantuml diagrams/*.puml
+        COMMAND pandoc README.md -H header.tex -o Informe.pdf --pdf-engine=xelatex
+)
+
 add_custom_target(lint_headers
         COMMAND cpplint --filter=${CPPLINT_FILTER_OPTIONS} "*.h"
         )
