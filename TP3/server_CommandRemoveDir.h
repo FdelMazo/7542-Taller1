@@ -6,9 +6,9 @@
 
 
 class CommandRemoveDir : public Command {
-    const int SUCCESS_RC = 250;
+    static const int SUCCESS_RC = 250;
     const std::string SUCCESS_MSG = "rmdSuccess";
-    const int FAILED_RC = 550;
+    static const int FAILED_RC = 550;
     const std::string FAILED_MSG = "rmdFailed";
 
 public:

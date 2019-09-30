@@ -5,13 +5,13 @@
 #include "server_HoneyPot.h"
 
 class Command {
-    const int NOT_LOGGED_RC = 530;
+    static const int NOT_LOGGED_RC = 530;
     const std::string NOT_LOGGED_MSG = "clientNotLogged";
 
-    const int LOGIN_RC = 230;
+    static const int LOGIN_RC = 230;
     const std::string LOGIN_MSG = "loginSuccess";
 
-    const int UNKNOWN_COMMAND_RC = 500;
+    static const int UNKNOWN_COMMAND_RC = 500;
     const std::string UNKNOWN_COMMAND_MSG = "unknownCommand";
 protected:
     HoneyPot *pot;

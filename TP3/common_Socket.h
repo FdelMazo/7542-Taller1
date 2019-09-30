@@ -5,10 +5,10 @@
 #include <sys/types.h>
 
 class Socket {
-//    static const int FAMILY = AF_INET;
-//    static const int SOCK_TYPE = SOCK_STREAM;
-//    static const int CLIENT_FLAGS = 0;
-//    static const int SERVER_FLAGS = AI_PASSIVE;
+//    static static const int FAMILY = AF_INET;
+//    static static const int SOCK_TYPE = SOCK_STREAM;
+//    static static const int CLIENT_FLAGS = 0;
+//    static static const int SERVER_FLAGS = AI_PASSIVE;
 
 public:
     Socket();

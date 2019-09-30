@@ -13,18 +13,18 @@ class HoneyPot {
     std::map<std::string, std::string> config;
 
 public:
-    const int UNKNOWN_COMMAND_RC = 500;
+    static const int UNKNOWN_COMMAND_RC = 500;
     const std::string UNKNOWN_COMMAND_MSG = "unknownCommand";
-    const int NEW_CLIENT_RC = 230;
+    static const int NEW_CLIENT_RC = 230;
     const std::string NEW_CLIENT_MSG = "newClient";
-    const int QUIT_RC = 221;
+    static const int QUIT_RC = 221;
     const std::string QUIT_MSG = "quitSuccess";
 
     void setUser(std::string user);
 
     bool logged();
 
-    explicit HoneyPot(const std::string configFileName);
+    explicit HoneyPot(std::string configFileName);
 
     std::string runCommand(std::string command, std::string arg);
 

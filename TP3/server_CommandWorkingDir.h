@@ -5,7 +5,7 @@
 #include "server_Command.h"
 
 class CommandWorkingDir : public Command {
-    const int RC = 257;
+    static const int RC = 257;
     const std::string MSG = "currentDirectoryMsg";
 public:
     using Command::Command;

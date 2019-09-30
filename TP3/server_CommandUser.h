@@ -5,7 +5,7 @@
 #include "server_Command.h"
 
 class CommandUser : public Command {
-    const int RC = 331;
+    static const int RC = 331;
     const std::string MSG = "passRequired";
 
 public:

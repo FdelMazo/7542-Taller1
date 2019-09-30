@@ -40,8 +40,8 @@ add_executable(server
         server_CommandSystemInfo.cpp server_CommandSystemInfo.h
         server_CommandListDirs.cpp server_CommandListDirs.h
         server_CommandMakeDir.cpp server_CommandMakeDir.h
-        server_CommandRemoveDir.cpp server_CommandRemoveDir.h common_Socket.cpp common_Socket.h server_ClientProxy.cpp server_ClientProxy.h)
+        server_CommandRemoveDir.cpp server_CommandRemoveDir.h common_Socket.cpp common_Socket.h server_Server.cpp server_Server.h common_CommunicationProtocol.cpp common_CommunicationProtocol.h)
 
 add_executable(client
         client_main.cpp
-        client_ServerProxy.cpp client_ServerProxy.h common_Socket.cpp common_Socket.h)
+        client_Client.cpp client_Client.h common_Socket.cpp common_Socket.h common_CommunicationProtocol.cpp common_CommunicationProtocol.h)

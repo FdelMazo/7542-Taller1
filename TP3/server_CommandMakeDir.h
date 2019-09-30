@@ -5,9 +5,9 @@
 #include "server_Command.h"
 
 class CommandMakeDir : public Command {
-    const int SUCCESS_RC = 257;
+    static const int SUCCESS_RC = 257;
     const std::string SUCCESS_MSG = "mkdSuccess";
-    const int FAILED_RC = 550;
+    static const int FAILED_RC = 550;
     const std::string FAILED_MSG = "mkdFailed";
 public:
     using Command::Command;

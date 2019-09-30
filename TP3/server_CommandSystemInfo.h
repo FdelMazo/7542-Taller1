@@ -5,7 +5,7 @@
 #include "server_Command.h"
 
 class CommandSystemInfo : public Command {
-    const int RC = 215;
+    static const int RC = 215;
     const std::string MSG = "systemInfo";
 public:
     using Command::Command;

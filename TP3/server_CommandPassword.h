@@ -5,7 +5,7 @@
 #include "server_Command.h"
 
 class CommandPassword : public Command {
-    const int RC = 530;
+    static const int RC = 530;
     const std::string MSG = "loginFailed";
 public:
     using Command::Command;
