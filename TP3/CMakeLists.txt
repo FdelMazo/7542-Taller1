@@ -30,9 +30,18 @@ add_custom_target(sercom
         )
 
 add_executable(server
-        common_main.cpp
-        server_HoneyPot.cpp server_HoneyPot.h server_Command.cpp server_Command.h server_CommandUser.cpp server_CommandUser.h server_CommandHelp.cpp server_CommandHelp.h server_CommandWorkingDir.cpp server_CommandWorkingDir.h server_CommandPassword.cpp server_CommandPassword.h server_CommandSystemInfo.cpp server_CommandSystemInfo.h server_CommandListDirs.cpp server_CommandListDirs.h server_CommandMakeDir.cpp server_CommandMakeDir.h server_CommandRemoveDir.cpp server_CommandRemoveDir.h)
+        server_main.cpp
+        server_HoneyPot.cpp server_HoneyPot.h
+        server_Command.cpp server_Command.h
+        server_CommandUser.cpp server_CommandUser.h
+        server_CommandHelp.cpp server_CommandHelp.h
+        server_CommandWorkingDir.cpp server_CommandWorkingDir.h
+        server_CommandPassword.cpp server_CommandPassword.h
+        server_CommandSystemInfo.cpp server_CommandSystemInfo.h
+        server_CommandListDirs.cpp server_CommandListDirs.h
+        server_CommandMakeDir.cpp server_CommandMakeDir.h
+        server_CommandRemoveDir.cpp server_CommandRemoveDir.h common_Socket.cpp common_Socket.h server_ClientProxy.cpp server_ClientProxy.h)
 
 add_executable(client
-        common_main.cpp
-        )
+        client_main.cpp
+        client_ServerProxy.cpp client_ServerProxy.h common_Socket.cpp common_Socket.h)
