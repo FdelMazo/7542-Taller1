@@ -5,12 +5,12 @@
 #include "server_Command.h"
 
 class CommandWorkingDir : public Command {
-    static const int RC = 257;
+    const int RC = 257;
     const std::string MSG = "currentDirectoryMsg";
 public:
     using Command::Command;
 
-    std::string run(std::string dummyArg, std::string *username, std::string *password, bool *pBoolean) override;
+    std::string run(std::string dummyArg, std::string *username, std::string *password, bool *pBoolean);
 };
 
 

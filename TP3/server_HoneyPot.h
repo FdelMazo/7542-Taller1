@@ -13,10 +13,8 @@ class HoneyPot {
 public:
     static const int UNKNOWN_COMMAND_RC = 500;
     const std::string UNKNOWN_COMMAND_MSG = "unknownCommand";
-    static const int NEW_CLIENT_RC = 230;
+    static const int NEW_CLIENT_RC = 220;
     const std::string NEW_CLIENT_MSG = "newClient";
-    static const int QUIT_RC = 221;
-    const std::string QUIT_MSG = "quitSuccess";
 
     bool logged(std::string *username, std::string *password);
 

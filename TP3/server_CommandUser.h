@@ -7,7 +7,6 @@
 class CommandUser : public Command {
     static const int RC = 331;
     const std::string MSG = "passRequired";
-
 public:
     using Command::Command;
 
