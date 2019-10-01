@@ -10,12 +10,12 @@ class Client {
 public:
     Client(char *host, char *port);
 
-    void sendRequest(std::string request);
-    Socket skt;
-
-    std::string getResponse();
-
     void run();
+
+private:
+    Socket skt;
+    void sendRequest(std::string request);
+    std::string getResponse();
 };
 
 

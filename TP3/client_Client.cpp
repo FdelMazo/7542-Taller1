@@ -8,14 +8,6 @@ Client::Client(char *host, char *port) {
     this->skt = socket;
 }
 
-void Client::sendRequest(std::string request) {
-    CommunicationProtocol::send(this->skt, request);
-}
-
-std::string Client::getResponse() {
-    return CommunicationProtocol::receive(this->skt);
-}
-
 void Client::run() {
     std::string greeting = getResponse();
     std::cout << greeting;
@@ -28,4 +20,12 @@ void Client::run() {
         if (response.empty()) break;
         std::cout << response;
     }
+}
+
+void Client::sendRequest(std::string request) {
+    CommunicationProtocol::send(this->skt, request);
+}
+
+std::string Client::getResponse() {
+    return CommunicationProtocol::receive(this->skt);
 }
