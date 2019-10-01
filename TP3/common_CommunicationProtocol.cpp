@@ -6,14 +6,14 @@ std::string CommunicationProtocol::receive(Socket skt) {
     char c = 0;
     while (true) {
         skt.recvMsg(reinterpret_cast<void *>(&c), 1);
-        if (c == '\n') break;
+        if (c == '\0') break;
         message += c;
     }
-    std::replace(message.begin(), message.end(), '\t', '\n');
     return message;
 }
 
 void CommunicationProtocol::send(Socket skt, std::string message) {
+    message += '\0';
     for (char &c : message) {
         skt.sendMsg(reinterpret_cast<const void *>(&c), 1);
     }

@@ -9,10 +9,9 @@ int main(int argc, char *argv[]) {
     while (true) {
         std::string request;
         getline(std::cin, request);
-        request+='\n';
         client.sendRequest(request);
         std::string response = client.getResponse();
-        std::cout << response << '\n';
+        std::cout << response;
     }
     return 0;
 }

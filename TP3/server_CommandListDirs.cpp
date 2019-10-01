@@ -10,7 +10,5 @@ std::string CommandListDirs::run(std::string dummyArg) {
         stream << DUMMY_LS << " \"" << dir << "\"" << '\n';
     }
     stream << response(END_RC, pot->getMsg(END_MSG));
-    std::string s = stream.str();
-    std::replace(s.begin(), s.end() - 1, '\n', '\t');
-    return s;
+    return stream.str();
 }
