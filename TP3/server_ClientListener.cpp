@@ -7,7 +7,7 @@ void ClientListener::run() {
         Socket clientSkt = this->serverSkt.acceptConnection();
         std::cerr << "New Client!\n";
         ClientTalker *client = new ClientTalker(this->pot, clientSkt);
-        client->run();
+        client->start();
     }
 }
 

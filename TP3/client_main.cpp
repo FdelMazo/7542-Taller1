@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
         request+='\n';
         client.sendRequest(request);
         std::string response = client.getResponse();
-        std::cout << response;
+        std::cout << response << '\n';
     }
     return 0;
 }

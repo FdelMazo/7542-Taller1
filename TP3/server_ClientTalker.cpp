@@ -14,6 +14,7 @@ std::string ClientTalker::processRequest(std::string request) {
     while (getline(stream, buff, ' ')) {
         command.emplace_back(buff);
     }
+    if (command.size() == 1) command.emplace_back("");
     return pot->runCommand(command[0], command[1]);
 }
 
@@ -28,7 +29,9 @@ ClientTalker::ClientTalker(HoneyPot *hpot, Socket socket) {
 }
 
 void ClientTalker::run() {
-    std::string request = receiveRequest(this->skt);
-    std::string response = processRequest(request);
-    sendResponse(this->skt, response);
+    while (true) {
+        std::string request = receiveRequest(this->skt);
+        std::string response = processRequest(request);
+        sendResponse(this->skt, response);
+    }
 }

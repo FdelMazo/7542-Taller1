@@ -1,16 +1,15 @@
-//
-// Created by delmazo on 9/30/19.
-//
-
+#include <algorithm>
 #include "common_CommunicationProtocol.h"
 
 std::string CommunicationProtocol::receive(Socket skt) {
     std::string message;
     char c = 0;
-    while (c != '\n') {
+    while (true) {
         skt.recvMsg(reinterpret_cast<void *>(&c), 1);
+        if (c == '\n') break;
         message += c;
     }
+    std::replace(message.begin(), message.end(), '\t', '\n');
     return message;
 }
 
