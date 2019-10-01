@@ -1,0 +1,32 @@
+\usepackage[margin=2cm,a4paper]{geometry}
+\usepackage{framed,fancyhdr,xcolor,fvextra,newunicodechar, float}
+
+% Declara simbolos de terminal zsh para poder copypastear desde la terminal
+\newunicodechar{➜}{\ensuremath{\rightarrow}}
+\newunicodechar{✗}{\ensuremath{\triangle}}
+\newunicodechar{✓}{\ensuremath{\triangle}}
+
+% Sacar 'Figure 1:' de las imagenes
+\usepackage[labelformat=empty]{caption}
+
+\newcommand{\nombre}{Federico del Mazo}
+\newcommand{\materia}{[75.42] Taller de Programación I}
+\newcommand{\cuatri}{2019c2}
+\newcommand{\trabajo}{TP3: FTP Pot}
+
+\pagestyle{fancy}
+\fancyhead[L]{\materia  \\ \trabajo}
+\fancyhead[R]{\nombre \\ \cuatri}
+
+% Hace letra monoespaciada en magenta
+\let\OldTexttt\texttt
+\renewcommand{\texttt}[1]{\OldTexttt{\color{magenta}{#1}}}    
+
+% Siempre que se puede, posicionar las imagenes en el lugar que se las indica
+\let\origfigure\figure
+\let\endorigfigure\endfigure
+\renewenvironment{figure}[1][2] {
+    \expandafter\origfigure\expandafter[H]
+} {
+    \endorigfigure
+}

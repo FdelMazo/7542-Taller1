@@ -4,7 +4,7 @@
 
 #include "server_HoneyPot.h"
 #include "common_Socket.h"
-#include "common_Thread.h"
+#include "server_Thread.h"
 
 class ClientTalker : public Thread {
 

@@ -13,6 +13,12 @@ set(CPPLINT_FILTER_OPTIONS
         )
 set(CMAKE_CXX_CPPLINT "cpplint;--extensions=h,hpp,c,cpp;--filter=${CPPLINT_FILTER_OPTIONS}")
 
+add_custom_target(informe
+        COMMAND plantuml diagrams/*.puml
+        COMMAND convert diagrams/server.png -rotate 90 diagrams/server.png
+        COMMAND pandoc README.md -H header.tex -o Informe.pdf --pdf-engine=xelatex
+        )
+
 add_custom_target(lint_headers
         COMMAND cpplint --filter=${CPPLINT_FILTER_OPTIONS} "*.h"
         )
@@ -32,6 +38,7 @@ add_custom_target(sercom
 add_executable(server
         server_main.cpp
         server_HoneyPot.cpp server_HoneyPot.h
+        server_DirectoryList.h server_DirectoryList.cpp
         server_Command.cpp server_Command.h
         server_CommandUser.cpp server_CommandUser.h
         server_CommandHelp.cpp server_CommandHelp.h
@@ -41,11 +48,17 @@ add_executable(server
         server_CommandListDirs.cpp server_CommandListDirs.h
         server_CommandMakeDir.cpp server_CommandMakeDir.h
         server_CommandRemoveDir.cpp server_CommandRemoveDir.h
-        common_Socket.cpp common_Socket.h server_Server.cpp server_Server.h
+        common_Socket.cpp common_Socket.h
+        server_Server.cpp server_Server.h
         common_CommunicationProtocol.cpp common_CommunicationProtocol.h
-        common_Thread.cpp common_Thread.cpp server_ClientListener.cpp server_ClientListener.h server_ClientTalker.cpp server_ClientTalker.h server_CommandQuit.cpp server_CommandQuit.h)
+        server_Thread.cpp server_Thread.h
+        server_ClientListener.cpp server_ClientListener.h
+        server_ClientTalker.cpp server_ClientTalker.h
+        server_CommandQuit.cpp server_CommandQuit.h)
 
 add_executable(client
         client_main.cpp
-        client_Client.cpp client_Client.h common_Socket.cpp common_Socket.h common_CommunicationProtocol.cpp common_CommunicationProtocol.h
-        common_Thread.cpp common_Thread.cpp)
+        client_Client.cpp client_Client.h
+        common_Socket.cpp common_Socket.h
+        common_CommunicationProtocol.cpp common_CommunicationProtocol.h
+        )

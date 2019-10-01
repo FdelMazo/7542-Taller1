@@ -1,0 +1,63 @@
+@startuml
+class Server {
+    run() [wait for exit]
+    HoneyPot pot
+    ClientListener listener
+    Socket skt
+}
+
+class Socket {
+    int fd
+    send()
+    recv()
+}
+
+class ClientListener {
+    run() [accept clients]
+    ClientTalker* clients
+}
+
+class ClientTalker {
+    run() [respond commands]
+    Socket peerskt
+}
+
+class Thread {
+    start() [call run]
+    join()
+}
+
+Thread <|-- ClientTalker
+Thread <|-left- ClientListener
+class HoneyPot {
+    DirectoryList dirList
+    mkdir(dir)
+    rmdir(dir)
+}
+class DirectoryList
+
+class Command {
+    run()
+}
+class CommandListDirs {
+    run() <<override>
+}
+class CommandMakeDir {
+    run() <<override>
+}
+class CommandRemoveDir {
+    run() <<override>
+}
+
+Command <|-- CommandListDirs
+Command <|-- CommandMakeDir
+Command <|-- CommandRemoveDir
+
+HoneyPot <-- Command
+Server *-right- HoneyPot
+Server *-- Socket
+ClientTalker *-right- Socket
+Server *-- ClientListener
+ClientListener *-- ClientTalker : *
+HoneyPot *-- DirectoryList
+@enduml
