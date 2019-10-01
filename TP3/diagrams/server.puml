@@ -3,7 +3,6 @@ class Server {
     run() [wait for exit]
     HoneyPot pot
     ClientListener listener
-    Socket skt
 }
 
 class Socket {
@@ -12,52 +11,49 @@ class Socket {
     recv()
 }
 
-class ClientListener {
+class ClientListener <Thread> {
     run() [accept clients]
     ClientTalker* clients
+    Socket skt
 }
 
-class ClientTalker {
+class ClientTalker <Thread> {
     run() [respond commands]
     Socket peerskt
+    user
+    passwd
 }
 
-class Thread {
-    start() [call run]
-    join()
-}
-
-Thread <|-- ClientTalker
-Thread <|-left- ClientListener
 class HoneyPot {
     DirectoryList dirList
-    mkdir(dir)
-    rmdir(dir)
+    addDir(dir)
+    eraseDir(dir)
 }
-class DirectoryList
 
+class DirectoryList
 class Command {
     run()
 }
 class CommandListDirs {
-    run() <<override>
+    run() <override>
 }
 class CommandMakeDir {
-    run() <<override>
+    run() <override>
 }
 class CommandRemoveDir {
-    run() <<override>
+    run() <override>
 }
 
 Command <|-- CommandListDirs
 Command <|-- CommandMakeDir
 Command <|-- CommandRemoveDir
 
-HoneyPot <-- Command
 Server *-right- HoneyPot
-Server *-- Socket
-ClientTalker *-right- Socket
+ClientListener *-- Socket
+ClientTalker *-left- Socket
+HoneyPot <-- ClientTalker
+Command <-- ClientTalker
 Server *-- ClientListener
 ClientListener *-- ClientTalker : *
-HoneyPot *-- DirectoryList
+HoneyPot *-right- DirectoryList
 @enduml

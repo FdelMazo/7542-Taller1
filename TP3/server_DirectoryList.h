@@ -7,14 +7,15 @@
 #include <mutex>
 
 class DirectoryList {
-    std::set<std::string> dirlist = {};
-    std::mutex m;
 public:
-    bool rmDir(std::string basicString);
+    bool addDir(std::string dirName);
 
+    bool eraseDir(std::string dirName);
     std::set<std::string> get();
 
-    bool mkDir(std::string dirName);
+private:
+    std::set<std::string> dirlist = {};
+    std::mutex m;
 };
 
 

@@ -1,6 +1,14 @@
 #include "server_DirectoryList.h"
 
-bool DirectoryList::rmDir(std::string dirName) {
+bool DirectoryList::addDir(std::string dirName) {
+    std::unique_lock<std::mutex> lock(m);
+    if (dirlist.count(dirName))
+        return false;
+    dirlist.insert(dirName);
+    return true;
+}
+
+bool DirectoryList::eraseDir(std::string dirName) {
     std::unique_lock<std::mutex> lock(m);
     if (!dirlist.count(dirName))
         return false;
@@ -10,12 +18,4 @@ bool DirectoryList::rmDir(std::string dirName) {
 
 std::set<std::string> DirectoryList::get() {
     return dirlist;
-}
-
-bool DirectoryList::mkDir(std::string dirName) {
-    std::unique_lock<std::mutex> lock(m);
-    if (dirlist.count(dirName))
-        return false;
-    dirlist.insert(dirName);
-    return true;
 }

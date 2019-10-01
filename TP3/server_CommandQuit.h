@@ -5,12 +5,10 @@
 #include "server_Command.h"
 
 class CommandQuit : public Command {
-//    static const int RC = 221;
-//    const std::string MSG = "quitSuccess";
 public:
     using Command::Command;
 
-    std::string run(std::string dummyArg, std::string *username, std::string *password, bool *pBoolean);
+    std::string run(std::string dummyArg) override;
 };
 
 

@@ -54,7 +54,7 @@ add_executable(server
         server_Thread.cpp server_Thread.h
         server_ClientListener.cpp server_ClientListener.h
         server_ClientTalker.cpp server_ClientTalker.h
-        server_CommandQuit.cpp server_CommandQuit.h)
+        server_CommandQuit.cpp server_CommandQuit.h server_CommandUnknown.cpp server_CommandUnknown.h)
 
 add_executable(client
         client_main.cpp

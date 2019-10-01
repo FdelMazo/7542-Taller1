@@ -11,20 +11,23 @@ class ClientTalker : public Thread {
 public:
     ClientTalker(HoneyPot *hpot, Socket socket);
 
-    ~ClientTalker();
-    std::string processRequest(std::string request);
+    ~ClientTalker() override;
+
+    void run() override;
+
+private:
+    HoneyPot *pot;
+    Socket peerskt;
+    std::string *user;
+    std::string *passwd;
 
     std::string receiveRequest(Socket clientSkt);
 
+    std::string processRequest(std::string request);
+
     void sendResponse(Socket clientSkt, std::string basicString);
 
-    void run();
-
-    HoneyPot *pot;
-    Socket skt;
-    bool *alive;
-    std::string *username;
-    std::string *password;
+    std::string runCommand(std::string commandName, std::string arg);
 };
 
 

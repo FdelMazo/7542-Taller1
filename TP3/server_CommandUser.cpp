@@ -1,9 +1,8 @@
 #include "server_CommandUser.h"
 
-std::string CommandUser::run(std::string userName,
-                             std::string *username, std::string *password, bool *pBoolean) {
+std::string CommandUser::run(std::string userName) {
     *username = userName;
-    if (pot->logged(username, password)) return loginSuccessResponse();
-//    return response(RC, pot->getMsg(MSG));
-    return response(331, pot->getMsg("passRequired"));
+    if (pot->validCredentials(username, password))
+        return loginSuccessResponse();
+    return response(331, pot->getAnswer("passRequired"));
 }

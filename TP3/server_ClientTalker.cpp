@@ -3,6 +3,34 @@
 #include <iostream>
 #include "server_ClientTalker.h"
 #include "common_CommunicationProtocol.h"
+#include "server_Command.h"
+
+ClientTalker::ClientTalker(HoneyPot *hpot, Socket socket) {
+    this->pot = hpot;
+    this->peerskt = socket;
+    this->user = new std::string("");
+    this->passwd = new std::string("");
+}
+
+ClientTalker::~ClientTalker() {
+    delete this->user;
+    delete this->passwd;
+    std::cerr << "Farewell Client!\n";
+    this->peerskt.close();
+    this->join();
+}
+
+void ClientTalker::run() {
+    std::string greeting = Command::acceptClient(this->pot);
+    sendResponse(this->peerskt, greeting);
+    while (true) {
+        std::string request = receiveRequest(this->peerskt);
+        if (request.empty())
+            break;
+        std::string response = processRequest(request);
+        sendResponse(this->peerskt, response);
+    }
+}
 
 std::string ClientTalker::receiveRequest(Socket clientSkt) {
     return CommunicationProtocol::receive(clientSkt);
@@ -15,7 +43,7 @@ std::string ClientTalker::processRequest(std::string request) {
     std::string arg;
     std::getline(stream, arg);
     if (arg.empty()) arg = "";
-    return pot->runCommand(command, arg, this->username, this->password, this->alive);
+    return runCommand(command, arg);
 }
 
 void ClientTalker::sendResponse(Socket clientSkt, std::string response) {
@@ -23,33 +51,9 @@ void ClientTalker::sendResponse(Socket clientSkt, std::string response) {
 }
 
 
-ClientTalker::ClientTalker(HoneyPot *hpot, Socket socket) {
-    this->pot = hpot;
-    this->skt = socket;
-    this->alive = new bool(true);
-    this->username = new std::string("");
-    this->password = new std::string("");
-}
-
-void ClientTalker::run() {
-    std::string greeting = this->pot->acceptClient();
-    sendResponse(this->skt, greeting);
-    while (*alive) {
-        std::string request = receiveRequest(this->skt);
-        if (request.empty()) {
-            *alive = false;
-            break;
-        }
-        std::string response = processRequest(request);
-        sendResponse(this->skt, response);
-    }
-    std::cerr << "Farewell Client!\n";
-}
-
-ClientTalker::~ClientTalker() {
-    delete this->alive;
-    delete this->username;
-    delete this->password;
-    this->skt.close();
-    this->join();
+std::string ClientTalker::runCommand(std::string commandName, std::string arg) {
+    std::unique_ptr<Command> command =
+            Command::getCommand(commandName,
+                                this->pot, this->user, this->passwd);
+    return command->run(arg);
 }

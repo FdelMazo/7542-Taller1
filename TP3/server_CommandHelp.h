@@ -5,12 +5,10 @@
 #include "server_Command.h"
 
 class CommandHelp : public Command {
-//    static const int RC = 214;
-//    const std::string MSG = "commands";
 public:
     using Command::Command;
 
-    std::string run(std::string dummyArg, std::string *username, std::string *password, bool *pBoolean);
+    std::string run(std::string dummyArg) override;
 };
 
 

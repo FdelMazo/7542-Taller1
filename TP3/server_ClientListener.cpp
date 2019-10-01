@@ -1,6 +1,22 @@
 #include <iostream>
 #include "server_ClientListener.h"
 
+ClientListener::ClientListener(char *port, HoneyPot *hpot) {
+    Socket serverSocket;
+    serverSocket.bind(port);
+    this->pot = hpot;
+    this->serverSkt = serverSocket;
+    this->serverSkt.listen();
+}
+
+ClientListener::~ClientListener() {
+    for (ClientTalker *c : clients) {
+        delete c;
+    }
+    this->serverSkt.close();
+    this->join();
+}
+
 void ClientListener::run() {
     while (true) {
         Socket clientSkt;
@@ -15,18 +31,4 @@ void ClientListener::run() {
         clients.push_back(client);
         client->start();
     }
-}
-
-ClientListener::ClientListener(Socket skt, HoneyPot *hpot) {
-    this->pot = hpot;
-    this->serverSkt = skt;
-    this->serverSkt.listen();
-}
-
-ClientListener::~ClientListener() {
-    for (ClientTalker *c : clients) {
-        delete c;
-    }
-    this->serverSkt.close();
-    this->join();
 }

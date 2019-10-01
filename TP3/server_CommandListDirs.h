@@ -5,16 +5,10 @@
 #include "server_Command.h"
 
 class CommandListDirs : public Command {
-//    const std::string DUMMY_LS = "drwxrwxrwx 0 1000 1000 4096 Sep 24 12:34";
-//
-//    static const int BEGIN_RC = 150;
-//    const std::string BEGIN_MSG = "listBegin";
-//    static const int END_RC = 226;
-//    const std::string END_MSG = "listEnd";
 public:
     using Command::Command;
 
-    std::string run(std::string dummyArg, std::string *username, std::string *password, bool *pBoolean);
+    std::string run(std::string dummyArg) override;
 };
 
 

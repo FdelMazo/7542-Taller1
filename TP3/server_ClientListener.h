@@ -10,14 +10,15 @@
 
 class ClientListener : public Thread {
 public:
-    void run();
+    ClientListener(char *skt, HoneyPot *pot);
 
-    ~ClientListener();
+    ~ClientListener() override;
+
+    void run() override;
+
+private:
     HoneyPot *pot;
     Socket serverSkt;
-
-    ClientListener(Socket skt, HoneyPot *pot);
-
     std::vector<ClientTalker *> clients;
 };
 
