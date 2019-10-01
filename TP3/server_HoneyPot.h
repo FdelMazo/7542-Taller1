@@ -7,8 +7,6 @@
 #include <map>
 
 class HoneyPot {
-    std::string user = "";
-    std::string passwd = "";
     std::set<std::string> dirList = {};
     std::map<std::string, std::string> config;
 
@@ -20,17 +18,13 @@ public:
     static const int QUIT_RC = 221;
     const std::string QUIT_MSG = "quitSuccess";
 
-    void setUser(std::string user);
-
-    bool logged();
+    bool logged(std::string *username, std::string *password);
 
     explicit HoneyPot(std::string configFileName);
 
-    std::string runCommand(std::string command, std::string arg);
+    std::string runCommand(std::string commandName, std::string arg, std::string *user, std::string *pass);
 
     std::string getMsg(std::string key);
-
-    void setPasswd(std::string password);
 
     std::set<std::string> getDirList();
 

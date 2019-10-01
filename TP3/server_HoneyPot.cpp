@@ -12,23 +12,16 @@ HoneyPot::HoneyPot(const std::string configFileName) {
     }
 }
 
-std::string HoneyPot::runCommand(std::string commandName, std::string arg) {
+std::string
+HoneyPot::runCommand(std::string commandName, std::string arg, std::string *username, std::string *password) {
     Command *command = Command::getCommand(commandName, this);
     if (!command)
         return Command::response(UNKNOWN_COMMAND_RC, config[UNKNOWN_COMMAND_MSG]);
-    return command->run(arg);
+    return command->run(arg, username, password);
 }
 
-bool HoneyPot::logged() {
-    return (user == config["user"] && passwd == config["password"]);
-}
-
-void HoneyPot::setUser(std::string username) {
-    user = username;
-}
-
-void HoneyPot::setPasswd(std::string password) {
-    passwd = password;
+bool HoneyPot::logged(std::string *username, std::string *password) {
+    return (*username == config["user"] && *password == config["password"]);
 }
 
 std::set<std::string> HoneyPot::getDirList() {

@@ -1,7 +1,3 @@
-//
-// Created by delmazo on 9/30/19.
-//
-
 #ifndef TP3_SERVER_SERVER_H
 #define TP3_SERVER_SERVER_H
 

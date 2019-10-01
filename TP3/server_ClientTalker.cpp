@@ -15,7 +15,7 @@ std::string ClientTalker::processRequest(std::string request) {
         command.emplace_back(buff);
     }
     if (command.size() == 1) command.emplace_back("");
-    return pot->runCommand(command[0], command[1]);
+    return pot->runCommand(command[0], command[1], this->username, this->password);
 }
 
 void ClientTalker::sendResponse(Socket clientSkt, std::string response) {
@@ -26,6 +26,8 @@ void ClientTalker::sendResponse(Socket clientSkt, std::string response) {
 ClientTalker::ClientTalker(HoneyPot *hpot, Socket socket) {
     this->pot = hpot;
     this->skt = socket;
+    this->username = new std::string;
+    this->password = new std::string;
 }
 
 void ClientTalker::run() {

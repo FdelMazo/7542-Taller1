@@ -1,7 +1,3 @@
-//
-// Created by delmazo on 9/30/19.
-//
-
 #ifndef TP3_SERVER_CLIENTTALKER_H
 #define TP3_SERVER_CLIENTTALKER_H
 
@@ -23,6 +19,8 @@ public:
 
     HoneyPot *pot;
     Socket skt;
+    std::string *username;
+    std::string *password;
 };
 
 

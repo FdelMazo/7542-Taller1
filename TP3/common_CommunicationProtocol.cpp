@@ -1,4 +1,3 @@
-#include <algorithm>
 #include "common_CommunicationProtocol.h"
 
 std::string CommunicationProtocol::receive(Socket skt) {

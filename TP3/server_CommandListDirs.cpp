@@ -2,8 +2,8 @@
 #include <algorithm>
 #include "server_CommandListDirs.h"
 
-std::string CommandListDirs::run(std::string dummyArg) {
-    if (!pot->logged()) return notLoggedResponse();
+std::string CommandListDirs::run(std::string dummyArg, std::string *username, std::string *password) {
+    if (!pot->logged(username, password)) return notLoggedResponse();
     std::ostringstream stream;
     stream << response(BEGIN_RC, pot->getMsg(BEGIN_MSG));
     for (const std::string dir : pot->getDirList()) {
