@@ -9,21 +9,19 @@
 #include <string>
 #include "server_HoneyPot.h"
 #include "common_Socket.h"
+#include "server_ClientListener.h"
+
 
 class Server {
 
 public:
     Server(char *string, char *string1);
 
-    std::string processRequest(std::string request);
-
-    std::string receiveRequest();
-
-    void sendResponse(std::string basicString);
-
     HoneyPot *pot;
     Socket skt;
-    Socket clientSkt;
+    ClientListener *listener;
+
+    void communicate();
 };
 
 

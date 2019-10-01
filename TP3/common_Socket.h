@@ -27,10 +27,9 @@ public:
 
     void listening();
 
+    int fd;
 private:
     struct addrinfo *_get_addr(const char *host, const char *service, int flags);
-
-    int fd;
 
 };
 

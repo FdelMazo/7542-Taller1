@@ -6,10 +6,7 @@ int main(int argc, char *argv[]) {
     char *port = argv[1];
     char *configFileName = argv[2];
     Server server(port, configFileName);
-    while (true) {
-        std::string request = server.receiveRequest();
-        std::string response = server.processRequest(request);
-        server.sendResponse(response);
-    }
+    server.communicate();
+    while (true) {};
     return 0;
 }

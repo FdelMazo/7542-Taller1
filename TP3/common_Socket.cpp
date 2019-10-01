@@ -91,7 +91,6 @@ void Socket::connection(char *host, char *port) {
 Socket Socket::acceptConnection() {
     int filedesc = accept(this->fd, NULL, NULL);
     return Socket(filedesc);
-
 }
 
 Socket::Socket(int i) {
