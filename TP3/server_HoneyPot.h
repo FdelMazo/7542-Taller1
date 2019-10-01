@@ -5,13 +5,14 @@
 #include <set>
 #include <string>
 #include <map>
+#include "server_DirectoryList.h"
 
 class HoneyPot {
-    std::set<std::string> dirList = {};
+    DirectoryList dirList;
     std::map<std::string, std::string> config;
 
 public:
-    static const int UNKNOWN_COMMAND_RC = 500;
+    static const int UNKNOWN_COMMAND_RC = 530;
     const std::string UNKNOWN_COMMAND_MSG = "unknownCommand";
     static const int NEW_CLIENT_RC = 220;
     const std::string NEW_CLIENT_MSG = "newClient";

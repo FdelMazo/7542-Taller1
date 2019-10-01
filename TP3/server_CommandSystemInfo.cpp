@@ -2,5 +2,6 @@
 
 std::string CommandSystemInfo::run(std::string dummyArg, std::string *username, std::string *password, bool *pBoolean) {
     if (!pot->logged(username, password)) return notLoggedResponse();
-    return response(RC, pot->getMsg(MSG));
+    return response(215, pot->getMsg("systemInfo"));
+//    return response(RC, pot->getMsg(MSG));
 }

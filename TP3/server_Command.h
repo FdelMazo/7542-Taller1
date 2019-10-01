@@ -6,10 +6,10 @@
 #include "server_HoneyPot.h"
 
 class Command {
-    static const int NOT_LOGGED_RC = 530;
+    const int NOT_LOGGED_RC = 530;
     const std::string NOT_LOGGED_MSG = "clientNotLogged";
 
-    static const int LOGIN_RC = 230;
+    const int LOGIN_RC = 230;
     const std::string LOGIN_MSG = "loginSuccess";
 
 protected:

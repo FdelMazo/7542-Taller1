@@ -5,8 +5,8 @@
 #include "server_Command.h"
 
 class CommandQuit : public Command {
-    static const int RC = 221;
-    const std::string MSG = "quitSuccess";
+//    static const int RC = 221;
+//    const std::string MSG = "quitSuccess";
 public:
     using Command::Command;
 

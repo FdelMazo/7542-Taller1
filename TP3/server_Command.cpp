@@ -54,6 +54,6 @@ std::string Command::response(int retCode, std::string message) {
 std::string Command::response(int retCode, std::string message,
                               std::string argument) {
     std::ostringstream stream;
-    stream << retCode << " " << argument << " " << message << "\n";
+    stream << retCode << " \"" << argument << "\" " << message << "\n";
     return stream.str();
 }

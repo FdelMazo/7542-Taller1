@@ -10,13 +10,12 @@ std::string ClientTalker::receiveRequest(Socket clientSkt) {
 
 std::string ClientTalker::processRequest(std::string request) {
     std::istringstream stream(request);
-    std::vector<std::string> command;
-    std::string buff;
-    while (std::getline(stream, buff, ' ')) {
-        command.emplace_back(buff);
-    }
-    if (command.size() == 1) command.emplace_back("");
-    return pot->runCommand(command[0], command[1], this->username, this->password, this->alive);
+    std::string command;
+    std::getline(stream, command, ' ');
+    std::string arg;
+    std::getline(stream, arg);
+    if (arg.empty()) arg = "";
+    return pot->runCommand(command, arg, this->username, this->password, this->alive);
 }
 
 void ClientTalker::sendResponse(Socket clientSkt, std::string response) {

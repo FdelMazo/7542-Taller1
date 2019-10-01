@@ -28,21 +28,15 @@ bool HoneyPot::logged(std::string *username, std::string *password) {
 }
 
 std::set<std::string> HoneyPot::getDirList() {
-    return dirList;
+    return dirList.get();
 }
 
 bool HoneyPot::makeDir(std::string dirName) {
-    if (dirList.count(dirName))
-        return false;
-    dirList.insert(dirName);
-    return true;
+    return dirList.mkDir(dirName);
 }
 
 bool HoneyPot::rmDir(std::string dirName) {
-    if (!dirList.count(dirName))
-        return false;
-    dirList.erase(dirName);
-    return true;
+    return dirList.rmDir(dirName);
 }
 
 std::string HoneyPot::getMsg(std::string command) {
