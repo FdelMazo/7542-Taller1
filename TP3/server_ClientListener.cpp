@@ -4,6 +4,7 @@
 void ClientListener::run() {
     while (true) {
         Socket clientSkt = this->serverSkt.accept();
+        if (clientSkt.fd == -1) break;
         std::cerr << "New Client!\n";
         ClientTalker *client = new ClientTalker(this->pot, clientSkt);
         clients.push_back(client);
@@ -21,5 +22,6 @@ ClientListener::~ClientListener() {
     for (ClientTalker *c : clients) {
         delete c;
     }
+    this->serverSkt.close();
     this->join();
 }

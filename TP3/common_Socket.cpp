@@ -1,6 +1,7 @@
 #include <cstring>
 #include <netdb.h>
 #include <sys/socket.h>
+#include <unistd.h>
 #include "common_Socket.h"
 
 struct addrinfo *Socket::_get_addr(const char *host, const char *service, int flags) {
@@ -103,6 +104,11 @@ Socket::Socket() {
 
 void Socket::listen() {
     ::listen(this->fd, 20);
+}
+
+void Socket::close() {
+    ::shutdown(this->fd, SHUT_RDWR);
+    ::close(this->fd);
 }
 
 

@@ -2,6 +2,7 @@
 #define TP3_SERVER_COMMAND_H
 
 
+#include <bits/unique_ptr.h>
 #include "server_HoneyPot.h"
 
 class Command {
@@ -11,8 +12,6 @@ class Command {
     static const int LOGIN_RC = 230;
     const std::string LOGIN_MSG = "loginSuccess";
 
-    static const int UNKNOWN_COMMAND_RC = 500;
-    const std::string UNKNOWN_COMMAND_MSG = "unknownCommand";
 protected:
     HoneyPot *pot;
 
@@ -25,7 +24,7 @@ public:
 
     std::string loginSuccessResponse();
 
-    static Command *getCommand(std::string command, HoneyPot *pot);
+    static std::unique_ptr<Command> getCommand(std::string command, HoneyPot *pot);
 
     static std::string response(int retCode, std::string message, std::string argument);
 

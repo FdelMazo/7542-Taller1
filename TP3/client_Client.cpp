@@ -17,11 +17,15 @@ std::string Client::getResponse() {
 }
 
 void Client::run() {
+    std::string greeting = getResponse();
+    std::cout << greeting;
     while (true) {
         std::string request;
-        getline(std::cin, request);
+        std::getline(std::cin, request);
+        if (request.empty()) break;
         sendRequest(request);
         std::string response = getResponse();
+        if (response.empty()) break;
         std::cout << response;
     }
 }

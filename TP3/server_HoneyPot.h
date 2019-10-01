@@ -32,6 +32,9 @@ public:
     bool makeDir(std::string basicString);
 
     bool rmDir(std::string dirName);
+
+    std::string acceptClient();
+
 };
 
 

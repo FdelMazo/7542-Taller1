@@ -14,25 +14,26 @@ Command::Command(HoneyPot *pot) {
     this->pot = pot;
 }
 
-Command *Command::getCommand(std::string command, HoneyPot *pot) {
+std::unique_ptr<Command> Command::getCommand(std::string command,
+                                             HoneyPot *pot) {
     if (command == "USER")
-        return new CommandUser(pot);
+        return std::unique_ptr<Command>(new CommandUser(pot));
     else if (command == "PASS")
-        return new CommandPassword(pot);
+        return std::unique_ptr<Command>(new CommandPassword(pot));
     else if (command == "SYST")
-        return new CommandSystemInfo(pot);
+        return std::unique_ptr<Command>(new CommandSystemInfo(pot));
     else if (command == "LIST")
-        return new CommandListDirs(pot);
+        return std::unique_ptr<Command>(new CommandListDirs(pot));
     else if (command == "HELP")
-        return new CommandHelp(pot);
+        return std::unique_ptr<Command>(new CommandHelp(pot));
     else if (command == "PWD")
-        return new CommandWorkingDir(pot);
+        return std::unique_ptr<Command>(new CommandWorkingDir(pot));
     else if (command == "MKD")
-        return new CommandMakeDir(pot);
+        return std::unique_ptr<Command>(new CommandMakeDir(pot));
     else if (command == "RMD")
-        return new CommandRemoveDir(pot);
+        return std::unique_ptr<Command>(new CommandRemoveDir(pot));
     else if (command == "QUIT")
-        return new CommandQuit(pot);
+        return std::unique_ptr<Command>(new CommandQuit(pot));
     return nullptr;
 }
 

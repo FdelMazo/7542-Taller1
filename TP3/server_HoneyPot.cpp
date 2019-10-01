@@ -13,10 +13,13 @@ HoneyPot::HoneyPot(const std::string configFileName) {
 }
 
 std::string
-HoneyPot::runCommand(std::string commandName, std::string arg, std::string *user, std::string *pass, bool *alive) {
-    Command *command = Command::getCommand(commandName, this);
+HoneyPot::runCommand(std::string commandName, std::string arg,
+                     std::string *user, std::string *pass, bool *alive) {
+    std::unique_ptr<Command> command =
+            Command::getCommand(commandName, this);
     if (!command)
-        return Command::response(UNKNOWN_COMMAND_RC, config[UNKNOWN_COMMAND_MSG]);
+        return Command::response(UNKNOWN_COMMAND_RC,
+                                 config[UNKNOWN_COMMAND_MSG]);
     return command->run(arg, user, pass, alive);
 }
 
@@ -44,4 +47,8 @@ bool HoneyPot::rmDir(std::string dirName) {
 
 std::string HoneyPot::getMsg(std::string command) {
     return config[command];
+}
+
+std::string HoneyPot::acceptClient() {
+    return Command::response(NEW_CLIENT_RC, config[NEW_CLIENT_MSG]);
 }
