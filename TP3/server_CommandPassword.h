@@ -3,12 +3,13 @@
 
 
 #include "server_Command.h"
+#include <string>
 
 class CommandPassword : public Command {
 public:
     using Command::Command;
 
-    std::string run(std::string passwd) override;
+    std::string run(std::string passwd, bool *alive) override;
 };
 
 

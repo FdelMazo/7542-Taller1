@@ -5,9 +5,9 @@
 #include "server_HoneyPot.h"
 #include "common_Socket.h"
 #include "server_Thread.h"
+#include <string>
 
 class ClientTalker : public Thread {
-
 public:
     ClientTalker(HoneyPot *hpot, Socket socket);
 
@@ -20,6 +20,7 @@ private:
     Socket peerskt;
     std::string *user;
     std::string *passwd;
+    bool *alive;
 
     std::string receiveRequest(Socket clientSkt);
 

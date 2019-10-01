@@ -1,6 +1,6 @@
 #include "server_CommandRemoveDir.h"
 
-std::string CommandRemoveDir::run(std::string dirName) {
+std::string CommandRemoveDir::run(std::string dirName, bool *alive) {
     if (!pot->validCredentials(this->username, this->password))
         return notLoggedResponse();
     if (pot->rmDir(dirName))

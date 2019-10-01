@@ -3,12 +3,13 @@
 
 
 #include "server_Command.h"
+#include <string>
 
 class CommandUser : public Command {
 public:
     using Command::Command;
 
-    std::string run(std::string userName) override;
+    std::string run(std::string userName, bool *alive) override;
 };
 
 

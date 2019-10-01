@@ -1,6 +1,6 @@
 #include "server_CommandMakeDir.h"
 
-std::string CommandMakeDir::run(std::string dirName) {
+std::string CommandMakeDir::run(std::string dirName, bool *alive) {
     if (!pot->validCredentials(this->username, this->password))
         return notLoggedResponse();
     if (pot->mkDir(dirName))

@@ -4,6 +4,8 @@
 
 #include <bits/unique_ptr.h>
 #include "server_HoneyPot.h"
+#include <memory>
+#include <string>
 
 class Command {
     static const int NOT_LOGGED_RC;
@@ -18,7 +20,7 @@ class Command {
 public:
     explicit Command(HoneyPot *pot, std::string *user, std::string *pass);
 
-    virtual std::string run(std::string arg) = 0;
+    virtual std::string run(std::string arg, bool *alive) = 0;
 
     static std::unique_ptr<Command> getCommand(std::string command,
                                                HoneyPot *pot, std::string *user, std::string *pass);
@@ -32,6 +34,7 @@ public:
 
 protected:
     std::string notLoggedResponse();
+
     std::string loginSuccessResponse();
 
     HoneyPot *pot;

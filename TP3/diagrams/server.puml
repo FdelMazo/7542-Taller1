@@ -30,7 +30,7 @@ class HoneyPot {
     eraseDir(dir)
 }
 
-class DirectoryList
+class DirectoryList <ThreadSafe>
 class Command {
     run()
 }

@@ -16,6 +16,7 @@ public:
     std::string getAnswer(std::string command);
 
     bool mkDir(std::string dirName);
+
     bool rmDir(std::string dirName);
 
     std::set<std::string> getDirList();

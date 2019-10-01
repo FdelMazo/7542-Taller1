@@ -10,7 +10,7 @@ Socket::Socket(int i) {
 void Socket::connect(char *host, char *port) {
     bool connection_err = false;
     struct addrinfo *addr_list;
-    addr_list = _get_addr(host, port, CLIENT_FLAGS);
+    addr_list = getAddr(host, port, CLIENT_FLAGS);
     int filedesc = -1;
     struct addrinfo *addr = addr_list;
     for (; addr && !connection_err; addr = addr->ai_next) {
@@ -26,7 +26,7 @@ void Socket::connect(char *host, char *port) {
 void Socket::bind(char *port) {
     bool bind_err = false;
     struct addrinfo *addr_list;
-    addr_list = _get_addr(nullptr, port, SERVER_FLAGS);
+    addr_list = getAddr(nullptr, port, SERVER_FLAGS);
     int filedesc = -1;
     struct addrinfo *addr = addr_list;
     for (; addr && !bind_err; addr = addr->ai_next) {
@@ -87,8 +87,8 @@ void Socket::recv(void *response, size_t length) {
     }
 }
 
-struct addrinfo *Socket::_get_addr(const char *host, const char *service,
-                                   int flags) {
+struct addrinfo *Socket::getAddr(const char *host, const char *service,
+                                 int flags) {
     struct addrinfo *addr_list;
     struct addrinfo hints;
     memset(&hints, 0, sizeof(struct addrinfo));

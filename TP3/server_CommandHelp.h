@@ -3,12 +3,13 @@
 
 
 #include "server_Command.h"
+#include <string>
 
 class CommandHelp : public Command {
 public:
     using Command::Command;
 
-    std::string run(std::string dummyArg) override;
+    std::string run(std::string dummyArg, bool *alive) override;
 };
 
 

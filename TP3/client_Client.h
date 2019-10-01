@@ -6,7 +6,6 @@
 #include "common_Socket.h"
 
 class Client {
-
 public:
     Client(char *host, char *port);
 
@@ -14,7 +13,9 @@ public:
 
 private:
     Socket skt;
+
     void sendRequest(std::string request);
+
     std::string getResponse();
 };
 

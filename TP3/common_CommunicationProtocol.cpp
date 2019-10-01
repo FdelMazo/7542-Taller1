@@ -5,6 +5,7 @@ void CommunicationProtocol::send(Socket skt, std::string message) {
     for (char &c : message)
         skt.send(reinterpret_cast<const void *>(&c), 1);
 }
+
 std::string CommunicationProtocol::receive(Socket skt) {
     std::string message;
     char c = 0;

@@ -7,9 +7,9 @@
 #include "server_ClientListener.h"
 
 class Server {
-
 public:
     Server(char *string, char *string1);
+
     ~Server();
 
     void run();

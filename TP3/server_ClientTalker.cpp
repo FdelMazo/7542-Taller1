@@ -8,6 +8,7 @@
 ClientTalker::ClientTalker(HoneyPot *hpot, Socket socket) {
     this->pot = hpot;
     this->peerskt = socket;
+    this->alive = new bool(true);
     this->user = new std::string("");
     this->passwd = new std::string("");
 }
@@ -15,7 +16,7 @@ ClientTalker::ClientTalker(HoneyPot *hpot, Socket socket) {
 ClientTalker::~ClientTalker() {
     delete this->user;
     delete this->passwd;
-    std::cerr << "Farewell Client!\n";
+    delete this->alive;
     this->peerskt.close();
     this->join();
 }
@@ -23,13 +24,16 @@ ClientTalker::~ClientTalker() {
 void ClientTalker::run() {
     std::string greeting = Command::acceptClient(this->pot);
     sendResponse(this->peerskt, greeting);
-    while (true) {
+    while (*this->alive) {
         std::string request = receiveRequest(this->peerskt);
-        if (request.empty())
+        if (request.empty()) {
+            *this->alive = false;
             break;
+        }
         std::string response = processRequest(request);
         sendResponse(this->peerskt, response);
     }
+    std::cerr << "Farewell Client!\n";
 }
 
 std::string ClientTalker::receiveRequest(Socket clientSkt) {
@@ -55,5 +59,5 @@ std::string ClientTalker::runCommand(std::string commandName, std::string arg) {
     std::unique_ptr<Command> command =
             Command::getCommand(commandName,
                                 this->pot, this->user, this->passwd);
-    return command->run(arg);
+    return command->run(arg, this->alive);
 }
