@@ -1,5 +1,6 @@
 #include <vector>
 #include <sstream>
+#include <iostream>
 #include "server_ClientTalker.h"
 #include "common_CommunicationProtocol.h"
 
@@ -15,7 +16,7 @@ std::string ClientTalker::processRequest(std::string request) {
         command.emplace_back(buff);
     }
     if (command.size() == 1) command.emplace_back("");
-    return pot->runCommand(command[0], command[1], this->username, this->password);
+    return pot->runCommand(command[0], command[1], this->username, this->password, this->alive);
 }
 
 void ClientTalker::sendResponse(Socket clientSkt, std::string response) {
@@ -26,14 +27,27 @@ void ClientTalker::sendResponse(Socket clientSkt, std::string response) {
 ClientTalker::ClientTalker(HoneyPot *hpot, Socket socket) {
     this->pot = hpot;
     this->skt = socket;
-    this->username = new std::string;
-    this->password = new std::string;
+    this->alive = new bool(true);
+    this->username = new std::string("");
+    this->password = new std::string("");
 }
 
 void ClientTalker::run() {
-    while (true) {
+    while (*alive) {
         std::string request = receiveRequest(this->skt);
+        if (!request.size()) {
+            *alive = false;
+            break;
+        }
         std::string response = processRequest(request);
         sendResponse(this->skt, response);
     }
+    std::cerr << "Farewell Client!\n";
+}
+
+ClientTalker::~ClientTalker() {
+    delete this->alive;
+    delete this->username;
+    delete this->password;
+    this->join();
 }

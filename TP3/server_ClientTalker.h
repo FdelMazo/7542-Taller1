@@ -2,13 +2,16 @@
 #define TP3_SERVER_CLIENTTALKER_H
 
 
-#include "server_Server.h"
+#include "server_HoneyPot.h"
+#include "common_Socket.h"
+#include "common_Thread.h"
 
 class ClientTalker : public Thread {
 
 public:
     ClientTalker(HoneyPot *hpot, Socket socket);
 
+    ~ClientTalker();
     std::string processRequest(std::string request);
 
     std::string receiveRequest(Socket clientSkt);
@@ -19,6 +22,7 @@ public:
 
     HoneyPot *pot;
     Socket skt;
+    bool *alive;
     std::string *username;
     std::string *password;
 };

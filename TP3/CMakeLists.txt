@@ -43,7 +43,7 @@ add_executable(server
         server_CommandRemoveDir.cpp server_CommandRemoveDir.h
         common_Socket.cpp common_Socket.h server_Server.cpp server_Server.h
         common_CommunicationProtocol.cpp common_CommunicationProtocol.h
-        common_Thread.cpp common_Thread.cpp server_ClientListener.cpp server_ClientListener.h server_ClientTalker.cpp server_ClientTalker.h)
+        common_Thread.cpp common_Thread.cpp server_ClientListener.cpp server_ClientListener.h server_ClientTalker.cpp server_ClientTalker.h server_CommandQuit.cpp server_CommandQuit.h)
 
 add_executable(client
         client_main.cpp

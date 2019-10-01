@@ -15,17 +15,17 @@ public:
 
     Socket(int i);
 
-    void connection(char *host, char *port);
+    void connect(char *host, char *port);
 
-    void sendMsg(const void *msg, size_t length);
+    void send(const void *msg, size_t length);
 
-    void recvMsg(void *response, size_t length);
+    void recv(void *response, size_t length);
 
-    void binding(char *port);
+    void bind(char *port);
 
-    Socket acceptConnection();
+    Socket accept();
 
-    void listening();
+    void listen();
 
     int fd;
 private:

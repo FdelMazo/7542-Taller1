@@ -12,7 +12,7 @@ class CommandMakeDir : public Command {
 public:
     using Command::Command;
 
-    std::string run(std::string dirName, std::string *username, std::string *password) override;
+    std::string run(std::string dirName, std::string *username, std::string *password, bool *pBoolean) override;
 };
 
 

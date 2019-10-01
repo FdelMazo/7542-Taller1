@@ -14,6 +14,8 @@ public:
     Socket skt;
 
     std::string getResponse();
+
+    void run();
 };
 
 

@@ -8,6 +8,7 @@
 #include "server_CommandPassword.h"
 #include "server_CommandWorkingDir.h"
 #include "server_CommandSystemInfo.h"
+#include "server_CommandQuit.h"
 
 Command::Command(HoneyPot *pot) {
     this->pot = pot;
@@ -30,6 +31,8 @@ Command *Command::getCommand(std::string command, HoneyPot *pot) {
         return new CommandMakeDir(pot);
     else if (command == "RMD")
         return new CommandRemoveDir(pot);
+    else if (command == "QUIT")
+        return new CommandQuit(pot);
     return nullptr;
 }
 

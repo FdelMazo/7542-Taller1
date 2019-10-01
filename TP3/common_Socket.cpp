@@ -17,15 +17,15 @@ struct addrinfo *Socket::_get_addr(const char *host, const char *service, int fl
     return addr_list;
 }
 
-void Socket::sendMsg(const void *msg, size_t length) {
+void Socket::send(const void *msg, size_t length) {
     if (length == 0) return;
     int remaining_bytes = length;
     uint total_bytes_sent = 0;
     ssize_t bytes = 0;
     const char *send_request = static_cast<const char *>(msg);
     while (total_bytes_sent < length) {
-        bytes = send(this->fd, &send_request[total_bytes_sent],
-                        remaining_bytes, MSG_NOSIGNAL);
+        bytes = ::send(this->fd, &send_request[total_bytes_sent],
+                       remaining_bytes, MSG_NOSIGNAL);
         if (bytes == -1) {
             total_bytes_sent = -1;
             break;
@@ -37,15 +37,15 @@ void Socket::sendMsg(const void *msg, size_t length) {
     }
 }
 
-void Socket::recvMsg(void *response, size_t length) {
+void Socket::recv(void *response, size_t length) {
     if (length == 0) return;
     int remaining_bytes = length;
     uint total_bytes_received = 0;
     ssize_t bytes = 0;
     char *recv_response = static_cast<char *>(response);
     while (total_bytes_received < length) {
-        bytes = recv(this->fd, &recv_response[total_bytes_received],
-                     remaining_bytes, 0);
+        bytes = ::recv(this->fd, &recv_response[total_bytes_received],
+                       remaining_bytes, 0);
         if (bytes == -1) {
             total_bytes_received = -1;
             break;
@@ -57,7 +57,7 @@ void Socket::recvMsg(void *response, size_t length) {
     }
 }
 
-void Socket::binding(char *port) {
+void Socket::bind(char *port) {
     bool bind_err = false;
     struct addrinfo *addr_list;
     addr_list = _get_addr(NULL, port, AI_PASSIVE);
@@ -65,14 +65,14 @@ void Socket::binding(char *port) {
     struct addrinfo *addr = addr_list;
     for (; addr && !bind_err; addr = addr->ai_next) {
         filedesc = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
-        if (bind(filedesc, addr->ai_addr, addr->ai_addrlen) == -1)
+        if (::bind(filedesc, addr->ai_addr, addr->ai_addrlen) == -1)
             bind_err = true;
     }
     this->fd = filedesc;
     freeaddrinfo(addr_list);
 }
 
-void Socket::connection(char *host, char *port) {
+void Socket::connect(char *host, char *port) {
     bool connection_err = false;
     struct addrinfo *addr_list;
     addr_list = _get_addr(host, port, 0);
@@ -80,7 +80,7 @@ void Socket::connection(char *host, char *port) {
     struct addrinfo *addr = addr_list;
     for (; addr && !connection_err; addr = addr->ai_next) {
         filedesc = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
-        if (connect(filedesc, addr->ai_addr, addr->ai_addrlen) == -1)
+        if (::connect(filedesc, addr->ai_addr, addr->ai_addrlen) == -1)
             connection_err = true;
     }
     this->fd = filedesc;
@@ -88,8 +88,8 @@ void Socket::connection(char *host, char *port) {
     freeaddrinfo(addr_list);
 }
 
-Socket Socket::acceptConnection() {
-    int filedesc = accept(this->fd, NULL, NULL);
+Socket Socket::accept() {
+    int filedesc = ::accept(this->fd, NULL, NULL);
     return Socket(filedesc);
 }
 
@@ -101,8 +101,8 @@ Socket::Socket() {
 
 }
 
-void Socket::listening() {
-    listen(this->fd, 20);
+void Socket::listen() {
+    ::listen(this->fd, 20);
 }
 
 

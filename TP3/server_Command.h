@@ -19,7 +19,7 @@ protected:
 public:
     explicit Command(HoneyPot *pot);
 
-    virtual std::string run(std::string arg, std::string *username, std::string *password) = 0;
+    virtual std::string run(std::string arg, std::string *username, std::string *password, bool *pBoolean) = 0;
 
     std::string notLoggedResponse();
 

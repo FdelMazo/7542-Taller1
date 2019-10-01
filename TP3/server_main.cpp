@@ -1,4 +1,3 @@
-#include "server_HoneyPot.h"
 #include "server_Server.h"
 
 int main(int argc, char *argv[]) {
@@ -6,7 +5,6 @@ int main(int argc, char *argv[]) {
     char *port = argv[1];
     char *configFileName = argv[2];
     Server server(port, configFileName);
-    server.communicate();
-    while (true) {};
+    server.run();
     return 0;
 }

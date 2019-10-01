@@ -10,7 +10,7 @@ class CommandHelp : public Command {
 public:
     using Command::Command;
 
-    std::string run(std::string dummyArg, std::string *username, std::string *password) override;
+    std::string run(std::string dummyArg, std::string *username, std::string *password, bool *pBoolean) override;
 };
 
 

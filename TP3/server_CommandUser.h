@@ -11,7 +11,7 @@ class CommandUser : public Command {
 public:
     using Command::Command;
 
-    std::string run(std::string userName, std::string *username, std::string *password);
+    std::string run(std::string userName, std::string *username, std::string *password, bool *pBoolean);
 };
 
 

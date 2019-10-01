@@ -13,11 +13,12 @@ class Server {
 public:
     Server(char *string, char *string1);
 
+    ~Server();
     HoneyPot *pot;
     Socket skt;
     ClientListener *listener;
 
-    void communicate();
+    void run();
 };
 
 

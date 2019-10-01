@@ -22,7 +22,8 @@ public:
 
     explicit HoneyPot(std::string configFileName);
 
-    std::string runCommand(std::string commandName, std::string arg, std::string *user, std::string *pass);
+    std::string
+    runCommand(std::string commandName, std::string arg, std::string *user, std::string *pass, bool *pBoolean);
 
     std::string getMsg(std::string key);
 
