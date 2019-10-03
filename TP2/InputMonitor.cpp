@@ -7,12 +7,14 @@ InputMonitor::InputMonitor(std::istream *inputStream) {
     stream->seekg(0, std::ios::beg);
 }
 
-bool InputMonitor::eof(int i) {
+bool InputMonitor::validPosition(int i) {
     return i >= streamSize;
 }
 
-void InputMonitor::read(char *buffer, size_t n, int pos) {
+bool InputMonitor::read(char *buffer, size_t n, int pos) {
     std::unique_lock<std::mutex> lock(m);
+    if (validPosition(pos)) return false;
     stream->seekg(pos);
     stream->read(buffer, n);
+    return true;
 }

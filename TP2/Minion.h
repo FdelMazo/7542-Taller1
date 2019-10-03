@@ -17,15 +17,10 @@
 // Once the processed is on the queue, the (sole) master will take care of it
 
 class Minion : public Thread {
-    // Class variable to keep track of all the minions (threads) running
-    static int minionCount;
-
 public:
-    // Constructor: Initializes the attributes and increments minionCount
-    Minion(int blockSize, int queueLimit, InputMonitor *input);
-
-    // Destructor: Joins the thread
-    ~Minion();
+    // Constructor: Initializes the attributes
+    Minion(int blockSize, int queueLimit, InputMonitor *input,
+            int myId, int totalCount);
 
     // As long as the file hasn't reach the end,
     //   and there are blocks inside the valid range:
@@ -35,11 +30,14 @@ public:
     void run();
 
     // Public queue which the master has access to (by reference)
-    ThreadSafeQueue *queue;
+    ThreadSafeQueue queue;
 
 private:
     // Minion's id
     int id;
+
+    // Keep track of all the minions (threads) running
+    int minionCount;
 
     // How many numbers will the minion read from the input
     int blockSize;

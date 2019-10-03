@@ -14,10 +14,11 @@ public:
     explicit InputMonitor(std::istream *inputStream);
 
     // Returns if a position is valid or not (past the EOF)
-    bool eof(int i);
+    bool validPosition(int i);
 
     // Read n bytes from file, starting in pos, and stores them in buffer
-    void read(char *buffer, size_t n, int pos);
+    // If the position is invalid, returns false
+    bool read(char *buffer, size_t n, int pos);
 
 private:
     // The resource everyone is racing to get to

@@ -14,10 +14,7 @@ class Master : public Thread {
 public:
     // Constructor: It initializes the queues, by taking them from the minions
     // (it also assigns the output stream, for then to write)
-    Master(std::vector<Minion *> vector, std::ostream *output);
-
-    // Destructor: Joins the thread
-    ~Master();
+    Master(const std::vector<Minion *> vector, std::ostream *output);
 
     // While the minions keep pushing everything to their queues,
     //    the master grabs those elements, and starts writing them to the out

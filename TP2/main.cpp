@@ -13,20 +13,26 @@ int main(int argc, char *argv[]) {
     if (!outputStream) return 1;
 
     InputMonitor input(inputStream);
-    std::vector<Minion *> minions(atoi(argv[2]));
+
+    int blockSize = atoi(argv[1]);
+    int minionCount = atoi(argv[2]);
+    int queueLimit = atoi(argv[2]);
+    std::vector<Minion *> minions(minionCount);
     for (uint i = 0; i < minions.size(); i++) {
-        minions[i] = new Minion(atoi(argv[1]), atoi(argv[3]), &input);
+        minions[i] = new Minion(blockSize, queueLimit,
+                &input, i, minionCount);
     }
 
-    Master *master = new Master(minions, outputStream);
-    master->start();
+    Master master(minions, outputStream);
+    master.start();
 
     for (uint i = 0; i < minions.size(); i++) {
         minions[i]->start();
     }
 
-    delete master;
+    master.join();
     for (uint i = 0; i < minions.size(); i++) {
+        minions[i]->join();
         delete minions[i];
     }
 

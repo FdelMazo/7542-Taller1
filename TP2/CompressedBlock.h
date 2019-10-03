@@ -39,7 +39,7 @@ private:
     std::string compressedNumbers;
 
     // Method to pass from the vector of (small) numbers to a string of bits
-    std::string compressNumbers(std::vector<uint32_t> vec);
+    std::string compressNumbers(const std::vector<uint32_t> vec);
 };
 
 

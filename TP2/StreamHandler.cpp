@@ -1,9 +1,10 @@
 #include "StreamHandler.h"
 #include <fstream>
 #include <cstring>
+#include <string>
 
 std::istream *StreamHandler::getInput(char *filename) {
-    bool inputIsFile = strncmp(filename, STREAM, strlen(filename));
+    bool inputIsFile = (std::string(filename) != std::string(STREAM));
     inputFile = new std::ifstream;
     if (inputIsFile) {
         inputFile->open(filename, std::ios::out | std::ios::binary);

@@ -36,8 +36,10 @@ private:
     // Mutex, for a lock to keep threads from moving elements at the same time
     std::mutex m;
 
-    // Conditional variable to notify that an action (push/pop) can be now made
-    std::condition_variable condition;
+    // Conditional variable to notify that an element was just pushed
+    std::condition_variable poped;
+    // Conditional variable to notify that an element was just popped
+    std::condition_variable pushed;
 };
 
 #endif //TP1_THREADSAFEQUEUE_H

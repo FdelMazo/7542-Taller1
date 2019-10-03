@@ -7,19 +7,19 @@ ThreadSafeQueue::ThreadSafeQueue(int elemLimit) {
 void ThreadSafeQueue::push(CompressedBlock block) {
     std::unique_lock<std::mutex> lock(m);
     while (queue.size() == limit)
-        condition.wait(lock);
+        poped.wait(lock);
 
     queue.push(block);
-    condition.notify_all();
+    pushed.notify_all();
 }
 
 CompressedBlock ThreadSafeQueue::pop() {
     std::unique_lock<std::mutex> lock(m);
     while (queue.size() == 0)
-        condition.wait(lock);
+        pushed.wait(lock);
 
     CompressedBlock block = queue.front();
     queue.pop();
-    condition.notify_all();
+    poped.notify_all();
     return block;
 }

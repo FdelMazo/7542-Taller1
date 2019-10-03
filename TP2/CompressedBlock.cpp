@@ -22,7 +22,7 @@ bool CompressedBlock::valid() {
     return reference != 0;
 }
 
-std::string CompressedBlock::compressNumbers(std::vector<uint32_t> vec) {
+std::string CompressedBlock::compressNumbers(const std::vector<uint32_t> vec) {
     std::string pack;
     for (uint i = 0; i < vec.size(); i++) {
         constexpr uint maxSize = sizeof(uint32_t) * CHAR_BIT;

@@ -39,3 +39,26 @@ Las colas de cada minion deben estar debidamente protegidas y sincronizadas. Est
 También, respecto a proteger recursos, se tuvo que proteger al flujo de entrada, con un monitor de este (nuevamente, esta el problema de *quien* es dueño de *que*; acá, el monitor de la entrada no es dueño de esta, y tiene solo un puntero). Este monitor se encarga de que cada vez que un hilo vaya a leer de la entrada, tenga que adueñarse de un *lock* (con su respectivo *mutex*), para evitar que dos hilos choquen allí. A esto se le agrega la complejidad de que cada minion debe saber de donde leer los números. Por ejemplo, de tener solo dos trabajadores, el primer minion debe leer los primeros `n` números, el segundo debe leer pasado este `n`, y luego el primero debe leer a partir de `2n`. Para esto, se hace que cada trabajador tenga un atributo de `id` donde sepa que número de trabajador es, y en base a eso saber desde donde leer. Para mantener la cuenta de cuantos trabajadores hay, se opto por tener una variable de clase que con cada minion creado vaya incrementando.
 
 El último problema a destacar es el de como hacer que cada minion notifique al escritor que ya proceso todos los bloques que podía, así el master deja de pedirle elementos a la cola. Como se implementó de tal forma que la cola, desde el punto de vista del master, nunca este vacía, no se puede simplemente dejar de ubicar bloques y que el master entienda que la cola vacía equivale a dejar de procesar (esto es porque si el master fue 'más rápido' que el minion, vería una cola vacía, y creería que se termino de procesar todo). Para solucionar esto, se optó por hacer algo análogo al patrón *poison pill* del problema del productor-consumidor. El minion, una vez procesados todos los bloques, va a dejar un elemento en la cola que simboliza que ya terminó. Lo que se ubica en la cola es un bloque vacío (si se crea un bloque comprimido con un vector vacío, no se tiene referencia para tomar, y un bloque sin referencia, en una técnica *frame of reference* es inválido). Una vez que el master se encuentra con un bloque inválido, se da cuenta que ya no tiene porque seguir corriendo, y sale del ciclo indefinido donde recorría todas sus colas. Es importante notar que nunca se puede dar la situación en la que el master lea un bloque inválido de una cola, mientras que la siguiente cola tenga elementos válidos, esto es por la naturaleza de *round robin* tanto del acceso a las colas como de la lectura del archivo de parte de cada minion.
+
+\newpage
+\fancyfoot[]{}
+
+## Cambios requeridos en la re-entrega
+
+* Renombra la función `InputMonitor::eof(int i)` a `InputMonitor::validPosition(int i)` ya que es un método que indica si una posición es valida (originalmente pensado como que devolvería que esta en EOF pasada la posición recibida), para más claridad. 
+
+* Hace que el método de lectura sobre el archivo de entrada (protegido) devuelva verdadero o falso dependiendo de si pudo efectivamente leer del archivo. Así, se agrega que se pregunte si la posición es válida en ese mismo método, haciendo que todo quede dentro de esa función protegida (por el `lock`). Todo esto logra que se evite hacer una operación no atómica al querer leer del archivo. En la primera entrega se preguntaba si la posición era valida, y luego se hacia la lectura. Ahora, con algunos cambios en el ciclo definido donde se hace las lecturas, se hace todo en la misma llamada a `read`, y queda todo atómico.
+
+* Pasa al *stack* las colas protegidas de cada trabajador. No había motivo por el cual esten en el *heap*. Para lograr esto se tuvo que actualizar el constructor del trabajador, haciendo que inicialice la cola con el *member initializer list*.
+
+* Remueve los destructores de los dos tipos de hilo, que lo unico que hacían era llamar a `join()` (y el de los trabajadores, liberar la memoria asignada para las colas, que ya no es necesario). Esto se hace para que el hilo principal, de `main`, pueda llamar a `join()` cuando lo desee, y no haya comportamiento inesperado como que si el hilo esta en el *stack* y se salga de la función, se llame a su destructor.
+
+* Pasa al *stack* al hilo *Master* (y llama correctamente a `join()`).
+
+* Remueve la variable de clase que mantiene la cuenta de cuantos trabajadores hay presentes; en un entorno de *multithreading* esto no es nada seguro. Ahora, se recibe en el constructor, junto al parametro `id`.
+
+* Cambia la manera en la que se comparan las cadenas del nombre del archivo. Antes, se usaba `strncmp`, que no era seguro, pudiendo ocasionar un overflow. Ahora, se hace uso de `std::string` de la biblioteca estándar de C++, y su operador sobrecargado de `==`.
+
+* Pasa a usar dos *conditional variables* en la cola protegida. Una para avisar que se puede agregar un elemento, y otra para avisar que se puede remover. Antes era una sola variable, pero hacía que la cola solo funcione en el contexto de este programa. Ahora, es reutilizable.
+
+* Cambia las firmas de métodos de varias clases para que los parametros sean constantes. Esto es porque estos métodos efectivamente no cambian (ni deberían cambiar) estos parametros.
