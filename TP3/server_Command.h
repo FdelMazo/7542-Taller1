@@ -18,17 +18,17 @@ class Command {
     static const char NEW_CLIENT_MSG[];
 
 public:
-    explicit Command(HoneyPot *pot, std::string *user, std::string *pass);
+    explicit Command(HoneyPot *pot, std::string &user, std::string &pass);
 
-    virtual std::string run(std::string arg, bool *alive) = 0;
+    virtual std::string run(std::string &arg, bool *alive) = 0;
 
     static std::unique_ptr<Command> getCommand(std::string command,
-                                               HoneyPot *pot, std::string *user, std::string *pass);
+                        HoneyPot *pot, std::string &user, std::string &pass);
 
-    static std::string response(int retCode, std::string message);
+    static std::string response(int retCode, std::string &message);
 
-    static std::string response(int retCode, std::string message,
-                                std::string argument);
+    static std::string response(int retCode, std::string &message,
+                                std::string &argument);
 
     static std::string acceptClient(HoneyPot *pot);
 
@@ -38,8 +38,8 @@ protected:
     std::string loginSuccessResponse();
 
     HoneyPot *pot;
-    std::string *username;
-    std::string *password;
+    std::string &username;
+    std::string &password;
 };
 
 

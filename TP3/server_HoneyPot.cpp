@@ -2,7 +2,7 @@
 #include <fstream>
 #include <sstream>
 
-HoneyPot::HoneyPot(const std::string configFileName) {
+HoneyPot::HoneyPot(std::string &configFileName) {
     std::ifstream configFile(configFileName);
     std::string key, value;
     while (std::getline(configFile, key, '=') &&
@@ -11,19 +11,19 @@ HoneyPot::HoneyPot(const std::string configFileName) {
     }
 }
 
-std::string HoneyPot::getAnswer(std::string command) {
+std::string & HoneyPot::getAnswer(const std::string &command) {
     return config[command];
 }
 
-bool HoneyPot::validCredentials(std::string *username, std::string *password) {
-    return (*username == config["user"] && *password == config["password"]);
+bool HoneyPot::validCredentials(std::string &username, std::string &password) {
+    return (username == config["user"] && password == config["password"]);
 }
 
-bool HoneyPot::mkDir(std::string dirName) {
+bool HoneyPot::mkDir(std::string &dirName) {
     return dirList.addDir(dirName);
 }
 
-bool HoneyPot::rmDir(std::string dirName) {
+bool HoneyPot::rmDir(std::string &dirName) {
     return dirList.eraseDir(dirName);
 }
 

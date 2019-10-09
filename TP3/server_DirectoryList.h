@@ -8,9 +8,9 @@
 
 class DirectoryList {
 public:
-    bool addDir(std::string dirName);
+    bool addDir(std::string &dirName);
 
-    bool eraseDir(std::string dirName);
+    bool eraseDir(std::string &dirName);
 
     std::set<std::string> get();
 

@@ -6,7 +6,7 @@
 #include "common_Socket.h"
 
 namespace CommunicationProtocol {
-    void send(Socket skt, std::string message);
+    void send(Socket skt, std::string &message);
 
     std::string receive(Socket skt);
 }

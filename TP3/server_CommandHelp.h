@@ -9,7 +9,7 @@ class CommandHelp : public Command {
 public:
     using Command::Command;
 
-    std::string run(std::string dummyArg, bool *alive) override;
+    std::string run(std::string &dummyArg, bool *alive) override;
 };
 
 

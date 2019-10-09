@@ -9,7 +9,7 @@ class CommandUser : public Command {
 public:
     using Command::Command;
 
-    std::string run(std::string userName, bool *alive) override;
+    std::string run(std::string &userName, bool *alive) override;
 };
 
 

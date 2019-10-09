@@ -18,15 +18,14 @@ const char Command::LOGIN_MSG[] = "loginSuccess";
 const int Command::NEW_CLIENT_RC = 220;
 const char Command::NEW_CLIENT_MSG[] = "newClient";
 
-Command::Command(HoneyPot *pot, std::string *user, std::string *pass) {
+Command::Command(HoneyPot *pot, std::string &user, std::string &pass) :
+    username(user), password(pass) {
     this->pot = pot;
-    this->username = user;
-    this->password = pass;
 }
 
 std::unique_ptr<Command>
 Command::getCommand(std::string command, HoneyPot *pot,
-                    std::string *user, std::string *pass) {
+                    std::string &user, std::string &pass) {
     if (command == "USER")
         return std::unique_ptr<Command>(new CommandUser(pot, user, pass));
     else if (command == "PASS")
@@ -48,14 +47,14 @@ Command::getCommand(std::string command, HoneyPot *pot,
     return std::unique_ptr<Command>(new CommandUnknown(pot, user, pass));;
 }
 
-std::string Command::response(int retCode, std::string message) {
+std::string Command::response(int retCode, std::string &message) {
     std::ostringstream stream;
     stream << retCode << " " << message << "\n";
     return stream.str();
 }
 
-std::string Command::response(int retCode, std::string message,
-                              std::string argument) {
+std::string Command::response(int retCode, std::string &message,
+                              std::string &argument) {
     std::ostringstream stream;
     stream << retCode << " \"" << argument << "\" " << message << "\n";
     return stream.str();

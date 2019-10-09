@@ -9,7 +9,7 @@ class CommandRemoveDir : public Command {
 public:
     using Command::Command;
 
-    std::string run(std::string dirName, bool *alive) override;
+    std::string run(std::string &dirName, bool *alive) override;
 };
 
 

@@ -24,11 +24,11 @@ private:
 
     std::string receiveRequest(Socket clientSkt);
 
-    std::string processRequest(std::string request);
+    std::string processRequest(std::string &request);
 
-    void sendResponse(Socket clientSkt, std::string basicString);
+    void sendResponse(Socket clientSkt, std::string &basicString);
 
-    std::string runCommand(std::string commandName, std::string arg);
+    std::string runCommand(std::string &commandName, std::string &arg);
 };
 
 

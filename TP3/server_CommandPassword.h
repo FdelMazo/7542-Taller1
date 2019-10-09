@@ -9,7 +9,7 @@ class CommandPassword : public Command {
 public:
     using Command::Command;
 
-    std::string run(std::string passwd, bool *alive) override;
+    std::string run(std::string &passwd, bool *alive) override;
 };
 
 

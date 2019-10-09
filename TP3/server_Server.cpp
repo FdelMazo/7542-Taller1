@@ -3,7 +3,8 @@
 #include "server_Server.h"
 
 Server::Server(char *port, char *configFileName) {
-    this->pot = new HoneyPot(configFileName);
+    std::string cf = configFileName;
+    this->pot = new HoneyPot(cf);
     this->listener = new ClientListener(port, this->pot);
     this->listener->start();
 }

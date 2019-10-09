@@ -9,15 +9,15 @@
 
 class HoneyPot {
 public:
-    explicit HoneyPot(std::string configFileName);
+    explicit HoneyPot(std::string &configFileName);
 
-    bool validCredentials(std::string *username, std::string *password);
+    bool validCredentials(std::string &username, std::string &password);
 
-    std::string getAnswer(std::string command);
+    std::string & getAnswer(const std::string &command);
 
-    bool mkDir(std::string dirName);
+    bool mkDir(std::string &dirName);
 
-    bool rmDir(std::string dirName);
+    bool rmDir(std::string &dirName);
 
     std::set<std::string> getDirList();
 

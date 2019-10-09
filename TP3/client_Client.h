@@ -14,7 +14,7 @@ public:
 private:
     Socket skt;
 
-    void sendRequest(std::string request);
+    void sendRequest(std::string &request);
 
     std::string getResponse();
 };

@@ -3,9 +3,7 @@
 #include "common_CommunicationProtocol.h"
 
 Client::Client(char *host, char *port) {
-    Socket socket;
-    socket.connect(host, port);
-    this->skt = socket;
+    this->skt.connect(host, port);
 }
 
 void Client::run() {
@@ -22,7 +20,7 @@ void Client::run() {
     }
 }
 
-void Client::sendRequest(std::string request) {
+void Client::sendRequest(std::string &request) {
     CommunicationProtocol::send(this->skt, request);
 }
 

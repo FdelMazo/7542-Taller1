@@ -8,7 +8,7 @@
 
 class Server {
 public:
-    Server(char *string, char *string1);
+    Server(char *port, char *configFileName);
 
     ~Server();
 

@@ -1,6 +1,6 @@
 #include "common_CommunicationProtocol.h"
 
-void CommunicationProtocol::send(Socket skt, std::string message) {
+void CommunicationProtocol::send(Socket skt, std::string &message) {
     message += '\0';
     for (char &c : message)
         skt.send(reinterpret_cast<const void *>(&c), 1);

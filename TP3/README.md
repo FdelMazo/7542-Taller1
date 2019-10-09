@@ -35,6 +35,8 @@ Finalmente, los múltiples hilos de habladores con clientes serán los encargado
 \newpage
 \fancyfoot[]{}
 
-## Aclaraciones del alumno
+## Cambios requeridos en la re-entrega
 
-En esta entrega, aunque pasa las pruebas del Sercom, no hice correctamente todo lo que respecta al cierre de los distintos hilos que se abren en la ejecución. Por temas de tiempo, empece a diseñar lo que refiere al garbage collector y la variable atomica que dice si un hilo sigue corriendo, pero no lo pude implementar. En la re-entrega esto va a estar ya implementado. Me gustaría aún así poder recibir correcciones de esta entrega parcial, para al menos no atrasarme con todo el trabajo.
+* Se pasan a usar referencias para todos los parámetros de tipo `std::string`.
+
+* Se simplifica el constructor de `Client` a una única linea que llama a `connect` sobre `this->socket`.

@@ -40,7 +40,7 @@ std::string ClientTalker::receiveRequest(Socket clientSkt) {
     return CommunicationProtocol::receive(clientSkt);
 }
 
-std::string ClientTalker::processRequest(std::string request) {
+std::string ClientTalker::processRequest(std::string &request) {
     std::istringstream stream(request);
     std::string command;
     std::getline(stream, command, ' ');
@@ -50,14 +50,15 @@ std::string ClientTalker::processRequest(std::string request) {
     return runCommand(command, arg);
 }
 
-void ClientTalker::sendResponse(Socket clientSkt, std::string response) {
-    return CommunicationProtocol::send(clientSkt, response);
+void ClientTalker::sendResponse(Socket clientSkt, std::string &basicString) {
+    return CommunicationProtocol::send(clientSkt, basicString);
 }
 
 
-std::string ClientTalker::runCommand(std::string commandName, std::string arg) {
+std::string ClientTalker::runCommand(std::string &commandName,
+        std::string &arg) {
     std::unique_ptr<Command> command =
             Command::getCommand(commandName,
-                                this->pot, this->user, this->passwd);
+                                this->pot, *this->user, *this->passwd);
     return command->run(arg, this->alive);
 }
