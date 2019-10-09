@@ -18,9 +18,9 @@ public:
 private:
     HoneyPot *pot;
     Socket peerskt;
-    std::string *user;
-    std::string *passwd;
-    bool *alive;
+    std::string user = "";
+    std::string passwd = "";
+    bool alive = true;
 
     std::string receiveRequest(Socket clientSkt);
 
