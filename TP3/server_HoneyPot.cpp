@@ -2,7 +2,7 @@
 #include <fstream>
 #include <sstream>
 
-HoneyPot::HoneyPot(std::string &configFileName) {
+HoneyPot::HoneyPot(char *configFileName) {
     std::ifstream configFile(configFileName);
     std::string key, value;
     while (std::getline(configFile, key, '=') &&

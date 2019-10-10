@@ -10,13 +10,11 @@ class Server {
 public:
     Server(char *port, char *configFileName);
 
-    ~Server();
-
     void run();
 
 private:
-    HoneyPot *pot;
-    ClientListener *listener;
+    HoneyPot pot;
+    ClientListener listener;
 };
 
 

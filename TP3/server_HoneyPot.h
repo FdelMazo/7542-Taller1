@@ -9,7 +9,7 @@
 
 class HoneyPot {
 public:
-    explicit HoneyPot(std::string &configFileName);
+    explicit HoneyPot(char *configFileName);
 
     bool validCredentials(std::string &username, std::string &password);
 
