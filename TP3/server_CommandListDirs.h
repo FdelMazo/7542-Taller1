@@ -4,12 +4,15 @@
 
 #include "server_Command.h"
 #include <string>
+#include <mutex>
 
 class CommandListDirs : public Command {
 public:
     using Command::Command;
 
     std::string run(std::string &dummyArg, bool *alive) override;
+
+    std::mutex m;
 };
 
 

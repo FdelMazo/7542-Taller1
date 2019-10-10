@@ -2,6 +2,7 @@
 #include "server_CommandListDirs.h"
 
 std::string CommandListDirs::run(std::string &dummyArg, bool *alive) {
+    std::unique_lock<std::mutex> lock(m);
     if (!pot->validCredentials(this->username, this->password))
         return notLoggedResponse();
     std::ostringstream stream;
