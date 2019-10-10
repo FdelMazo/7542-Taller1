@@ -42,3 +42,7 @@ Finalmente, los múltiples hilos de habladores con clientes serán los encargado
 * Simplifica el constructor de `Client` a una única linea que llama a `connect` sobre `this->socket`.
 
 * Pasa al stack los atributos de usuario/contraseña y el de si el hilo esta vivo o no de `ClientTalker` (así, evita usar punteros).
+
+* Pasa al stack el HoneyPot y el escuchador de clientes del servidor.
+
+* Hace al comando de listar directorios thread-safe, agregandole un lock.
