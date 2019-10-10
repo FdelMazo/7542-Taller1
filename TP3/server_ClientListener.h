@@ -5,7 +5,7 @@
 #include "server_Thread.h"
 #include "server_HoneyPot.h"
 #include "server_ClientTalker.h"
-#include <vector>
+#include <list>
 
 
 class ClientListener : public Thread {
@@ -19,7 +19,7 @@ public:
 private:
     HoneyPot *pot;
     Socket serverSkt;
-    std::vector<ClientTalker *> clients;
+    std::list<ClientTalker *> clients;
 };
 
 

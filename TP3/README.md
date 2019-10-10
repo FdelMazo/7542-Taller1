@@ -46,3 +46,5 @@ Finalmente, los múltiples hilos de habladores con clientes serán los encargado
 * Pasa al stack el HoneyPot y el escuchador de clientes del servidor.
 
 * Hace al comando de listar directorios thread-safe, agregandole un lock.
+
+* Usa una lista en vez de un vector para llevar registro de los clientes atendidos (por perfomance).
