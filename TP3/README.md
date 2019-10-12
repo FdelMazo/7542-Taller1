@@ -50,3 +50,5 @@ Finalmente, los múltiples hilos de habladores con clientes serán los encargado
 * Usa una lista en vez de un vector para llevar registro de los clientes atendidos (por perfomance).
 
 * Hace a la clase Socket mucho más apta para C++ (usando RAII). Implementa el destructor, el constructor por movimiento, y el operador de asignación por movimiento.
+
+* Se agrega un método para limpiar los hilos donde el cliente ya no esta activo.

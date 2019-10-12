@@ -56,3 +56,7 @@ std::string ClientTalker::runCommand(std::string &commandName,
                                 this->pot, this->user, this->passwd);
     return command->run(arg, &this->alive);
 }
+
+bool ClientTalker::isAlive() {
+    return this->alive;
+}

@@ -15,6 +15,8 @@ public:
 
     void run() override;
 
+    bool isAlive();
+
 private:
     HoneyPot *pot;
     Socket peerskt;

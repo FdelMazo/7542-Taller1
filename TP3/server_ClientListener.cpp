@@ -31,5 +31,18 @@ void ClientListener::run() {
                 std::move(clientSkt));
         clients.push_back(client);
         client->start();
+        garbageCollector();
+    }
+}
+
+void ClientListener::garbageCollector() {
+    std::list<ClientTalker *>::iterator it = clients.begin();
+    while (it != clients.end()) {
+        if (!(*it)->isAlive()) {
+            delete *it;
+            it = clients.erase(it);
+        } else {
+            it++;
+        }
     }
 }

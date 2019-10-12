@@ -20,6 +20,8 @@ private:
     HoneyPot *pot;
     Socket serverSkt;
     std::list<ClientTalker *> clients;
+
+    void garbageCollector();
 };
 
 
