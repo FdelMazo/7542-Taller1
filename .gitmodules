@@ -1,0 +1,3 @@
+[submodule "micromachines"]
+	path = micromachines
+	url = git@github.com:pastine/taller-micromachines.git
