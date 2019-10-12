@@ -22,11 +22,11 @@ private:
     std::string passwd = "";
     bool alive = true;
 
-    std::string receiveRequest(Socket clientSkt);
+    std::string receiveRequest();
 
     std::string processRequest(std::string &request);
 
-    void sendResponse(Socket clientSkt, std::string &basicString);
+    void sendResponse(std::string &basicString);
 
     std::string runCommand(std::string &commandName, std::string &arg);
 };

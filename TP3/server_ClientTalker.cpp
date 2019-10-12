@@ -7,7 +7,7 @@
 
 ClientTalker::ClientTalker(HoneyPot *hpot, Socket socket) {
     this->pot = hpot;
-    this->peerskt = socket;
+    this->peerskt = std::move(socket);
 }
 
 ClientTalker::~ClientTalker() {
@@ -17,21 +17,21 @@ ClientTalker::~ClientTalker() {
 
 void ClientTalker::run() {
     std::string greeting = Command::acceptClient(this->pot);
-    sendResponse(this->peerskt, greeting);
+    sendResponse(greeting);
     while (this->alive) {
-        std::string request = receiveRequest(this->peerskt);
+        std::string request = receiveRequest();
         if (request.empty()) {
             this->alive = false;
             break;
         }
         std::string response = processRequest(request);
-        sendResponse(this->peerskt, response);
+        sendResponse(response);
     }
     std::cerr << "Farewell Client!\n";
 }
 
-std::string ClientTalker::receiveRequest(Socket clientSkt) {
-    return CommunicationProtocol::receive(clientSkt);
+std::string ClientTalker::receiveRequest() {
+    return CommunicationProtocol::receive(this->peerskt);
 }
 
 std::string ClientTalker::processRequest(std::string &request) {
@@ -44,8 +44,8 @@ std::string ClientTalker::processRequest(std::string &request) {
     return runCommand(command, arg);
 }
 
-void ClientTalker::sendResponse(Socket clientSkt, std::string &basicString) {
-    return CommunicationProtocol::send(clientSkt, basicString);
+void ClientTalker::sendResponse(std::string &basicString) {
+    return CommunicationProtocol::send(this->peerskt, basicString);
 }
 
 

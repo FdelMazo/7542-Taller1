@@ -100,3 +100,20 @@ struct addrinfo *Socket::getAddr(const char *host, const char *service,
         return nullptr;
     return addr_list;
 }
+
+Socket::~Socket() {
+    if (this->fd == -1) return;
+    ::shutdown(this->fd, SHUT_RDWR);
+    ::close(this->fd);
+}
+
+Socket::Socket(Socket &&other) {
+    this->fd = other.fd;
+    other.fd = -1;
+}
+
+Socket &Socket::operator=(Socket &&other) {
+    this->fd = other.fd;
+    other.fd = -1;
+    return *this;
+}

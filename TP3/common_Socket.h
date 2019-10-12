@@ -14,6 +14,8 @@ class Socket {
 public:
     Socket() = default;
 
+    ~Socket();
+
     explicit Socket(int i);
 
     void connect(char *host, char *port);
@@ -29,6 +31,10 @@ public:
     void send(const void *msg, size_t length);
 
     void recv(void *response, size_t length);
+
+    Socket(Socket &&other);
+
+    Socket &operator=(Socket &&other);
 
 private:
     int fd;

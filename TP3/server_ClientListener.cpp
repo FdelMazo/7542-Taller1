@@ -5,7 +5,7 @@ ClientListener::ClientListener(char *port, HoneyPot *hpot) {
     Socket serverSocket;
     serverSocket.bind(port);
     this->pot = hpot;
-    this->serverSkt = serverSocket;
+    this->serverSkt = std::move(serverSocket);
     this->serverSkt.listen();
 }
 
@@ -27,7 +27,8 @@ void ClientListener::run() {
             break;
         }
         std::cerr << "New Client!\n";
-        ClientTalker *client = new ClientTalker(this->pot, clientSkt);
+        ClientTalker *client = new ClientTalker(this->pot,
+                std::move(clientSkt));
         clients.push_back(client);
         client->start();
     }
